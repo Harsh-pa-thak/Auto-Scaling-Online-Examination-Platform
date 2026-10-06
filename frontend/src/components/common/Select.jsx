@@ -74,17 +74,17 @@ const Select = forwardRef(function Select(
 
         <ChevronDown
           size={16}
-          className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-slate-400"
+          className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-zinc-500"
         />
       </div>
 
       {error && (
-        <p role="alert" className="text-xs text-red-600">
+        <p role="alert" className="text-xs text-red-500">
           {error}
         </p>
       )}
       {helperText && !error && (
-        <p className="text-xs text-slate-500">{helperText}</p>
+        <p className="text-xs text-zinc-400">{helperText}</p>
       )}
     </div>
   )

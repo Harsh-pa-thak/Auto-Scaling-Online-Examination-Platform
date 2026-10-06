@@ -18,12 +18,12 @@ export default function EmptyState({
 }) {
   return (
     <div className={`flex flex-col items-center justify-center py-12 px-4 text-center ${className}`}>
-      <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-slate-100 text-slate-400 mb-4 border border-slate-200/60 shadow-sm">
-        {icon || <Inbox size={26} className="text-slate-400" />}
+      <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-zinc-800/80 text-zinc-400 mb-4 border border-zinc-700/60 shadow-sm">
+        {icon || <Inbox size={26} className="text-zinc-500" />}
       </div>
-      <h3 className="text-sm font-semibold text-slate-800">{title}</h3>
+      <h3 className="text-sm font-semibold text-zinc-100">{title}</h3>
       {message && (
-        <p className="mt-1 text-xs sm:text-sm text-slate-500 max-w-sm leading-relaxed">
+        <p className="mt-1 text-xs sm:text-sm text-zinc-400 max-w-sm leading-relaxed">
           {message}
         </p>
       )}

@@ -19,13 +19,13 @@ export function DropdownItem({
       className={[
         'flex w-full items-center gap-2.5 px-3 py-2 text-xs font-medium rounded-lg text-left transition-colors',
         danger
-          ? 'text-red-600 hover:bg-red-50 active:bg-red-100'
-          : 'text-slate-700 hover:bg-slate-100 active:bg-slate-200',
+          ? 'text-red-400 hover:bg-red-950/40 active:bg-red-950/60'
+          : 'text-zinc-300 hover:bg-zinc-800 hover:text-zinc-100 active:bg-zinc-700',
         disabled ? 'opacity-40 cursor-not-allowed' : '',
         className,
       ].join(' ')}
     >
-      {icon && <span className="flex-shrink-0 text-slate-400 group-hover:text-slate-600">{icon}</span>}
+      {icon && <span className="flex-shrink-0 text-zinc-500 group-hover:text-zinc-300">{icon}</span>}
       <span className="flex-1 truncate">{children}</span>
     </button>
   )
@@ -35,7 +35,7 @@ export function DropdownItem({
  * Dropdown divider component
  */
 export function DropdownDivider() {
-  return <div className="my-1 border-t border-slate-100" />
+  return <div className="my-1 border-t border-zinc-800" />
 }
 
 /**
@@ -90,7 +90,7 @@ export default function Dropdown({
           role="menu"
           aria-orientation="vertical"
           className={[
-            'absolute z-50 mt-2 p-1.5 bg-white border border-slate-200/80 rounded-xl shadow-lg shadow-slate-200/50 focus:outline-none animate-in fade-in zoom-in-95 duration-100',
+            'absolute z-50 mt-2 p-1.5 bg-zinc-900 border border-zinc-800 rounded-xl shadow-xl focus:outline-none animate-in fade-in zoom-in-95 duration-100',
             align === 'right' ? 'right-0 origin-top-right' : 'left-0 origin-top-left',
             width,
           ].join(' ')}

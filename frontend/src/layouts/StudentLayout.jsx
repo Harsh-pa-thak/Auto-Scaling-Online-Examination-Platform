@@ -15,7 +15,7 @@ export default function StudentLayout() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col font-sans">
+    <div className="min-h-screen bg-zinc-950 text-zinc-100 flex flex-col font-sans">
       {/* ── Top Navbar ── */}
       <StudentNavbar onToggleMobileMenu={() => setMobileMenuOpen(true)} />
 
@@ -34,11 +34,11 @@ export default function StudentLayout() {
           </div>
 
           {/* Academic Footer */}
-          <footer className="mt-12 pt-6 border-t border-slate-200/80 text-xs text-slate-400 flex flex-col sm:flex-row items-center justify-between gap-2 max-w-7xl w-full mx-auto">
+          <footer className="mt-12 pt-6 border-t border-zinc-800 text-xs text-zinc-500 flex flex-col sm:flex-row items-center justify-between gap-2 max-w-7xl w-full mx-auto">
             <span>
               Auto-Scaling Online Examination Platform • University Assessment Portal
             </span>
-            <span className="flex items-center gap-1.5 text-slate-400">
+            <span className="flex items-center gap-1.5 text-zinc-400">
               <span className="inline-block h-1.5 w-1.5 rounded-full bg-emerald-500" />
               Proctoring & Autosave: Active
             </span>

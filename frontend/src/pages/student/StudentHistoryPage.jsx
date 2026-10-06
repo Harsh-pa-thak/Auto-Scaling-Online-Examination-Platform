@@ -76,22 +76,23 @@ export default function StudentHistoryPage() {
         const query = searchQuery.toLowerCase().trim()
         const matchesTitle = res.examTitle?.toLowerCase().includes(query)
         const matchesSubject = res.subject?.toLowerCase().includes(query)
-        if (!matchesTitle && !matchesSubject) return false
+        const matchesId = res.id?.toLowerCase().includes(query)
+        if (!matchesTitle && !matchesSubject && !matchesId) return false
       }
 
       return true
     })
   }, [allStudentResults, activeFilter, searchQuery])
 
-  // Table columns
+  // Table columns: Exam, Subject, Date, Score, Percentage, Status
   const columns = [
     {
       key: 'examTitle',
       label: 'Exam',
       render: (val, row) => (
         <div>
-          <p className="font-semibold text-slate-900">{row.examTitle}</p>
-          <span className="text-xs text-slate-400 font-mono">Attempt ID: {row.id}</span>
+          <p className="font-semibold text-zinc-100">{row.examTitle}</p>
+          <span className="text-xs text-zinc-500 font-mono">Attempt ID: {row.id}</span>
         </div>
       ),
     },
@@ -99,7 +100,7 @@ export default function StudentHistoryPage() {
       key: 'subject',
       label: 'Subject',
       render: (val) => (
-        <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-slate-100 text-slate-700">
+        <span className="text-xs font-semibold px-2.5 py-0.5 rounded-md bg-zinc-800 text-zinc-300 border border-zinc-700/60 font-mono">
           {val}
         </span>
       ),
@@ -108,7 +109,7 @@ export default function StudentHistoryPage() {
       key: 'submittedAt',
       label: 'Date',
       render: (val) => (
-        <span className="text-xs text-slate-600 font-medium">
+        <span className="text-xs text-zinc-300 font-medium">
           {formatDate(val)}
         </span>
       ),
@@ -117,8 +118,8 @@ export default function StudentHistoryPage() {
       key: 'score',
       label: 'Score',
       render: (val, row) => (
-        <span className="text-xs font-semibold text-slate-800">
-          {row.score} <span className="text-slate-400 font-normal">/ {row.totalMarks}</span>
+        <span className="text-xs font-semibold text-zinc-200">
+          {row.score} <span className="text-zinc-500 font-normal">/ {row.totalMarks}</span>
         </span>
       ),
     },
@@ -127,7 +128,7 @@ export default function StudentHistoryPage() {
       label: 'Percentage',
       render: (val, row) => (
         <div className="flex items-center gap-2">
-          <span className="font-bold text-slate-900 text-xs">{val}%</span>
+          <span className="font-bold text-zinc-100 text-xs">{val}%</span>
           {row.grade && (
             <Badge variant="primary" size="sm">
               Grade {row.grade}
@@ -156,7 +157,7 @@ export default function StudentHistoryPage() {
       render: (val, row) => (
         <Link to={`/student/results?id=${row.id}`}>
           <Button variant="secondary" size="xs" rightIcon={<Eye size={12} />}>
-            Scorecard
+            View Result
           </Button>
         </Link>
       ),
@@ -164,21 +165,21 @@ export default function StudentHistoryPage() {
   ]
 
   return (
-    <div className="space-y-6 animate-in fade-in duration-200">
+    <div className="space-y-6 max-w-7xl mx-auto animate-in fade-in duration-200">
       {/* ── Page Header ── */}
-      <div className="pb-2 border-b border-slate-200/80">
-        <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
+      <div className="pb-4 border-b border-zinc-800">
+        <h1 className="text-2xl sm:text-3xl font-bold text-zinc-100 tracking-tight">
           Examination History
         </h1>
-        <p className="text-sm text-slate-500 mt-1 leading-relaxed">
-          Historical records of your past online examinations, finalized scores, and academic evaluations.
+        <p className="text-sm text-zinc-400 mt-1 leading-relaxed">
+          Comprehensive records of completed university examinations, finalized scores, and academic evaluations.
         </p>
       </div>
 
-      {/* ── Status Tabs & Search Bar Row ── */}
+      {/* ── Filters Row: Tabs + Search Bar ── */}
       <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4">
         {/* Filter Tabs (All, Passed, Failed) */}
-        <div className="flex p-1 bg-slate-100 rounded-xl border border-slate-200/60 max-w-md">
+        <div className="flex p-1 bg-zinc-900 rounded-xl border border-zinc-800 max-w-md">
           {TABS.map((tab) => {
             const count = counts[tab.id] ?? 0
             const isActive = activeFilter === tab.id
@@ -189,14 +190,16 @@ export default function StudentHistoryPage() {
                 onClick={() => setActiveFilter(tab.id)}
                 className={`flex-1 flex items-center justify-center gap-1.5 py-1.5 px-3 text-xs font-semibold rounded-lg transition-all ${
                   isActive
-                    ? 'bg-white text-slate-900 shadow-xs'
-                    : 'text-slate-600 hover:text-slate-900'
+                    ? 'bg-zinc-800 text-zinc-100 shadow-xs'
+                    : 'text-zinc-400 hover:text-zinc-200 hover:bg-zinc-850/50'
                 }`}
               >
                 <span>{tab.label}</span>
                 <span
                   className={`text-[10px] px-1.5 py-0.2 rounded-full ${
-                    isActive ? 'bg-primary-50 text-primary-700' : 'bg-slate-200 text-slate-600'
+                    isActive
+                      ? 'bg-amber-950/60 text-amber-400 border border-amber-800/40'
+                      : 'bg-zinc-800 text-zinc-400'
                   }`}
                 >
                   {count}
@@ -218,9 +221,9 @@ export default function StudentHistoryPage() {
 
       {/* ── Table or Empty State ── */}
       {filteredResults.length === 0 ? (
-        <div className="bg-white rounded-2xl border border-slate-200 p-8">
+        <div className="bg-zinc-900 rounded-2xl border border-zinc-800 p-8">
           <EmptyState
-            icon={<History size={30} className="text-slate-400" />}
+            icon={<History size={30} className="text-zinc-500" />}
             title="No examination records found"
             message={
               searchQuery || activeFilter !== 'all'

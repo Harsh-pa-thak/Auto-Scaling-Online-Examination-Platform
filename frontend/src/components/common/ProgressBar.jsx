@@ -6,11 +6,11 @@ const heights = {
 }
 
 const variants = {
-  primary: 'bg-primary-600',
+  primary: 'bg-amber-500',
   success: 'bg-emerald-500',
   warning: 'bg-amber-500',
   danger:  'bg-red-500',
-  slate:   'bg-slate-500',
+  slate:   'bg-zinc-600',
 }
 
 /**
@@ -37,10 +37,10 @@ export default function ProgressBar({
   return (
     <div className={`w-full ${className}`}>
       {(label || showPercentage) && (
-        <div className="flex items-center justify-between text-xs font-medium text-slate-700 mb-1.5">
+        <div className="flex items-center justify-between text-xs font-medium text-zinc-300 mb-1.5">
           {label && <span>{label}</span>}
           {showPercentage && (
-            <span className="text-slate-500 ml-auto">{percentage}%</span>
+            <span className="text-zinc-500 ml-auto">{percentage}%</span>
           )}
         </div>
       )}
@@ -50,7 +50,7 @@ export default function ProgressBar({
         aria-valuenow={value}
         aria-valuemin={0}
         aria-valuemax={max}
-        className={`w-full bg-slate-100 rounded-full overflow-hidden ${heights[size] || heights.md}`}
+        className={`w-full bg-zinc-800 rounded-full overflow-hidden ${heights[size] || heights.md}`}
       >
         <div
           style={{ width: `${percentage}%` }}

@@ -11,6 +11,10 @@ import ExamDetailsPage from '../pages/student/ExamDetailsPage'
 import LiveExamPage from '../pages/student/LiveExamPage'
 import StudentResultsPage from '../pages/student/StudentResultsPage'
 import StudentHistoryPage from '../pages/student/StudentHistoryPage'
+import StudentNotificationsPage from '../pages/student/StudentNotificationsPage'
+import StudentProfilePage from '../pages/student/StudentProfilePage'
+import AdminDashboard from '../pages/admin/AdminDashboard'
+import AdminStudentsPage from '../pages/admin/AdminStudentsPage'
 import RoutePlaceholder from './RoutePlaceholder'
 import { Card, Button } from '../components/common'
 import { AlertCircle, ArrowLeft } from 'lucide-react'
@@ -19,13 +23,13 @@ import { Link } from 'react-router-dom'
 // 404 Not Found Page
 function NotFoundPage() {
   return (
-    <div className="min-h-screen bg-slate-50 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-zinc-950 text-zinc-100 flex items-center justify-center p-4">
       <Card padding="p-8" className="max-w-md w-full text-center">
-        <div className="h-14 w-14 rounded-2xl bg-red-50 text-red-500 flex items-center justify-center mx-auto mb-4 border border-red-100">
+        <div className="h-14 w-14 rounded-2xl bg-red-950/50 text-red-400 flex items-center justify-center mx-auto mb-4 border border-red-800/60">
           <AlertCircle size={28} />
         </div>
-        <h1 className="text-xl font-bold text-slate-900">404 — Page Not Found</h1>
-        <p className="mt-2 text-sm text-slate-500">
+        <h1 className="text-xl font-bold text-zinc-100">404 — Page Not Found</h1>
+        <p className="mt-2 text-sm text-zinc-400">
           The requested page route does not exist in this examination portal.
         </p>
         <div className="mt-6 flex justify-center gap-3">
@@ -67,51 +71,15 @@ export default function AppRoutes() {
         <Route path="exams/:id" element={<ExamDetailsPage />} />
         <Route path="results" element={<StudentResultsPage />} />
         <Route path="history" element={<StudentHistoryPage />} />
-        <Route
-          path="notifications"
-          element={
-            <RoutePlaceholder
-              title="Notifications"
-              description="Exam schedules, score release announcements, and system alerts."
-              role="student"
-            />
-          }
-        />
-        <Route
-          path="profile"
-          element={
-            <RoutePlaceholder
-              title="Student Profile"
-              description="Academic registration details, department, batch, and credentials."
-              role="student"
-            />
-          }
-        />
+        <Route path="notifications" element={<StudentNotificationsPage />} />
+        <Route path="profile" element={<StudentProfilePage />} />
       </Route>
 
       {/* ── Admin Routes ── */}
       <Route path="/admin" element={<AdminLayout />}>
         <Route index element={<Navigate to="/admin/dashboard" replace />} />
-        <Route
-          path="dashboard"
-          element={
-            <RoutePlaceholder
-              title="Administration Dashboard"
-              description="High-level overview of active exams, active examinees, cluster nodes, and pass rates."
-              role="admin"
-            />
-          }
-        />
-        <Route
-          path="students"
-          element={
-            <RoutePlaceholder
-              title="Student Management"
-              description="Directory of enrolled students, registration numbers, batch filters, and statuses."
-              role="admin"
-            />
-          }
-        />
+        <Route path="dashboard" element={<AdminDashboard />} />
+        <Route path="students" element={<AdminStudentsPage />} />
         <Route
           path="exams"
           element={

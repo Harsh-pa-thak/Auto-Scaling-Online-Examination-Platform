@@ -10,7 +10,7 @@ const sizes = {
 
 const statusColors = {
   online: 'bg-emerald-500',
-  offline: 'bg-slate-400',
+  offline: 'bg-zinc-600',
   busy: 'bg-red-500',
   away: 'bg-amber-500',
 }
@@ -25,20 +25,7 @@ const statusSizes = {
 
 // Generate consistent background tint from initials/name
 function getInitialsColor(name = '') {
-  const colors = [
-    'bg-primary-100 text-primary-700',
-    'bg-blue-100 text-blue-700',
-    'bg-emerald-100 text-emerald-700',
-    'bg-violet-100 text-violet-700',
-    'bg-amber-100 text-amber-800',
-    'bg-teal-100 text-teal-700',
-  ]
-  let hash = 0
-  for (let i = 0; i < name.length; i++) {
-    hash = name.charCodeAt(i) + ((hash << 5) - hash)
-  }
-  const index = Math.abs(hash) % colors.length
-  return colors[index]
+  return 'bg-zinc-800 text-amber-400 border border-zinc-700/80'
 }
 
 function getInitials(name = '') {
@@ -73,11 +60,11 @@ export default function Avatar({
           src={src}
           alt={name}
           onError={() => setImageFailed(true)}
-          className={`rounded-full object-cover ring-2 ring-white ${sizes[size]}`}
+          className={`rounded-full object-cover ring-2 ring-zinc-800 ${sizes[size]}`}
         />
       ) : (
         <div
-          className={`inline-flex items-center justify-center rounded-full font-semibold ring-2 ring-white ${
+          className={`inline-flex items-center justify-center rounded-full font-semibold ring-2 ring-zinc-800 ${
             sizes[size]
           } ${getInitialsColor(name)}`}
           aria-label={name}
@@ -88,7 +75,7 @@ export default function Avatar({
 
       {status && (
         <span
-          className={`absolute bottom-0 right-0 rounded-full ring-2 ring-white ${
+          className={`absolute bottom-0 right-0 rounded-full ring-2 ring-zinc-950 ${
             statusSizes[size]
           } ${statusColors[status] || statusColors.offline}`}
           aria-label={`Status: ${status}`}

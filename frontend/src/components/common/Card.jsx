@@ -28,13 +28,13 @@ export default function Card({
       {hasHeader && (
         <div
           className={[
-            'flex items-center justify-between border-b border-slate-100',
+            'flex items-center justify-between border-b border-zinc-800',
             padding,
             'pb-4',
           ].join(' ')}
         >
           {title && (
-            <h3 className="text-sm font-semibold text-slate-800">{title}</h3>
+            <h3 className="text-sm font-semibold text-zinc-100">{title}</h3>
           )}
           {headerAction && (
             <div className="flex items-center gap-2">{headerAction}</div>

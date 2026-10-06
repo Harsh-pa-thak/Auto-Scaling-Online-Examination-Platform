@@ -1,13 +1,13 @@
 import LoadingSpinner from './LoadingSpinner'
 
 const variants = {
-  primary:   'bg-primary-600 text-white hover:bg-primary-700 active:bg-primary-800 focus:ring-primary-500 shadow-sm',
-  secondary: 'bg-white text-slate-700 border border-slate-300 hover:bg-slate-50 active:bg-slate-100 focus:ring-primary-500 shadow-sm',
-  danger:    'bg-red-600 text-white hover:bg-red-700 active:bg-red-800 focus:ring-red-500 shadow-sm',
-  ghost:     'bg-transparent text-slate-600 hover:bg-slate-100 active:bg-slate-200 focus:ring-slate-300',
-  success:   'bg-emerald-600 text-white hover:bg-emerald-700 active:bg-emerald-800 focus:ring-emerald-500 shadow-sm',
-  warning:   'bg-amber-500 text-white hover:bg-amber-600 active:bg-amber-700 focus:ring-amber-400 shadow-sm',
-  link:      'bg-transparent text-primary-600 hover:text-primary-800 underline-offset-4 hover:underline focus:ring-primary-500 p-0',
+  primary:   'bg-amber-500 text-zinc-950 font-semibold hover:bg-amber-400 active:bg-amber-600 focus:ring-amber-500 shadow-sm',
+  secondary: 'bg-zinc-800 text-zinc-200 border border-zinc-700/80 hover:bg-zinc-700 hover:text-zinc-100 active:bg-zinc-750 focus:ring-amber-500 shadow-sm',
+  danger:    'bg-red-600 text-white hover:bg-red-500 active:bg-red-700 focus:ring-red-500 shadow-sm',
+  ghost:     'bg-transparent text-zinc-400 hover:bg-zinc-800 hover:text-zinc-100 active:bg-zinc-700 focus:ring-zinc-600',
+  success:   'bg-emerald-600 text-white hover:bg-emerald-500 active:bg-emerald-700 focus:ring-emerald-500 shadow-sm',
+  warning:   'bg-amber-500 text-zinc-950 hover:bg-amber-400 active:bg-amber-600 focus:ring-amber-400 shadow-sm',
+  link:      'bg-transparent text-amber-400 hover:text-amber-300 underline-offset-4 hover:underline focus:ring-amber-500 p-0',
 }
 
 const sizes = {
@@ -54,7 +54,7 @@ export default function Button({
       className={[
         'inline-flex items-center justify-center font-medium rounded-lg',
         'transition-colors duration-150',
-        'focus:outline-none focus:ring-2 focus:ring-offset-2',
+        'focus:outline-none focus:ring-2 focus:ring-offset-2 ring-offset-zinc-950',
         'disabled:opacity-50 disabled:cursor-not-allowed',
         variants[variant] ?? variants.primary,
         variant === 'link' ? '' : sizes[size] ?? sizes.md,
