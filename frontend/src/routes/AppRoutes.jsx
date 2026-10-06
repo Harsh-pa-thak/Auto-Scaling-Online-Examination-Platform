@@ -4,6 +4,7 @@ import AdminLayout from '../layouts/AdminLayout'
 import AuthLayout from '../layouts/AuthLayout'
 import LoginPage from '../pages/auth/LoginPage'
 import RegisterPage from '../pages/auth/RegisterPage'
+import ForgotPasswordPage from '../pages/auth/ForgotPasswordPage'
 import RoutePlaceholder from './RoutePlaceholder'
 import { Card, Button } from '../components/common'
 import { AlertCircle, ArrowLeft } from 'lucide-react'
@@ -46,6 +47,7 @@ export default function AppRoutes() {
       <Route element={<AuthLayout />}>
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
+        <Route path="/forgot-password" element={<ForgotPasswordPage />} />
       </Route>
 
       {/* ── Student Routes ── */}
