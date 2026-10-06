@@ -7,6 +7,7 @@ import RegisterPage from '../pages/auth/RegisterPage'
 import ForgotPasswordPage from '../pages/auth/ForgotPasswordPage'
 import StudentDashboard from '../pages/student/StudentDashboard'
 import StudentExamsPage from '../pages/student/StudentExamsPage'
+import ExamDetailsPage from '../pages/student/ExamDetailsPage'
 import RoutePlaceholder from './RoutePlaceholder'
 import { Card, Button } from '../components/common'
 import { AlertCircle, ArrowLeft } from 'lucide-react'
@@ -57,16 +58,7 @@ export default function AppRoutes() {
         <Route index element={<Navigate to="/student/dashboard" replace />} />
         <Route path="dashboard" element={<StudentDashboard />} />
         <Route path="exams" element={<StudentExamsPage />} />
-        <Route
-          path="exams/:id"
-          element={
-            <RoutePlaceholder
-              title="Exam Details & Instructions"
-              description="Pre-exam guidelines, syllabus, duration, rules, and launch gate."
-              role="student"
-            />
-          }
-        />
+        <Route path="exams/:id" element={<ExamDetailsPage />} />
         <Route
           path="exam/:id"
           element={
