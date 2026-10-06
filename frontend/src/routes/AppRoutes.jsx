@@ -56,16 +56,7 @@ export default function AppRoutes() {
       <Route path="/student" element={<StudentLayout />}>
         <Route index element={<Navigate to="/student/dashboard" replace />} />
         <Route path="dashboard" element={<StudentDashboard />} />
-        <Route
-          path="exams"
-          element={
-            <RoutePlaceholder
-              title="Available Examinations"
-              description="Filter and access upcoming, active, and completed university examinations."
-              role="student"
-            />
-          }
-        />
+        <Route path="exams" element={<StudentExamsPage />} />
         <Route
           path="exams/:id"
           element={
