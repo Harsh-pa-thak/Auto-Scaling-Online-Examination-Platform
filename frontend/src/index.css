@@ -1,0 +1,140 @@
+/* ============================================================
+   Global Stylesheet — ExamPortal Design System
+   Tailwind CSS v3 + custom design tokens
+   ============================================================ */
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ── Base layer ───────────────────────────────────────────── */
+@layer base {
+  html {
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-slate-50 text-slate-900 min-h-screen;
+  }
+
+  /* Focus ring for keyboard accessibility */
+  :focus-visible {
+    @apply outline-none ring-2 ring-primary-500 ring-offset-2;
+  }
+
+  /* Scrollbar styling */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    @apply bg-slate-100;
+  }
+  ::-webkit-scrollbar-thumb {
+    @apply bg-slate-300 rounded-full;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-slate-400;
+  }
+}
+
+/* ── Component layer ──────────────────────────────────────── */
+@layer components {
+
+  /* ── Card ── */
+  .card {
+    @apply bg-white border border-slate-200 rounded-xl shadow-card;
+  }
+
+  /* ── Form elements ── */
+  .input-base {
+    @apply w-full px-3 py-2 text-sm bg-white border border-slate-300 rounded-lg
+           text-slate-900 placeholder:text-slate-400
+           focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500
+           disabled:bg-slate-50 disabled:text-slate-400 disabled:cursor-not-allowed
+           transition-colors duration-150;
+  }
+
+  .input-error {
+    @apply border-red-400 focus:ring-red-400 focus:border-red-400;
+  }
+
+  .form-label {
+    @apply block text-sm font-medium text-slate-700 mb-1;
+  }
+
+  /* ── Page container ── */
+  .page-container {
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6;
+  }
+
+  /* ── Page heading ── */
+  .page-title {
+    @apply text-2xl font-bold text-slate-900 tracking-tight;
+  }
+
+  .page-subtitle {
+    @apply text-sm text-slate-500 mt-1;
+  }
+
+  /* ── Section header ── */
+  .section-title {
+    @apply text-base font-semibold text-slate-800;
+  }
+
+  /* ── Divider ── */
+  .divider {
+    @apply border-t border-slate-200 my-4;
+  }
+
+  /* ── Sidebar nav item ── */
+  .sidebar-link {
+    @apply flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium
+           text-slate-600 hover:bg-slate-100 hover:text-slate-900
+           transition-colors duration-150 cursor-pointer;
+  }
+
+  .sidebar-link-active {
+    @apply bg-primary-50 text-primary-700 hover:bg-primary-50 hover:text-primary-700;
+  }
+
+  /* ── Top nav link ── */
+  .nav-link {
+    @apply flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium
+           text-slate-600 hover:bg-slate-100 hover:text-slate-900
+           transition-colors duration-150;
+  }
+
+  .nav-link-active {
+    @apply text-primary-700 bg-primary-50 hover:bg-primary-50 hover:text-primary-700;
+  }
+}
+
+/* ── Utility layer ────────────────────────────────────────── */
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  /* Exam interface — no text selection */
+  .no-select {
+    user-select: none;
+    -webkit-user-select: none;
+  }
+
+  /* Transition defaults */
+  .transition-fast {
+    @apply transition-all duration-100 ease-in-out;
+  }
+
+  .transition-base {
+    @apply transition-all duration-150 ease-in-out;
+  }
+
+  .transition-slow {
+    @apply transition-all duration-300 ease-in-out;
+  }
+}
