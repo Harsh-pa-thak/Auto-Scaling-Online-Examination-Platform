@@ -297,6 +297,24 @@ export const mockResults = [
     submittedAt: '2025-09-30T10:52:00',
     status: 'failed',
   },
+  {
+    id: 'R005',
+    studentId: '24BCE1234',
+    examId: 'EX006',
+    examTitle: 'Data Structures — Diagnostic Assessment',
+    subject: 'Data Structures',
+    score: 18,
+    totalMarks: 50,
+    percentage: 36,
+    grade: 'F',
+    timeTaken: 38,
+    totalQuestions: 25,
+    attempted: 22,
+    correct: 9,
+    wrong: 13,
+    submittedAt: '2025-08-20T11:40:00',
+    status: 'failed',
+  },
 ]
 
 // ── Notifications ──────────────────────────────────────────────

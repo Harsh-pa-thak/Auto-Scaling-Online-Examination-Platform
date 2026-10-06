@@ -8,6 +8,9 @@ import ForgotPasswordPage from '../pages/auth/ForgotPasswordPage'
 import StudentDashboard from '../pages/student/StudentDashboard'
 import StudentExamsPage from '../pages/student/StudentExamsPage'
 import ExamDetailsPage from '../pages/student/ExamDetailsPage'
+import LiveExamPage from '../pages/student/LiveExamPage'
+import StudentResultsPage from '../pages/student/StudentResultsPage'
+import StudentHistoryPage from '../pages/student/StudentHistoryPage'
 import RoutePlaceholder from './RoutePlaceholder'
 import { Card, Button } from '../components/common'
 import { AlertCircle, ArrowLeft } from 'lucide-react'
@@ -53,42 +56,17 @@ export default function AppRoutes() {
         <Route path="/forgot-password" element={<ForgotPasswordPage />} />
       </Route>
 
-      {/* ── Student Routes ── */}
+      {/* ── Standalone Live Examination Screen (Distraction-Free) ── */}
+      <Route path="/student/exam/:id" element={<LiveExamPage />} />
+
+      {/* ── Student Portal Routes ── */}
       <Route path="/student" element={<StudentLayout />}>
         <Route index element={<Navigate to="/student/dashboard" replace />} />
         <Route path="dashboard" element={<StudentDashboard />} />
         <Route path="exams" element={<StudentExamsPage />} />
         <Route path="exams/:id" element={<ExamDetailsPage />} />
-        <Route
-          path="exam/:id"
-          element={
-            <RoutePlaceholder
-              title="Live Examination Interface"
-              description="Secure proctored test screen, question palette, autosave, timer, and submission."
-              role="student"
-            />
-          }
-        />
-        <Route
-          path="results"
-          element={
-            <RoutePlaceholder
-              title="Exam Results & Performance"
-              description="Published scorecard, grade breakdown, and question-level analytics."
-              role="student"
-            />
-          }
-        />
-        <Route
-          path="history"
-          element={
-            <RoutePlaceholder
-              title="Attempt History"
-              description="Past examination records, timestamps, and certificates."
-              role="student"
-            />
-          }
-        />
+        <Route path="results" element={<StudentResultsPage />} />
+        <Route path="history" element={<StudentHistoryPage />} />
         <Route
           path="notifications"
           element={
