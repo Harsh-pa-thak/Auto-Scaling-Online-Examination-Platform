@@ -5,6 +5,8 @@ import AuthLayout from '../layouts/AuthLayout'
 import LoginPage from '../pages/auth/LoginPage'
 import RegisterPage from '../pages/auth/RegisterPage'
 import ForgotPasswordPage from '../pages/auth/ForgotPasswordPage'
+import StudentDashboard from '../pages/student/StudentDashboard'
+import StudentExamsPage from '../pages/student/StudentExamsPage'
 import RoutePlaceholder from './RoutePlaceholder'
 import { Card, Button } from '../components/common'
 import { AlertCircle, ArrowLeft } from 'lucide-react'
@@ -53,16 +55,7 @@ export default function AppRoutes() {
       {/* ── Student Routes ── */}
       <Route path="/student" element={<StudentLayout />}>
         <Route index element={<Navigate to="/student/dashboard" replace />} />
-        <Route
-          path="dashboard"
-          element={
-            <RoutePlaceholder
-              title="Student Dashboard"
-              description="Upcoming scheduled exams, ongoing assessments, quick metrics, and recent notices."
-              role="student"
-            />
-          }
-        />
+        <Route path="dashboard" element={<StudentDashboard />} />
         <Route
           path="exams"
           element={

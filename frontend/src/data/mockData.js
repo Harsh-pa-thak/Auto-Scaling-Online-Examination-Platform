@@ -178,7 +178,7 @@ export const mockExams = [
     negativeMarking: false,
     startTime: '2025-11-20T16:00:00',
     endTime:   '2025-11-20T17:00:00',
-    status: 'draft',
+    status: 'unavailable',
     createdBy: 'ADMIN001',
     allowedStudents: 180,
     section: ['A', 'B', 'C'],
