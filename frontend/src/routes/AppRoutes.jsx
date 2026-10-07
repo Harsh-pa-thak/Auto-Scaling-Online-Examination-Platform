@@ -1,4 +1,5 @@
-import { Routes, Route, Navigate } from 'react-router-dom'
+import { lazy, Suspense } from 'react'
+import { Routes, Route, Navigate, Link } from 'react-router-dom'
 import StudentLayout from '../layouts/StudentLayout'
 import AdminLayout from '../layouts/AdminLayout'
 import AuthLayout from '../layouts/AuthLayout'
@@ -16,11 +17,27 @@ import StudentProfilePage from '../pages/student/StudentProfilePage'
 import AdminDashboard from '../pages/admin/AdminDashboard'
 import AdminStudentsPage from '../pages/admin/AdminStudentsPage'
 import RoutePlaceholder from './RoutePlaceholder'
-import { Card, Button } from '../components/common'
+import { Card, Button, LoadingSpinner } from '../components/common'
 import { AlertCircle, ArrowLeft } from 'lucide-react'
-import { Link } from 'react-router-dom'
 
-// 404 Not Found Page
+// ── Admin pages — lazy loaded for code splitting ───────────────
+const AdminExamsPage        = lazy(() => import('../pages/admin/AdminExamsPage'))
+const AdminQuestionsPage    = lazy(() => import('../pages/admin/AdminQuestionsPage'))
+const AdminQuestionBankPage = lazy(() => import('../pages/admin/AdminQuestionBankPage'))
+const AdminMonitoringPage   = lazy(() => import('../pages/admin/AdminMonitoringPage'))
+const AdminResultsPage      = lazy(() => import('../pages/admin/AdminResultsPage'))
+const AdminAnalyticsPage    = lazy(() => import('../pages/admin/AdminAnalyticsPage'))
+const AdminProfilePage      = lazy(() => import('../pages/admin/AdminProfilePage'))
+
+function AdminFallback() {
+  return (
+    <div className="flex items-center justify-center min-h-64 w-full">
+      <LoadingSpinner size="lg" />
+    </div>
+  )
+}
+
+// ── 404 Not Found Page ─────────────────────────────────────────
 function NotFoundPage() {
   return (
     <div className="min-h-screen bg-zinc-950 text-zinc-100 flex items-center justify-center p-4">
@@ -80,86 +97,57 @@ export default function AppRoutes() {
         <Route index element={<Navigate to="/admin/dashboard" replace />} />
         <Route path="dashboard" element={<AdminDashboard />} />
         <Route path="students" element={<AdminStudentsPage />} />
-        <Route
-          path="exams"
-          element={
-            <RoutePlaceholder
-              title="Examination Management"
-              description="Manage scheduled, ongoing, and completed exams, configure timings and sections."
-              role="admin"
-            />
-          }
-        />
-        <Route
-          path="exams/create"
-          element={
-            <RoutePlaceholder
-              title="Create New Examination"
-              description="Multi-step wizard to configure paper code, timings, question bank linkage, and rules."
-              role="admin"
-            />
-          }
-        />
-        <Route
-          path="exams/:id"
-          element={
-            <RoutePlaceholder
-              title="Exam Configuration & Details"
-              description="Specific exam settings, participant lists, question allocations, and status toggles."
-              role="admin"
-            />
-          }
-        />
-        <Route
-          path="question-bank"
-          element={
-            <RoutePlaceholder
-              title="Question Bank Repository"
-              description="Manage subject question banks, difficulty levels, topics, and question creation."
-              role="admin"
-            />
-          }
-        />
-        <Route
-          path="monitoring"
-          element={
-            <RoutePlaceholder
-              title="Live Examination Monitoring"
-              description="Real-time dashboard of concurrent student sessions, heartbeat tracking, and autoscaling metrics."
-              role="admin"
-            />
-          }
-        />
-        <Route
-          path="results"
-          element={
-            <RoutePlaceholder
-              title="Results & Grade Evaluation"
-              description="Evaluate submissions, compute score distributions, and publish grades."
-              role="admin"
-            />
-          }
-        />
-        <Route
-          path="analytics"
-          element={
-            <RoutePlaceholder
-              title="System & Academic Analytics"
-              description="Subject pass trends, score distribution histograms, and platform load charts."
-              role="admin"
-            />
-          }
-        />
-        <Route
-          path="profile"
-          element={
-            <RoutePlaceholder
-              title="Administrator Profile"
-              description="Departmental privileges, faculty identity, and security preferences."
-              role="admin"
-            />
-          }
-        />
+
+        <Route path="exams" element={
+          <Suspense fallback={<AdminFallback />}>
+            <AdminExamsPage />
+          </Suspense>
+        } />
+        <Route path="exams/create" element={
+          <RoutePlaceholder
+            title="Create New Examination"
+            description="Multi-step wizard to configure paper code, timings, question bank linkage, and rules."
+            role="admin"
+          />
+        } />
+        <Route path="exams/:id" element={
+          <RoutePlaceholder
+            title="Exam Configuration & Details"
+            description="Specific exam settings, participant lists, question allocations, and status toggles."
+            role="admin"
+          />
+        } />
+
+        <Route path="questions" element={
+          <Suspense fallback={<AdminFallback />}>
+            <AdminQuestionsPage />
+          </Suspense>
+        } />
+        <Route path="question-bank" element={
+          <Suspense fallback={<AdminFallback />}>
+            <AdminQuestionBankPage />
+          </Suspense>
+        } />
+        <Route path="monitoring" element={
+          <Suspense fallback={<AdminFallback />}>
+            <AdminMonitoringPage />
+          </Suspense>
+        } />
+        <Route path="results" element={
+          <Suspense fallback={<AdminFallback />}>
+            <AdminResultsPage />
+          </Suspense>
+        } />
+        <Route path="analytics" element={
+          <Suspense fallback={<AdminFallback />}>
+            <AdminAnalyticsPage />
+          </Suspense>
+        } />
+        <Route path="profile" element={
+          <Suspense fallback={<AdminFallback />}>
+            <AdminProfilePage />
+          </Suspense>
+        } />
       </Route>
 
       {/* ── 404 Catch-All ── */}
