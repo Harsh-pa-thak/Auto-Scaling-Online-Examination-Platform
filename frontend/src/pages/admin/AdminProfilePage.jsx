@@ -136,7 +136,6 @@ export default function AdminProfilePage() {
     activityLog: true,
   })
 
-  // ── Password handlers ──
   function handlePwField(field, value) {
     setPwForm((p) => ({ ...p, [field]: value }))
     if (pwErrors[field]) setPwErrors((p) => ({ ...p, [field]: undefined }))
@@ -151,7 +150,7 @@ export default function AdminProfilePage() {
     if (Object.keys(errs).length > 0) { setPwErrors(errs); return }
 
     setPwLoading(true)
-    await new Promise((r) => setTimeout(r, 800)) // simulate API call
+    await new Promise((r) => setTimeout(r, 800))
     setPwLoading(false)
     setPwForm({ current: '', next: '', confirm: '' })
     setPwErrors({})
