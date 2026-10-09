@@ -1,9 +1,9 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { Input, Button, Badge } from '../../components/common'
+import { Input, Button } from '../../components/common'
 import { useAuth } from '../../hooks/useAuth'
 import { useToast } from '../../hooks/useToast'
-import { Mail, Lock, Eye, EyeOff, LogIn, ArrowRight, ShieldCheck, GraduationCap } from 'lucide-react'
+import { Mail, Lock, Eye, EyeOff, LogIn, ShieldCheck, GraduationCap } from 'lucide-react'
 
 // Email format regex
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
@@ -101,52 +101,54 @@ export default function LoginPage() {
     }
   }
 
+  const roleTab = (value) =>
+    `flex items-center justify-center gap-2 rounded-md px-3 py-2 text-sm font-medium transition-colors ${
+      role === value ? 'bg-zinc-800 text-zinc-50' : 'text-zinc-400 hover:text-zinc-100'
+    }`
+
   return (
     <div className="space-y-6">
       {/* Header */}
       <div className="text-center">
-        <h2 className="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight">
-          Sign In to Examination Portal
-        </h2>
-        <p className="text-xs sm:text-sm text-slate-500 mt-1.5">
-          Access your exams, evaluations, and academic records
+        <h1 className="text-xl font-semibold text-zinc-50">Sign in</h1>
+        <p className="mt-2 text-sm text-zinc-400">
+          Access your exams, evaluations, and academic records.
         </p>
       </div>
 
-      {/* Role Selector Tabs */}
-      <div className="grid grid-cols-2 gap-1 p-1 bg-slate-100 rounded-xl border border-slate-200/60">
+      {/* Role Selector */}
+      <div
+        role="tablist"
+        aria-label="Portal"
+        className="grid grid-cols-2 gap-1 rounded-lg border border-zinc-800 bg-zinc-950 p-1"
+      >
         <button
           type="button"
+          role="tab"
+          aria-selected={role === 'student'}
           onClick={() => handleRoleChange('student')}
-          className={`flex items-center justify-center gap-2 py-2 px-3 text-xs font-semibold rounded-lg transition-all ${
-            role === 'student'
-              ? 'bg-white text-primary-700 shadow-sm border border-slate-200/40'
-              : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/50'
-          }`}
+          className={roleTab('student')}
         >
-          <GraduationCap size={15} />
-          <span>Student Portal</span>
+          <GraduationCap size={16} />
+          Student
         </button>
         <button
           type="button"
+          role="tab"
+          aria-selected={role === 'admin'}
           onClick={() => handleRoleChange('admin')}
-          className={`flex items-center justify-center gap-2 py-2 px-3 text-xs font-semibold rounded-lg transition-all ${
-            role === 'admin'
-              ? 'bg-white text-primary-700 shadow-sm border border-slate-200/40'
-              : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/50'
-          }`}
+          className={roleTab('admin')}
         >
-          <ShieldCheck size={15} />
-          <span>Admin Portal</span>
+          <ShieldCheck size={16} />
+          Admin
         </button>
       </div>
 
       {/* Login Form */}
       <form onSubmit={handleSubmit} className="space-y-4" noValidate>
-        {/* Email Field */}
         <Input
           id="login-email"
-          label="Institutional Email"
+          label="Institutional email"
           type="email"
           required
           value={email}
@@ -158,7 +160,6 @@ export default function LoginPage() {
           autoComplete="email"
         />
 
-        {/* Password Field with Show/Hide toggle */}
         <Input
           id="login-password"
           label="Password"
@@ -176,70 +177,51 @@ export default function LoginPage() {
               type="button"
               onClick={() => setShowPassword((prev) => !prev)}
               aria-label={showPassword ? 'Hide password' : 'Show password'}
-              className="p-1 rounded text-slate-400 hover:text-slate-600 focus:outline-none focus:ring-1 focus:ring-primary-500 transition-colors"
+              className="rounded p-1 text-zinc-500 transition-colors hover:text-zinc-300 focus:outline-none focus:ring-1 focus:ring-amber-500"
             >
               {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
             </button>
           }
         />
 
-        {/* Remember Me & Forgot Password Row */}
-        <div className="flex items-center justify-between pt-0.5">
-          <label className="flex items-center gap-2 cursor-pointer select-none">
+        <div className="flex items-center justify-between">
+          <label className="flex cursor-pointer select-none items-center gap-2">
             <input
               type="checkbox"
               checked={rememberMe}
               onChange={(e) => setRememberMe(e.target.checked)}
-              className="h-4 w-4 rounded border-slate-300 text-primary-600 focus:ring-primary-500 focus:ring-offset-0 cursor-pointer"
+              className="h-4 w-4 cursor-pointer rounded border-zinc-700 bg-zinc-950 accent-amber-500"
             />
-            <span className="text-xs text-slate-600 font-medium">Remember me</span>
+            <span className="text-sm text-zinc-300">Remember me</span>
           </label>
 
-          <Link
-            to="/forgot-password"
-            className="text-xs font-semibold text-primary-600 hover:text-primary-700 hover:underline transition-colors"
-          >
+          <Link to="/forgot-password" className="text-link">
             Forgot password?
           </Link>
         </div>
 
-        {/* Submit Button */}
-        <div className="pt-1">
-          <Button
-            type="submit"
-            fullWidth
-            size="lg"
-            loading={isLoading}
-            rightIcon={<LogIn size={16} />}
-          >
-            Sign In as {role === 'admin' ? 'Administrator' : 'Student'}
-          </Button>
-        </div>
+        <Button
+          type="submit"
+          fullWidth
+          size="lg"
+          loading={isLoading}
+          rightIcon={<LogIn size={16} />}
+          className="!mt-6"
+        >
+          Sign in as {role === 'admin' ? 'administrator' : 'student'}
+        </Button>
       </form>
 
-      {/* Demo helper pill */}
-      <div className="rounded-xl bg-slate-50 border border-slate-200/80 p-3 text-xs text-slate-500">
-        <div className="flex items-center justify-between font-medium text-slate-700 mb-1">
-          <span>Demo Account Loaded:</span>
-          <Badge variant={role === 'admin' ? 'primary' : 'info'} size="sm">
-            {role.toUpperCase()}
-          </Badge>
-        </div>
-        <p className="text-[11px] text-slate-500 leading-relaxed font-mono">
-          {email} • {password}
-        </p>
-      </div>
+      <p className="text-center text-xs text-zinc-500">
+        Demo mode: credentials are prefilled. Any email with a 6+ character password works.
+      </p>
 
-      {/* Register Link */}
-      <div className="text-center text-xs text-slate-500 pt-3 border-t border-slate-100">
-        <span>Don't have a registered account? </span>
-        <Link
-          to="/register"
-          className="text-primary-600 font-semibold hover:text-primary-700 hover:underline transition-colors"
-        >
-          Register here
+      <p className="border-t border-zinc-800 pt-6 text-center text-sm text-zinc-400">
+        Don&apos;t have an account?{' '}
+        <Link to="/register" className="text-link">
+          Register
         </Link>
-      </div>
+      </p>
     </div>
   )
 }

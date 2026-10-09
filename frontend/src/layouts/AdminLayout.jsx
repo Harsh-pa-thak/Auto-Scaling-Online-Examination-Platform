@@ -9,8 +9,6 @@ import AdminHeader from '../components/admin/AdminHeader'
  * Provides:
  * - Desktop: Fixed/collapsible left sidebar, sticky top header, main content area
  * - Mobile: Responsive hamburger drawer navigation
- * - Admin profile menu with credentials and sign out
- * - Dark neutral academic design system
  */
 export default function AdminLayout() {
   const [mobileDrawerOpen, setMobileDrawerOpen] = useState(false)
@@ -21,8 +19,7 @@ export default function AdminLayout() {
   }
 
   return (
-    <div className="min-h-screen bg-zinc-950 text-zinc-100 flex font-sans">
-      {/* ── Left Sidebar (Desktop fixed/collapsible + Mobile Drawer) ── */}
+    <div className="flex min-h-screen bg-zinc-950 font-sans text-zinc-100">
       <AdminSidebar
         collapsed={desktopCollapsed}
         onToggleCollapse={toggleDesktopCollapse}
@@ -30,30 +27,20 @@ export default function AdminLayout() {
         onCloseMobile={() => setMobileDrawerOpen(false)}
       />
 
-      {/* ── Main Content Area ── */}
-      <div className="flex-1 flex flex-col min-w-0">
-        {/* Sticky Top Header */}
+      <div className="flex min-w-0 flex-1 flex-col">
         <AdminHeader
           onToggleMobile={() => setMobileDrawerOpen(true)}
           collapsed={desktopCollapsed}
           onToggleCollapse={toggleDesktopCollapse}
         />
 
-        {/* Main Content Area with nested route Outlet */}
-        <main className="flex-1 p-4 sm:p-6 lg:p-8 max-w-7xl w-full mx-auto flex flex-col">
+        <main className="mx-auto flex w-full max-w-7xl flex-1 flex-col px-4 py-8 sm:px-6 lg:px-8">
           <div className="flex-1">
             <Outlet />
           </div>
 
-          {/* Academic Footer */}
-          <footer className="mt-12 pt-6 border-t border-zinc-800 text-xs text-zinc-500 flex flex-col sm:flex-row items-center justify-between gap-2 w-full">
-            <span>
-              Auto-Scaling Online Examination Platform • University Administration Portal
-            </span>
-            <span className="flex items-center gap-1.5 text-zinc-400">
-              <span className="inline-block h-1.5 w-1.5 rounded-full bg-emerald-500" />
-              Administrative Session: Active
-            </span>
+          <footer className="mt-16 w-full border-t border-zinc-800 pt-6 text-xs text-zinc-500">
+            Auto-Scaling Online Examination Platform
           </footer>
         </main>
       </div>

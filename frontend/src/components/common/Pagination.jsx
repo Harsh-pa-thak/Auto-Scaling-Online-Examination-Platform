@@ -50,20 +50,20 @@ export default function Pagination({
 
   return (
     <div
-      className={`flex flex-col sm:flex-row items-center justify-between gap-4 py-3 px-2 text-sm text-slate-600 ${className}`}
+      className={`flex flex-col sm:flex-row items-center justify-between gap-4 py-4 text-sm text-zinc-300 ${className}`}
     >
       {/* Items count summary */}
-      <div className="text-xs text-slate-500 order-2 sm:order-1">
+      <div className="text-xs text-zinc-400 order-2 sm:order-1">
         {totalItems != null && startItem != null && endItem != null ? (
           <span>
-            Showing <strong className="font-semibold text-slate-700">{startItem}</strong> to{' '}
-            <strong className="font-semibold text-slate-700">{endItem}</strong> of{' '}
-            <strong className="font-semibold text-slate-700">{totalItems}</strong> entries
+            Showing <strong className="font-semibold text-zinc-200">{startItem}</strong> to{' '}
+            <strong className="font-semibold text-zinc-200">{endItem}</strong> of{' '}
+            <strong className="font-semibold text-zinc-200">{totalItems}</strong> entries
           </span>
         ) : (
           <span>
-            Page <strong className="font-semibold text-slate-700">{currentPage}</strong> of{' '}
-            <strong className="font-semibold text-slate-700">{totalPages}</strong>
+            Page <strong className="font-semibold text-zinc-200">{currentPage}</strong> of{' '}
+            <strong className="font-semibold text-zinc-200">{totalPages}</strong>
           </span>
         )}
       </div>
@@ -71,13 +71,13 @@ export default function Pagination({
       <div className="flex items-center gap-3 order-1 sm:order-2">
         {/* Page size selector if enabled */}
         {pageSizeOptions && onPageSizeChange && (
-          <div className="flex items-center gap-1.5 text-xs text-slate-500">
+          <div className="flex items-center gap-1.5 text-xs text-zinc-400">
             <span>Rows:</span>
             <select
               value={pageSize}
               onChange={(e) => onPageSizeChange(Number(e.target.value))}
               aria-label="Rows per page"
-              className="rounded-md border border-slate-300 bg-white px-2 py-1 text-xs text-slate-700 focus:outline-none focus:ring-1 focus:ring-primary-500"
+              className="rounded-md border border-zinc-700 bg-zinc-900 px-2 py-1 text-xs text-zinc-200 focus:outline-none focus:ring-1 focus:ring-amber-500"
             >
               {pageSizeOptions.map((opt) => (
                 <option key={opt} value={opt}>
@@ -89,13 +89,13 @@ export default function Pagination({
         )}
 
         {/* Navigation buttons */}
-        <nav aria-label="Pagination" className="inline-flex items-center -space-x-px rounded-lg border border-slate-200 bg-white shadow-sm overflow-hidden">
+        <nav aria-label="Pagination" className="inline-flex items-center -space-x-px rounded-lg border border-zinc-800 bg-zinc-900 overflow-hidden">
           <button
             type="button"
             disabled={currentPage <= 1}
             onClick={() => onPageChange(currentPage - 1)}
             aria-label="Previous page"
-            className="inline-flex items-center px-2.5 py-1.5 text-slate-500 hover:bg-slate-50 hover:text-slate-700 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+            className="inline-flex items-center px-2.5 py-1.5 text-zinc-400 hover:bg-zinc-800 hover:text-zinc-200 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
           >
             <ChevronLeft size={16} />
           </button>
@@ -104,7 +104,7 @@ export default function Pagination({
             p === '...' ? (
               <span
                 key={`ellipsis-${idx}`}
-                className="inline-flex items-center px-3 py-1.5 text-xs text-slate-400 select-none"
+                className="inline-flex items-center px-3 py-1.5 text-xs text-zinc-500 select-none"
               >
                 ...
               </span>
@@ -117,8 +117,8 @@ export default function Pagination({
                 className={[
                   'inline-flex items-center px-3 py-1.5 text-xs font-medium transition-colors',
                   p === currentPage
-                    ? 'bg-primary-50 text-primary-600 font-semibold border-y border-primary-500/20'
-                    : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900',
+                    ? 'bg-amber-500/10 text-amber-400 font-semibold'
+                    : 'text-zinc-300 hover:bg-zinc-800 hover:text-zinc-100',
                 ].join(' ')}
               >
                 {p}
@@ -131,7 +131,7 @@ export default function Pagination({
             disabled={currentPage >= totalPages}
             onClick={() => onPageChange(currentPage + 1)}
             aria-label="Next page"
-            className="inline-flex items-center px-2.5 py-1.5 text-slate-500 hover:bg-slate-50 hover:text-slate-700 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+            className="inline-flex items-center px-2.5 py-1.5 text-zinc-400 hover:bg-zinc-800 hover:text-zinc-200 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
           >
             <ChevronRight size={16} />
           </button>

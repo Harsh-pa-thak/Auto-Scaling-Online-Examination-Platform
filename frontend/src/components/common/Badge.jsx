@@ -1,15 +1,16 @@
+// Neutral by default; amber for emphasis; green/red only for pass/fail style states.
 const variants = {
-  default: 'bg-zinc-800 text-zinc-300 border border-zinc-700/60',
-  primary: 'bg-amber-950/60 text-amber-300 border border-amber-800/60',
-  success: 'bg-emerald-950/60 text-emerald-300 border border-emerald-800/60',
-  warning: 'bg-amber-950/60 text-amber-300 border border-amber-800/60',
-  danger:  'bg-red-950/60 text-red-300 border border-red-800/60',
-  info:    'bg-zinc-800 text-zinc-300 border border-zinc-700/60',
+  default: 'bg-zinc-800 text-zinc-300 border border-zinc-700',
+  primary: 'bg-amber-500/10 text-amber-300 border border-amber-500/30',
+  success: 'bg-emerald-500/10 text-emerald-300 border border-emerald-500/30',
+  warning: 'bg-amber-500/10 text-amber-300 border border-amber-500/30',
+  danger:  'bg-red-500/10 text-red-300 border border-red-500/30',
+  info:    'bg-zinc-800 text-zinc-300 border border-zinc-700',
 }
 
 const sizes = {
   sm: 'px-2 py-0.5 text-xs',
-  md: 'px-2.5 py-1 text-xs',
+  md: 'px-2.5 py-0.5 text-xs',
   lg: 'px-3 py-1 text-sm',
 }
 

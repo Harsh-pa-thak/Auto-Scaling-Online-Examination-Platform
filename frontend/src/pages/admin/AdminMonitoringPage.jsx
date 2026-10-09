@@ -154,7 +154,7 @@ export default function AdminMonitoringPage() {
   }, [students])
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       {/* ── Page Header with Live Indicator ── */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-2 border-b border-zinc-800">
         <div>
@@ -164,9 +164,9 @@ export default function AdminMonitoringPage() {
             </h1>
 
             {/* "Live" Indicator */}
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-950/70 border border-emerald-800/80 shadow-xs">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-950/70 border border-emerald-800/80">
               <span className="relative flex h-2.5 w-2.5">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-80" />
+                <span className="absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-80" />
                 <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500" />
               </span>
               <span className="text-xs font-bold tracking-wide text-emerald-400 uppercase">
@@ -180,7 +180,7 @@ export default function AdminMonitoringPage() {
         </div>
 
         {/* Sync telemetry info */}
-        <div className="flex items-center gap-2.5 self-start sm:self-auto">
+        <div className="flex items-center gap-3 self-start sm:self-auto">
           <span className="text-xs text-zinc-500 hidden md:inline">
             Updated: {lastRefreshedTime}
           </span>
@@ -197,19 +197,19 @@ export default function AdminMonitoringPage() {
       </div>
 
       {/* ── Active Exam Information Card ── */}
-      <Card padding="p-5" className="border-amber-600/30 bg-gradient-to-r from-zinc-900 to-zinc-900/90">
+      <Card className="border-amber-600/30">
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
           {/* Exam Details */}
-          <div className="flex items-start gap-3.5">
-            <div className="h-11 w-11 rounded-xl bg-amber-500/15 border border-amber-500/30 text-amber-400 flex items-center justify-center flex-shrink-0 shadow-xs">
-              <Radio size={22} className="animate-pulse" />
+          <div className="flex items-start gap-4">
+            <div className="h-11 w-11 rounded-xl bg-amber-500/15 border border-amber-500/30 text-amber-400 flex items-center justify-center flex-shrink-0">
+              <Radio size={22} className="" />
             </div>
             <div>
               <div className="flex items-center gap-2">
                 <span className="text-xs font-bold uppercase tracking-wider text-amber-400">
                   Active Exam
                 </span>
-                <span className="text-xs text-zinc-500 font-mono">
+                <span className="text-xs text-zinc-500 tabular-nums">
                   {ACTIVE_EXAM.code} • {ACTIVE_EXAM.id}
                 </span>
               </div>
@@ -218,7 +218,7 @@ export default function AdminMonitoringPage() {
               </h2>
               <p className="text-xs text-zinc-400 mt-1">
                 Subject: <strong className="text-zinc-300 font-medium">{ACTIVE_EXAM.subject}</strong> &nbsp;•&nbsp;
-                Session: <span className="font-mono text-zinc-300">{ACTIVE_EXAM.startTime} – {ACTIVE_EXAM.endTime}</span> ({ACTIVE_EXAM.durationMinutes} min allotted)
+                Session: <span className="tabular-nums text-zinc-300">{ACTIVE_EXAM.startTime} – {ACTIVE_EXAM.endTime}</span> ({ACTIVE_EXAM.durationMinutes} min allotted)
               </p>
             </div>
           </div>
@@ -227,10 +227,10 @@ export default function AdminMonitoringPage() {
           <div className="flex items-center gap-3 self-start lg:self-auto bg-zinc-950/70 border border-zinc-800 rounded-xl px-4 py-2.5">
             <Clock size={18} className="text-amber-400 flex-shrink-0" />
             <div>
-              <p className="text-[10px] uppercase font-semibold text-zinc-500 tracking-wider">
+              <p className="text-xs uppercase font-semibold text-zinc-500 tracking-wider">
                 Time Remaining
               </p>
-              <p className="text-base sm:text-lg font-mono font-bold text-zinc-100">
+              <p className="text-base sm:text-lg tabular-nums font-bold text-zinc-100">
                 {remainingMinutes}:{remainingSecsFormatted}
               </p>
             </div>
@@ -254,18 +254,18 @@ export default function AdminMonitoringPage() {
       </Card>
 
       {/* ── Live Status Cards ── */}
-      <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
+      <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {/* Card 1: Registered Students */}
-        <Card padding="p-4" className="bg-zinc-900 border-zinc-800">
+        <Card className="bg-zinc-900 border-zinc-800">
           <div className="flex items-start justify-between">
             <div>
               <p className="text-xs uppercase font-semibold tracking-wider text-zinc-400">
                 Registered Students
               </p>
-              <p className="text-2xl sm:text-3xl font-extrabold text-zinc-100 mt-1">
+              <p className="text-2xl sm:text-3xl font-bold text-zinc-100 mt-1">
                 {summary.registered}
               </p>
-              <p className="text-[11px] text-zinc-500 mt-0.5">
+              <p className="text-xs text-zinc-500 mt-0.5">
                 Total eligible candidates
               </p>
             </div>
@@ -276,56 +276,56 @@ export default function AdminMonitoringPage() {
         </Card>
 
         {/* Card 2: Students Started */}
-        <Card padding="p-4" className="bg-zinc-900 border-zinc-800">
+        <Card className="bg-zinc-900 border-zinc-800">
           <div className="flex items-start justify-between">
             <div>
               <p className="text-xs uppercase font-semibold tracking-wider text-zinc-400">
                 Students Started
               </p>
-              <p className="text-2xl sm:text-3xl font-extrabold text-zinc-100 mt-1">
+              <p className="text-2xl sm:text-3xl font-bold text-zinc-100 mt-1">
                 {summary.started}
               </p>
-              <p className="text-[11px] text-zinc-500 mt-0.5">
+              <p className="text-xs text-zinc-500 mt-0.5">
                 {Math.round((summary.started / summary.registered) * 100)}% attendance rate
               </p>
             </div>
-            <div className="p-2.5 rounded-xl bg-blue-950/60 border border-blue-800/40 text-blue-400">
+            <div className="p-2.5 rounded-xl bg-zinc-800 text-zinc-300">
               <PlayCircle size={18} />
             </div>
           </div>
         </Card>
 
         {/* Card 3: Currently Taking */}
-        <Card padding="p-4" className="bg-zinc-900 border-amber-600/40 ring-1 ring-amber-500/20">
+        <Card className="bg-zinc-900 border-amber-600/40">
           <div className="flex items-start justify-between">
             <div>
               <p className="text-xs uppercase font-semibold tracking-wider text-amber-400">
                 Currently Taking
               </p>
-              <p className="text-2xl sm:text-3xl font-extrabold text-amber-400 mt-1">
+              <p className="text-2xl sm:text-3xl font-bold text-amber-400 mt-1">
                 {summary.inProgress}
               </p>
-              <p className="text-[11px] text-zinc-400 mt-0.5">
+              <p className="text-xs text-zinc-400 mt-0.5">
                 Actively answering paper
               </p>
             </div>
-            <div className="p-2.5 rounded-xl bg-amber-950/60 border border-amber-800/40 text-amber-400">
-              <Activity size={18} className="animate-pulse" />
+            <div className="p-2.5 rounded-xl bg-amber-500/10 text-amber-400">
+              <Activity size={18} className="" />
             </div>
           </div>
         </Card>
 
         {/* Card 4: Submitted */}
-        <Card padding="p-4" className="bg-zinc-900 border-zinc-800">
+        <Card className="bg-zinc-900 border-zinc-800">
           <div className="flex items-start justify-between">
             <div>
               <p className="text-xs uppercase font-semibold tracking-wider text-zinc-400">
                 Submitted
               </p>
-              <p className="text-2xl sm:text-3xl font-extrabold text-emerald-400 mt-1">
+              <p className="text-2xl sm:text-3xl font-bold text-emerald-400 mt-1">
                 {summary.submitted}
               </p>
-              <p className="text-[11px] text-zinc-500 mt-0.5">
+              <p className="text-xs text-zinc-500 mt-0.5">
                 {submittedPct}% turn-in completed
               </p>
             </div>
@@ -337,7 +337,7 @@ export default function AdminMonitoringPage() {
       </div>
 
       {/* ── Visual Cohort Progress Indicator ── */}
-      <Card padding="p-4">
+      <Card>
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-2.5">
           <div>
             <p className="text-xs font-semibold uppercase tracking-wider text-zinc-300">
@@ -347,7 +347,7 @@ export default function AdminMonitoringPage() {
               Breakdown of {summary.registered} examinees across submission lifecycle stages
             </p>
           </div>
-          <span className="text-xs font-mono font-semibold text-zinc-300">
+          <span className="text-xs tabular-nums font-semibold text-zinc-300">
             {summary.submitted} of {summary.registered} Finished ({submittedPct}%)
           </span>
         </div>
@@ -404,7 +404,7 @@ export default function AdminMonitoringPage() {
       {/* ── Student Session Table ── */}
       <Card padding="p-0">
         {/* Table Top Controls & Filter Tabs */}
-        <div className="p-4 border-b border-zinc-800 flex flex-col md:flex-row md:items-center justify-between gap-3">
+        <div className="px-6 py-4 border-b border-zinc-800 flex flex-col md:flex-row md:items-center justify-between gap-3">
           {/* Status Tabs */}
           <div className="flex items-center gap-1.5 overflow-x-auto pb-1 md:pb-0 scrollbar-none">
             {STATUS_FILTERS.map((st) => {
@@ -425,7 +425,7 @@ export default function AdminMonitoringPage() {
                   <span>{st}</span>
                   <span
                     className={[
-                      'px-1.5 py-0.2 rounded-full text-[10px] font-mono',
+                      'px-1.5 py-0.2 rounded-full text-xs tabular-nums',
                       isActive ? 'bg-amber-500/30 text-amber-200' : 'bg-zinc-800 text-zinc-400',
                     ].join(' ')}
                   >
@@ -447,7 +447,7 @@ export default function AdminMonitoringPage() {
         </div>
 
         {/* Table Header */}
-        <div className="hidden lg:grid grid-cols-12 px-5 py-3 border-b border-zinc-800 text-xs font-semibold uppercase tracking-wider text-zinc-400 bg-zinc-900/50">
+        <div className="hidden lg:grid grid-cols-12 px-6 py-4 border-b border-zinc-800 text-xs font-semibold uppercase tracking-wider text-zinc-400 bg-zinc-900/50">
           <div className="col-span-3">Student ID</div>
           <div className="col-span-3">Name</div>
           <div className="col-span-2">Status</div>
@@ -471,14 +471,14 @@ export default function AdminMonitoringPage() {
                 <div
                   key={s.id}
                   className={[
-                    'px-5 py-3.5 lg:grid lg:grid-cols-12 lg:items-center gap-3 transition-colors',
+                    'px-6 py-4 lg:grid lg:grid-cols-12 lg:items-center gap-3 transition-colors',
                     isDisconnected
                       ? 'bg-red-950/20 hover:bg-red-950/30 border-l-2 border-red-500'
                       : 'hover:bg-zinc-900/40',
                   ].join(' ')}
                 >
                   {/* 1. Student ID */}
-                  <div className="lg:col-span-3 font-mono text-xs font-semibold text-zinc-300 flex items-center gap-2">
+                  <div className="lg:col-span-3 tabular-nums text-xs font-semibold text-zinc-300 flex items-center gap-2">
                     <span className="p-1 rounded bg-zinc-800 text-zinc-400">
                       ID
                     </span>
@@ -489,7 +489,7 @@ export default function AdminMonitoringPage() {
                   <div className="lg:col-span-3 mt-1 lg:mt-0 font-medium text-sm text-zinc-100 flex items-center gap-2">
                     <span>{s.name}</span>
                     {isDisconnected && (
-                      <span className="text-[10px] font-semibold text-red-400 bg-red-950/80 px-1.5 py-0.5 rounded border border-red-800/60">
+                      <span className="text-xs font-semibold text-red-400 bg-red-950/80 px-1.5 py-0.5 rounded border border-red-800/60">
                         Signal Lost
                       </span>
                     )}
@@ -509,19 +509,19 @@ export default function AdminMonitoringPage() {
                           : 'bg-zinc-800/60 border-zinc-700/50 text-zinc-400',
                       ].join(' ')}
                     >
-                      <span className={`h-1.5 w-1.5 rounded-full ${cfg.dotColor} ${s.status === 'In Progress' ? 'animate-ping' : ''}`} />
+                      <span className={`h-1.5 w-1.5 rounded-full ${cfg.dotColor} ${s.status === 'In Progress' ? '' : ''}`} />
                       <span>{s.status}</span>
                     </span>
                   </div>
 
                   {/* 4. Started At */}
-                  <div className="lg:col-span-2 mt-1 lg:mt-0 text-xs font-mono text-zinc-400">
+                  <div className="lg:col-span-2 mt-1 lg:mt-0 text-xs tabular-nums text-zinc-400">
                     <span className="lg:hidden text-zinc-500 font-sans mr-1">Started:</span>
                     {s.startedAt}
                   </div>
 
                   {/* 5. Time Remaining / Action */}
-                  <div className="lg:col-span-2 mt-2 lg:mt-0 lg:text-right flex items-center lg:justify-end gap-2 text-xs font-mono font-bold">
+                  <div className="lg:col-span-2 mt-2 lg:mt-0 lg:text-right flex items-center lg:justify-end gap-2 text-xs tabular-nums font-bold">
                     <span className="lg:hidden text-zinc-500 font-sans mr-1 font-normal">Remaining:</span>
                     {s.status === 'Submitted' ? (
                       <span className="text-emerald-400 inline-flex items-center gap-1">
@@ -554,7 +554,7 @@ export default function AdminMonitoringPage() {
         )}
 
         {/* Footer info */}
-        <div className="p-4 border-t border-zinc-800 text-xs text-zinc-500 flex flex-col sm:flex-row items-center justify-between gap-2">
+        <div className="px-6 py-4 border-t border-zinc-800 text-xs text-zinc-500 flex flex-col sm:flex-row items-center justify-between gap-2">
           <span>
             Displaying {filteredStudents.length} of {students.length} candidate sessions.
           </span>

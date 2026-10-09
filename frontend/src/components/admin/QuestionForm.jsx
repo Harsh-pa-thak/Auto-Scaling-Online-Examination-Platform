@@ -147,11 +147,11 @@ export default function QuestionForm({
   }
 
   return (
-    <form onSubmit={handleSubmit} noValidate className="space-y-5 text-left">
+    <form onSubmit={handleSubmit} noValidate className="space-y-6 text-left">
       {/* ── Question Text ── */}
-      <div className="space-y-1">
+      <div className="space-y-2">
         <label htmlFor="question-text" className="form-label">
-          Question Text <span className="text-red-500">*</span>
+          Question text <span className="text-red-500">*</span>
         </label>
         <textarea
           id="question-text"
@@ -160,12 +160,12 @@ export default function QuestionForm({
           onChange={(e) => handleChange('text', e.target.value)}
           placeholder="Enter question statement..."
           className={[
-            'input-base w-full resize-none',
+            'input-base resize-none',
             errors.text ? 'input-error' : '',
           ].join(' ')}
         />
         {errors.text && (
-          <p role="alert" className="text-xs text-red-500">
+          <p role="alert" className="text-xs text-red-400">
             {errors.text}
           </p>
         )}
@@ -216,10 +216,10 @@ export default function QuestionForm({
         {/* Correct Answer */}
         <Select
           id="correctAnswer"
-          label="Correct Answer"
+          label="Correct answer"
           required
           options={CORRECT_ANSWER_OPTIONS}
-          placeholder="Select Answer"
+          placeholder="Select answer"
           value={form.correctAnswer}
           onChange={(e) => handleChange('correctAnswer', e.target.value)}
           error={errors.correctAnswer}
@@ -245,7 +245,7 @@ export default function QuestionForm({
           label="Difficulty"
           required
           options={DIFFICULTY_OPTIONS}
-          placeholder="Select Difficulty"
+          placeholder="Select difficulty"
           value={form.difficulty}
           onChange={(e) => handleChange('difficulty', e.target.value)}
           error={errors.difficulty}
@@ -257,7 +257,7 @@ export default function QuestionForm({
           label="Category"
           required
           options={CATEGORY_OPTIONS}
-          placeholder="Select Category"
+          placeholder="Select category"
           value={form.category}
           onChange={(e) => handleChange('category', e.target.value)}
           error={errors.category}
@@ -265,7 +265,7 @@ export default function QuestionForm({
       </div>
 
       {/* ── Action Buttons ── */}
-      <div className="flex items-center justify-end gap-3 pt-3 border-t border-zinc-800">
+      <div className="flex items-center justify-end gap-2 border-t border-zinc-800 pt-6">
         <Button
           type="button"
           variant="secondary"
@@ -275,7 +275,7 @@ export default function QuestionForm({
           Cancel
         </Button>
         <Button type="submit" loading={loading}>
-          {initialData ? 'Update Question' : 'Add Question'}
+          {initialData ? 'Update question' : 'Add question'}
         </Button>
       </div>
     </form>

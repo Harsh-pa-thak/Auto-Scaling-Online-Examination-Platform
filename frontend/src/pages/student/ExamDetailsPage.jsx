@@ -2,20 +2,9 @@ import { useState } from 'react'
 import { useParams, Link, useNavigate } from 'react-router-dom'
 import {
   ArrowLeft,
-  Calendar,
-  Clock,
-  Timer,
-  HelpCircle,
-  Award,
-  CheckCircle2,
   AlertTriangle,
   Play,
   Lock,
-  ShieldCheck,
-  FileText,
-  User,
-  Info,
-  ExternalLink,
 } from 'lucide-react'
 import {
   Card,
@@ -94,290 +83,168 @@ export default function ExamDetailsPage() {
     navigate(`/student/exam/${exam.id}`)
   }
 
+  const overview = [
+    { label: 'Duration',      value: `${exam.duration} min`, hint: 'Timed session' },
+    { label: 'Questions',     value: exam.totalQuestions,     hint: 'Multiple choice' },
+    { label: 'Total marks',   value: exam.totalMarks,         hint: `${exam.marksPerQuestion || 2} marks per question` },
+    { label: 'Passing marks', value: exam.passMark,           hint: `${Math.round((exam.passMark / exam.totalMarks) * 100)}% minimum` },
+  ]
+
+  const schedule = [
+    { label: 'Date',     value: formatDate(exam.startTime) },
+    { label: 'Time',     value: `${formatTime(exam.startTime)} – ${formatTime(exam.endTime)}` },
+    { label: 'Sections', value: Array.isArray(exam.section) ? exam.section.join(', ') : 'All enrolled students' },
+    {
+      label: 'Negative marking',
+      value: exam.negativeMarking
+        ? `Yes, ${exam.negativeMarks || 0.5} marks per wrong answer`
+        : 'No',
+    },
+  ]
+
   return (
-    <div className="space-y-6 max-w-6xl mx-auto animate-in fade-in duration-200">
-      {/* ── Top Back Navigation ── */}
-      <div>
+    <div className="max-w-6xl space-y-8">
+      {/* ── Header ── */}
+      <header>
         <Link
           to="/student/exams"
-          className="inline-flex items-center gap-2 text-xs font-semibold text-slate-500 hover:text-slate-800 transition-colors py-1"
+          className="inline-flex items-center gap-2 text-sm font-medium text-zinc-400 transition-colors hover:text-zinc-100"
         >
           <ArrowLeft size={14} />
-          <span>Back to Examinations</span>
+          Back to examinations
         </Link>
-      </div>
 
-      {/* ── Header Banner ── */}
-      <div className="bg-white rounded-2xl border border-slate-200/90 p-6 sm:p-8 shadow-xs space-y-4">
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          <div className="flex items-center gap-2.5">
-            <span className="text-xs font-bold uppercase tracking-wider px-3 py-1 rounded-full bg-primary-50 text-primary-700 border border-primary-200/60">
-              {exam.subject}
-            </span>
-            <span className="font-mono text-xs font-semibold text-slate-400">
-              {exam.code}
-            </span>
-          </div>
-
-          <div>
+        <div className="mt-6 flex flex-wrap items-center gap-2 text-sm text-zinc-400">
+          <span>{exam.subject}</span>
+          <span className="text-zinc-600">·</span>
+          <span className="tabular-nums">{exam.code}</span>
+          <span className="ml-2">
             {isLive ? (
-              <Badge variant="success" dot size="lg">
-                Active & In Session
-              </Badge>
+              <Badge variant="primary" dot>Live now</Badge>
             ) : isUpcoming ? (
-              <Badge variant="primary" dot size="lg">
-                Upcoming Examination
-              </Badge>
+              <Badge dot>Upcoming</Badge>
             ) : isCompleted ? (
-              <Badge variant="default" size="lg">Completed</Badge>
+              <Badge>Completed</Badge>
             ) : (
-              <Badge variant="danger" dot size="lg">Unavailable</Badge>
+              <Badge>Unavailable</Badge>
             )}
-          </div>
+          </span>
         </div>
 
-        <div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight leading-tight">
-            {exam.title}
-          </h1>
-          <p className="mt-2 text-sm text-slate-500 leading-relaxed max-w-3xl">
-            Official semester assessment. Please review all timing parameters, syllabus coverage, and proctored examination rules prior to entering.
-          </p>
-        </div>
-      </div>
+        <h1 className="mt-2 page-title">{exam.title}</h1>
+        <p className="page-subtitle">
+          Review the timing, marking scheme, and exam rules before you begin.
+        </p>
+      </header>
 
-      {/* ── Main Layout: Two Columns ── */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Left Column (2 Cols): Details & Instructions */}
-        <div className="lg:col-span-2 space-y-6">
-          {/* Exam Summary Grid Card */}
-          <Card padding="p-6">
-            <h2 className="text-sm font-bold text-slate-900 uppercase tracking-wider mb-4 flex items-center gap-2">
-              <FileText size={16} className="text-primary-600" />
-              Examination Overview & Structure
-            </h2>
-
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-              <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-100">
-                <span className="text-[11px] font-semibold uppercase text-slate-400 tracking-wider">
-                  Duration
-                </span>
-                <p className="text-xl font-bold text-slate-900 mt-1 flex items-center gap-1.5">
-                  <Timer size={18} className="text-primary-600" />
-                  {exam.duration}m
-                </p>
-                <span className="text-[11px] text-slate-500">Timed session</span>
-              </div>
-
-              <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-100">
-                <span className="text-[11px] font-semibold uppercase text-slate-400 tracking-wider">
-                  Questions
-                </span>
-                <p className="text-xl font-bold text-slate-900 mt-1 flex items-center gap-1.5">
-                  <HelpCircle size={18} className="text-blue-600" />
-                  {exam.totalQuestions}
-                </p>
-                <span className="text-[11px] text-slate-500">Multiple choice</span>
-              </div>
-
-              <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-100">
-                <span className="text-[11px] font-semibold uppercase text-slate-400 tracking-wider">
-                  Total Marks
-                </span>
-                <p className="text-xl font-bold text-slate-900 mt-1 flex items-center gap-1.5">
-                  <Award size={18} className="text-amber-600" />
-                  {exam.totalMarks}
-                </p>
-                <span className="text-[11px] text-slate-500">{exam.marksPerQuestion || 2} marks / Q</span>
-              </div>
-
-              <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-100">
-                <span className="text-[11px] font-semibold uppercase text-slate-400 tracking-wider">
-                  Passing Marks
-                </span>
-                <p className="text-xl font-bold text-slate-900 mt-1 flex items-center gap-1.5">
-                  <CheckCircle2 size={18} className="text-emerald-600" />
-                  {exam.passMark}
-                </p>
-                <span className="text-[11px] text-slate-500">{Math.round((exam.passMark / exam.totalMarks) * 100)}% minimum</span>
-              </div>
-            </div>
-
-            {/* Negative Marking Alert */}
-            <div className="mt-4 pt-4 border-t border-slate-100 flex items-center justify-between text-xs">
-              <span className="text-slate-500 font-medium">Negative Marking:</span>
-              {exam.negativeMarking ? (
-                <Badge variant="warning" size="sm">
-                  Yes ({exam.negativeMarks || 0.5} marks deducted per wrong answer)
-                </Badge>
-              ) : (
-                <Badge variant="success" size="sm">
-                  No Negative Marking
-                </Badge>
-              )}
-            </div>
+      {/* ── Two columns ── */}
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
+        {/* Left: details & instructions */}
+        <div className="space-y-6 lg:col-span-2">
+          <Card>
+            <h2 className="section-title">Overview</h2>
+            <dl className="mt-4 grid grid-cols-2 gap-4 sm:grid-cols-4">
+              {overview.map(({ label, value, hint }) => (
+                <div key={label} className="rounded-lg border border-zinc-800 bg-zinc-950 p-4">
+                  <dt className="eyebrow">{label}</dt>
+                  <dd className="mt-1 text-xl font-semibold tabular-nums text-zinc-50">{value}</dd>
+                  <dd className="text-xs text-zinc-400">{hint}</dd>
+                </div>
+              ))}
+            </dl>
           </Card>
 
-          {/* Schedule & Timing Card */}
-          <Card padding="p-6">
-            <h2 className="text-sm font-bold text-slate-900 uppercase tracking-wider mb-4 flex items-center gap-2">
-              <Calendar size={16} className="text-primary-600" />
-              Schedule & Assessment Window
-            </h2>
-
-            <div className="space-y-3 text-xs sm:text-sm">
-              <div className="flex items-center justify-between py-2 border-b border-slate-100">
-                <span className="text-slate-500 flex items-center gap-2">
-                  <Calendar size={15} className="text-slate-400" />
-                  Examination Date
-                </span>
-                <span className="font-semibold text-slate-900">
-                  {formatDate(exam.startTime)}
-                </span>
-              </div>
-
-              <div className="flex items-center justify-between py-2 border-b border-slate-100">
-                <span className="text-slate-500 flex items-center gap-2">
-                  <Clock size={15} className="text-slate-400" />
-                  Session Time Window
-                </span>
-                <span className="font-semibold text-slate-900">
-                  {formatTime(exam.startTime)} to {formatTime(exam.endTime)}
-                </span>
-              </div>
-
-              <div className="flex items-center justify-between py-2">
-                <span className="text-slate-500 flex items-center gap-2">
-                  <User size={15} className="text-slate-400" />
-                  Eligible Sections
-                </span>
-                <span className="font-semibold text-slate-900">
-                  {Array.isArray(exam.section) ? exam.section.join(', ') : 'All Enrolled Students'}
-                </span>
-              </div>
-            </div>
+          <Card>
+            <h2 className="section-title">Schedule</h2>
+            <dl className="mt-4 divide-y divide-zinc-800 text-sm">
+              {schedule.map(({ label, value }) => (
+                <div key={label} className="flex items-center justify-between gap-4 py-2">
+                  <dt className="text-zinc-400">{label}</dt>
+                  <dd className="text-right font-medium text-zinc-100">{value}</dd>
+                </div>
+              ))}
+            </dl>
           </Card>
 
-          {/* Instructions Section */}
-          <Card padding="p-6">
-            <h2 className="text-sm font-bold text-slate-900 uppercase tracking-wider mb-4 flex items-center gap-2">
-              <ShieldCheck size={16} className="text-primary-600" />
-              Candidate Instructions & Guidelines
-            </h2>
-
-            <ExamInstructions customInstructions={exam.instructions} />
+          <Card>
+            <h2 className="section-title">Instructions</h2>
+            <div className="mt-4">
+              <ExamInstructions customInstructions={exam.instructions} />
+            </div>
           </Card>
         </div>
 
-        {/* Right Column (1 Col): Pre-Exam Action Gate */}
+        {/* Right: start action */}
         <div className="space-y-6">
-          {/* Action Card */}
-          <Card padding="p-6" className="sticky top-20 border-primary-200/80 shadow-md">
-            <div className="text-center pb-4 border-b border-slate-100">
-              <div className="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-primary-50 text-primary-600 mb-3 border border-primary-100">
-                <ShieldCheck size={24} />
-              </div>
-              <h3 className="text-base font-bold text-slate-900">
-                Examination Gate
-              </h3>
-              <p className="text-xs text-slate-500 mt-1">
-                Verify requirements before launching
-              </p>
-            </div>
+          <Card className={`lg:sticky lg:top-24 ${isLive ? 'border-amber-500/50' : ''}`}>
+            <h2 className="section-title">
+              {isLive ? 'Ready when you are' : isCompleted ? 'Exam completed' : 'Start exam'}
+            </h2>
+            <p className="mt-2 text-sm text-zinc-400">
+              {isLive
+                ? 'The session is live. The timer starts as soon as you begin.'
+                : isUpcoming
+                ? `Scheduled for ${formatDate(exam.startTime)} at ${formatTime(exam.startTime)}.`
+                : isCompleted
+                ? 'This assessment was completed and submitted.'
+                : 'This examination window is closed or unavailable.'}
+            </p>
 
-            {/* Checklist */}
-            <div className="py-4 space-y-2.5 text-xs text-slate-600 border-b border-slate-100">
-              <div className="flex items-center gap-2">
-                <CheckCircle2 size={15} className="text-emerald-500 flex-shrink-0" />
-                <span>Student Identity Verified</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <CheckCircle2 size={15} className="text-emerald-500 flex-shrink-0" />
-                <span>Timer Auto-sync Enabled</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <CheckCircle2 size={15} className="text-emerald-500 flex-shrink-0" />
-                <span>Autosave Engine Ready</span>
-              </div>
-            </div>
-
-            {/* Start Button & Status Warning */}
-            <div className="pt-4 space-y-3">
+            <div className="mt-6">
               {isLive ? (
-                <>
-                  <Button
-                    variant="success"
-                    fullWidth
-                    size="lg"
-                    onClick={() => setConfirmModalOpen(true)}
-                    rightIcon={<Play size={16} className="fill-current" />}
-                  >
-                    Start Exam Now
-                  </Button>
-                  <p className="text-[11px] text-center text-slate-400">
-                    Live session in progress. Once started, the timer will begin.
-                  </p>
-                </>
+                <Button
+                  fullWidth
+                  size="lg"
+                  onClick={() => setConfirmModalOpen(true)}
+                  rightIcon={<Play size={16} className="fill-current" />}
+                >
+                  Start exam
+                </Button>
               ) : isUpcoming ? (
-                <>
-                  <Button
-                    variant="primary"
-                    fullWidth
-                    size="lg"
-                    onClick={() => setConfirmModalOpen(true)}
-                    rightIcon={<Play size={16} className="fill-current" />}
-                  >
-                    Start Exam (Test Session)
-                  </Button>
-                  <p className="text-[11px] text-center text-slate-400">
-                    Officially scheduled for {formatDate(exam.startTime)} at {formatTime(exam.startTime)}.
-                  </p>
-                </>
+                <Button
+                  variant="secondary"
+                  fullWidth
+                  size="lg"
+                  onClick={() => setConfirmModalOpen(true)}
+                  rightIcon={<Play size={16} className="fill-current" />}
+                >
+                  Start test session
+                </Button>
               ) : isCompleted ? (
-                <>
-                  <Button
-                    variant="secondary"
-                    fullWidth
-                    size="lg"
-                    onClick={() => navigate('/student/results')}
-                  >
-                    View Examination Results
-                  </Button>
-                  <p className="text-[11px] text-center text-slate-400">
-                    This assessment was completed and submitted.
-                  </p>
-                </>
+                <Button
+                  variant="secondary"
+                  fullWidth
+                  size="lg"
+                  onClick={() => navigate('/student/results')}
+                >
+                  View results
+                </Button>
               ) : (
-                <>
-                  <Button
-                    variant="secondary"
-                    fullWidth
-                    size="lg"
-                    disabled
-                    leftIcon={<Lock size={15} />}
-                  >
-                    Start Exam (Unavailable)
-                  </Button>
-                  <p className="text-[11px] text-center text-red-500 font-medium">
-                    This examination window is currently closed or unavailable.
-                  </p>
-                </>
+                <Button
+                  variant="secondary"
+                  fullWidth
+                  size="lg"
+                  disabled
+                  leftIcon={<Lock size={16} />}
+                >
+                  Not available
+                </Button>
               )}
             </div>
           </Card>
 
-          {/* Faculty / Help Card */}
-          <Card padding="p-5" className="bg-slate-50/50">
-            <h4 className="text-xs font-bold text-slate-700 uppercase tracking-wider mb-2 flex items-center gap-1.5">
-              <Info size={14} className="text-slate-500" />
-              Technical Support
-            </h4>
-            <p className="text-xs text-slate-500 leading-relaxed">
-              If you experience unexpected browser crashes or power loss during the test, log back in immediately from any browser. Your answers are preserved.
+          <Card>
+            <h2 className="section-title">Technical support</h2>
+            <p className="mt-2 text-sm text-zinc-400">
+              If your browser crashes or you lose power during the test, sign back in from any
+              browser. Your answers are preserved.
             </p>
-            <div className="mt-3 pt-3 border-t border-slate-200/60 text-[11px] text-slate-400">
-              Department Helpline: helpdesk@vit.ac.in
-            </div>
+            <p className="mt-4 border-t border-zinc-800 pt-4 text-sm text-zinc-400">
+              Helpline:{' '}
+              <a href="mailto:helpdesk@vit.ac.in" className="text-link">
+                helpdesk@vit.ac.in
+              </a>
+            </p>
           </Card>
         </div>
       </div>
@@ -386,62 +253,56 @@ export default function ExamDetailsPage() {
       <Modal
         isOpen={confirmModalOpen}
         onClose={() => setConfirmModalOpen(false)}
-        title="Ready to Begin Examination?"
+        title="Begin examination?"
         size="md"
         footer={
           <>
-            <Button
-              variant="secondary"
-              onClick={() => setConfirmModalOpen(false)}
-            >
+            <Button variant="secondary" onClick={() => setConfirmModalOpen(false)}>
               Cancel
             </Button>
             <Button
-              variant="success"
               disabled={!agreementChecked}
               onClick={handleStartExam}
               rightIcon={<Play size={14} className="fill-current" />}
             >
-              Confirm & Start Exam
+              Start exam
             </Button>
           </>
         }
       >
         <div className="space-y-4">
-          <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-200 space-y-1.5 text-xs">
-            <div className="flex justify-between font-medium text-slate-800">
-              <span>Exam:</span>
-              <strong className="text-slate-900">{exam.title}</strong>
+          <dl className="space-y-1 rounded-lg border border-zinc-800 bg-zinc-950 p-4 text-sm">
+            <div className="flex justify-between gap-4">
+              <dt className="text-zinc-400">Exam</dt>
+              <dd className="text-right font-medium text-zinc-100">{exam.title}</dd>
             </div>
-            <div className="flex justify-between text-slate-600">
-              <span>Duration:</span>
-              <span>{exam.duration} minutes</span>
+            <div className="flex justify-between gap-4">
+              <dt className="text-zinc-400">Duration</dt>
+              <dd className="tabular-nums text-zinc-200">{exam.duration} minutes</dd>
             </div>
-            <div className="flex justify-between text-slate-600">
-              <span>Questions:</span>
-              <span>{exam.totalQuestions} questions ({exam.totalMarks} marks)</span>
+            <div className="flex justify-between gap-4">
+              <dt className="text-zinc-400">Questions</dt>
+              <dd className="tabular-nums text-zinc-200">
+                {exam.totalQuestions} ({exam.totalMarks} marks)
+              </dd>
             </div>
-          </div>
+          </dl>
 
-          <div className="p-3.5 rounded-xl bg-amber-50 border border-amber-200 text-xs text-amber-900 space-y-1">
-            <p className="font-semibold flex items-center gap-1.5">
-              <AlertTriangle size={14} className="text-amber-600" />
-              Important Notice:
-            </p>
-            <p className="leading-relaxed text-[11px]">
-              Once you start, the timer cannot be paused. Tab switches and window minimizations are tracked for academic integrity.
-            </p>
-          </div>
+          <p className="flex items-start gap-2 text-sm text-zinc-300">
+            <AlertTriangle size={16} className="mt-0.5 flex-shrink-0 text-amber-400" />
+            Once you start, the timer cannot be paused. Tab switches and window minimizing are
+            recorded for academic integrity.
+          </p>
 
-          <label className="flex items-start gap-2.5 pt-2 cursor-pointer select-none">
+          <label className="flex cursor-pointer select-none items-start gap-2 border-t border-zinc-800 pt-4">
             <input
               type="checkbox"
               checked={agreementChecked}
               onChange={(e) => setAgreementChecked(e.target.checked)}
-              className="mt-0.5 h-4 w-4 rounded border-slate-300 text-primary-600 focus:ring-primary-500"
+              className="mt-1 h-4 w-4 rounded border-zinc-700 bg-zinc-950 accent-amber-500"
             />
-            <span className="text-xs text-slate-700 leading-normal">
-              I have read the examination instructions and agree to adhere to the university honor code.
+            <span className="text-sm text-zinc-200">
+              I have read the instructions and agree to follow the university honor code.
             </span>
           </label>
         </div>

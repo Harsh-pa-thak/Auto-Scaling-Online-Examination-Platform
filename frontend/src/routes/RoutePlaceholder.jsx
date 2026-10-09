@@ -7,7 +7,7 @@ export default function RoutePlaceholder({ title, description, role = 'student' 
   const params = useParams()
 
   return (
-    <div className="space-y-6 animate-in fade-in duration-200">
+    <div className="space-y-6 duration-200">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-zinc-100">
@@ -24,20 +24,20 @@ export default function RoutePlaceholder({ title, description, role = 'student' 
 
       <Card padding="p-8">
         <div className="flex flex-col items-center justify-center text-center max-w-md mx-auto py-8">
-          <div className="h-12 w-12 rounded-2xl bg-zinc-800 text-amber-400 flex items-center justify-center mb-4 border border-zinc-700/60 shadow-sm">
+          <div className="h-12 w-12 rounded-2xl bg-zinc-800 text-amber-400 flex items-center justify-center mb-4 border border-zinc-700/60">
             <Clock size={22} />
           </div>
           <h3 className="text-base font-semibold text-zinc-100">
             {title}
           </h3>
-          <p className="mt-2 text-xs sm:text-sm text-zinc-400 leading-relaxed">
-            Layout and route architecture for <code className="px-1.5 py-0.5 rounded bg-zinc-800 font-mono text-zinc-300">{location.pathname}</code> are configured.
+          <p className="mt-2 text-xs sm:text-sm text-zinc-400">
+            Layout and route architecture for <code className="px-1.5 py-0.5 rounded bg-zinc-800 tabular-nums text-zinc-300">{location.pathname}</code> are configured.
           </p>
 
           {Object.keys(params).length > 0 && (
-            <div className="mt-4 p-3 bg-zinc-850 rounded-lg border border-zinc-800 text-xs text-left w-full">
+            <div className="mt-4 p-3 rounded-lg border border-zinc-800 text-xs text-left w-full">
               <span className="font-semibold text-zinc-300">Route Parameters:</span>
-              <pre className="mt-1 text-zinc-400 font-mono text-[11px]">
+              <pre className="mt-1 text-zinc-400 tabular-nums text-xs">
                 {JSON.stringify(params, null, 2)}
               </pre>
             </div>

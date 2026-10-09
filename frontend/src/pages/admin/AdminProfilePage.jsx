@@ -29,7 +29,7 @@ const admin = mockUsers.admin
 // ── Reusable Section wrapper ───────────────────────────────────
 function Section({ title, subtitle, icon, children }) {
   return (
-    <Card padding="p-5">
+    <Card>
       <div className="flex items-start gap-3 mb-5 pb-4 border-b border-zinc-800">
         {icon && (
           <div className="h-8 w-8 rounded-lg bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400 shrink-0">
@@ -55,7 +55,7 @@ function InfoRow({ icon, label, value, mono = false }) {
       </div>
       <div className="flex-1 min-w-0">
         <p className="text-xs text-zinc-500 uppercase tracking-wider font-medium">{label}</p>
-        <p className={`text-sm font-medium text-zinc-200 mt-0.5 truncate ${mono ? 'font-mono' : ''}`}>
+        <p className={`text-sm font-medium text-zinc-200 mt-0.5 truncate ${mono ? 'tabular-nums' : ''}`}>
           {value}
         </p>
       </div>
@@ -105,7 +105,7 @@ function Toggle({ checked, onChange }) {
     >
       <span
         className={[
-          'pointer-events-none inline-block h-4 w-4 transform rounded-full bg-white shadow',
+          'pointer-events-none inline-block h-4 w-4 transform rounded-full bg-zinc-900',
           'transition duration-200 ease-in-out',
           checked ? 'translate-x-4' : 'translate-x-0',
         ].join(' ')}
@@ -174,7 +174,7 @@ export default function AdminProfilePage() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       {/* ── Page Header ── */}
       <div>
         <h1 className="text-xl font-bold text-zinc-100 flex items-center gap-2">
@@ -194,7 +194,7 @@ export default function AdminProfilePage() {
             <div className="flex flex-col items-center text-center">
               <Avatar name={admin.name} size="xl" className="mb-4" />
               <h2 className="text-base font-bold text-zinc-100">{admin.name}</h2>
-              <p className="text-xs text-zinc-400 mt-0.5 font-mono">{admin.email}</p>
+              <p className="text-xs text-zinc-400 mt-0.5 tabular-nums">{admin.email}</p>
 
               <div className="mt-3 flex flex-wrap gap-2 justify-center">
                 <Badge variant="warning" size="sm">Administrator</Badge>
@@ -206,7 +206,7 @@ export default function AdminProfilePage() {
               <div className="mt-5 w-full space-y-3 pt-4 border-t border-zinc-800 text-left text-xs">
                 <div>
                   <p className="text-zinc-500 uppercase tracking-wider font-medium">Staff ID</p>
-                  <p className="mt-0.5 font-mono font-semibold text-zinc-300">{admin.id}</p>
+                  <p className="mt-0.5 tabular-nums font-semibold text-zinc-300">{admin.id}</p>
                 </div>
                 <div>
                   <p className="text-zinc-500 uppercase tracking-wider font-medium">Role</p>
@@ -223,7 +223,7 @@ export default function AdminProfilePage() {
           </Card>
 
           {/* Session / Logout card */}
-          <Card padding="p-4">
+          <Card>
             <div className="flex items-center gap-2 mb-3">
               <ShieldCheck size={14} className="text-zinc-500" />
               <span className="text-xs font-medium text-zinc-400 uppercase tracking-wider">Active Session</span>
@@ -302,7 +302,7 @@ export default function AdminProfilePage() {
               />
 
               {/* Password strength hint */}
-              <div className="flex flex-wrap gap-x-4 gap-y-1 text-[11px] text-zinc-500">
+              <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-zinc-500">
                 <span className={`flex items-center gap-1 ${pwForm.next.length >= 8 ? 'text-emerald-400' : ''}`}>
                   <CheckCircle2 size={11} /> Min 8 characters
                 </span>

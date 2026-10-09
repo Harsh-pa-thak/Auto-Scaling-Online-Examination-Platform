@@ -6,15 +6,11 @@ import {
   ChevronLeft,
   ChevronRight,
   Send,
-  XCircle,
   LayoutGrid,
   CheckCircle2,
-  Clock,
   ArrowRight,
-  ShieldAlert,
-  AlertTriangle,
 } from 'lucide-react'
-import { Button, Badge, ProgressBar } from '../../components/common'
+import { Button, ProgressBar } from '../../components/common'
 import ExamTimer from '../../components/exam/ExamTimer'
 import QuestionCard from '../../components/exam/QuestionCard'
 import QuestionNavigator from '../../components/exam/QuestionNavigator'
@@ -131,56 +127,46 @@ export default function LiveExamPage() {
   if (isSubmitted) {
     const timeSpentMinutes = Math.max(1, Math.round((Date.now() - startTime) / 60000))
 
+    const stats = [
+      { label: 'Attempted',  value: `${answeredCount} / ${totalQuestions}` },
+      { label: 'Unanswered', value: unansweredCount },
+      { label: 'Time taken', value: `${timeSpentMinutes} min` },
+    ]
+
     return (
-      <div className="min-h-screen bg-slate-50 flex items-center justify-center p-4">
-        <div className="bg-white rounded-3xl border border-slate-200/80 shadow-xl max-w-lg w-full p-8 text-center space-y-6 animate-in zoom-in-95 duration-200">
-          <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-emerald-50 text-emerald-600 border border-emerald-200 shadow-sm">
-            <CheckCircle2 size={36} />
-          </div>
+      <div className="flex min-h-screen items-center justify-center bg-zinc-950 p-4">
+        <div className="card w-full max-w-lg space-y-6 p-8 text-center">
+          <CheckCircle2 size={32} className="mx-auto text-emerald-400" />
 
           <div>
-            <span className="text-xs font-bold uppercase tracking-wider text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-200">
-              {autoSubmitted ? 'Auto-Submitted on Time Expiry' : 'Successfully Submitted'}
-            </span>
-            <h1 className="text-2xl font-extrabold text-slate-900 mt-3 tracking-tight">
-              Examination Completed
-            </h1>
-            <p className="text-sm text-slate-500 mt-1.5 leading-relaxed">
-              Your responses for <strong className="text-slate-800">{exam.title}</strong> have been recorded securely.
+            <p className="eyebrow">
+              {autoSubmitted ? 'Submitted automatically when time ran out' : 'Submitted'}
+            </p>
+            <h1 className="mt-2 text-2xl font-semibold text-zinc-50">Examination completed</h1>
+            <p className="mt-2 text-sm text-zinc-400">
+              Your responses for <span className="text-zinc-100">{exam.title}</span> have been
+              recorded.
             </p>
           </div>
 
-          {/* Submission Statistics Card */}
-          <div className="grid grid-cols-3 gap-3 p-4 rounded-2xl bg-slate-50 border border-slate-200 text-xs">
-            <div>
-              <span className="text-slate-400 font-medium">Attempted</span>
-              <p className="text-xl font-bold text-slate-900 mt-0.5">
-                {answeredCount} <span className="text-xs text-slate-400 font-normal">/ {totalQuestions}</span>
-              </p>
-            </div>
-            <div>
-              <span className="text-slate-400 font-medium">Unanswered</span>
-              <p className="text-xl font-bold text-amber-600 mt-0.5">
-                {unansweredCount}
-              </p>
-            </div>
-            <div>
-              <span className="text-slate-400 font-medium">Time Taken</span>
-              <p className="text-xl font-bold text-slate-900 mt-0.5">
-                {timeSpentMinutes}m
-              </p>
-            </div>
-          </div>
+          <dl className="grid grid-cols-3 divide-x divide-zinc-800 rounded-lg border border-zinc-800">
+            {stats.map(({ label, value }) => (
+              <div key={label} className="p-4">
+                <dt className="eyebrow">{label}</dt>
+                <dd className="mt-1 text-lg font-semibold tabular-nums text-zinc-50">{value}</dd>
+              </div>
+            ))}
+          </dl>
 
-          <div className="pt-2 flex flex-col sm:flex-row gap-3">
+          <div className="flex flex-col gap-2 sm:flex-row">
             <Link to="/student/dashboard" className="flex-1">
               <Button variant="secondary" fullWidth>
-                Student Dashboard
+                Dashboard
               </Button>
             </Link>
             <Link to="/student/results" className="flex-1">
-              <Button fullWidth rightIcon={<ArrowRight size={15} />}>
-                View My Results
+              <Button fullWidth rightIcon={<ArrowRight size={16} />}>
+                View results
               </Button>
             </Link>
           </div>
@@ -189,76 +175,60 @@ export default function LiveExamPage() {
     )
   }
 
+  const progressPct = Math.round((answeredCount / totalQuestions) * 100)
+
   // ── ACTIVE DISTRACTION-FREE EXAM INTERFACE ──
   return (
-    <div className="min-h-screen bg-slate-100/70 flex flex-col font-sans select-none no-select">
+    <div className="no-select flex min-h-screen select-none flex-col bg-zinc-950 font-sans">
       {/* ── TOP HEADER ── */}
-      <header className="sticky top-0 z-30 h-16 bg-white border-b border-slate-200/90 px-4 sm:px-6 flex items-center justify-between shadow-xs">
-        {/* Left: Brand / Title */}
-        <div className="flex items-center gap-3 min-w-0">
-          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary-600 text-white flex-shrink-0 shadow-sm">
-            <GraduationCap size={20} />
-          </div>
+      <header className="sticky top-0 z-30 flex h-16 items-center justify-between gap-4 border-b border-zinc-800 bg-zinc-950 px-4 sm:px-6">
+        <div className="flex min-w-0 items-center gap-3">
+          <span className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg bg-amber-500 text-zinc-950">
+            <GraduationCap size={18} />
+          </span>
           <div className="min-w-0">
-            <h1 className="text-xs sm:text-sm font-bold text-slate-900 truncate">
-              {exam.title}
-            </h1>
-            <p className="text-[11px] text-slate-400 truncate hidden sm:block">
-              {exam.subject} • {exam.code}
+            <h1 className="truncate text-sm font-semibold text-zinc-100">{exam.title}</h1>
+            <p className="hidden truncate text-xs text-zinc-500 sm:block">
+              {exam.subject} · <span className="tabular-nums">{exam.code}</span>
             </p>
           </div>
         </div>
 
-        {/* Center: Question Progress */}
-        <div className="hidden md:flex flex-col items-center gap-1 w-48">
-          <div className="flex items-center justify-between w-full text-xs font-semibold text-slate-700">
+        {/* Progress */}
+        <div className="hidden w-48 md:block">
+          <div className="mb-2 flex items-center justify-between text-xs text-zinc-400">
             <span>Progress</span>
-            <span>
-              {answeredCount}/{totalQuestions} ({Math.round((answeredCount / totalQuestions) * 100)}%)
+            <span className="tabular-nums">
+              {answeredCount}/{totalQuestions} ({progressPct}%)
             </span>
           </div>
-          <ProgressBar
-            value={answeredCount}
-            max={totalQuestions}
-            size="xs"
-            variant="primary"
-          />
+          <ProgressBar value={answeredCount} max={totalQuestions} size="xs" />
         </div>
 
-        {/* Right: Timer, Palette Button (mobile), Submit Button */}
-        <div className="flex items-center gap-2.5 sm:gap-3 flex-shrink-0">
-          {/* Countdown Timer */}
+        <div className="flex flex-shrink-0 items-center gap-2 sm:gap-4">
           <ExamTimer
             initialSeconds={exam.duration ? exam.duration * 60 : 3600}
             onExpire={handleTimerExpire}
           />
 
-          {/* Mobile Question Palette Toggle */}
           <button
             type="button"
             onClick={() => setMobilePaletteOpen(true)}
-            aria-label="Open question navigator palette"
-            className="lg:hidden p-2 rounded-xl text-slate-600 hover:bg-slate-100 border border-slate-200"
+            aria-label="Open question navigator"
+            className="rounded-lg border border-zinc-800 p-2 text-zinc-300 hover:bg-zinc-800 lg:hidden"
           >
             <LayoutGrid size={18} />
           </button>
 
-          {/* Quick Submit Exam Header Button */}
-          <Button
-            variant="primary"
-            size="sm"
-            onClick={() => setSubmissionModalOpen(true)}
-            rightIcon={<Send size={14} />}
-          >
-            Submit Exam
+          <Button size="sm" onClick={() => setSubmissionModalOpen(true)} rightIcon={<Send size={14} />}>
+            Submit
           </Button>
         </div>
       </header>
 
-      {/* ── MAIN CONTENT AREA (Left: Question, Right: Navigator) ── */}
-      <div className="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 lg:p-8 flex flex-col lg:flex-row gap-6">
-        {/* Left/Center: Question Card */}
-        <div className="flex-1 min-w-0 flex flex-col justify-between">
+      {/* ── MAIN: question + navigator ── */}
+      <div className="mx-auto flex w-full max-w-7xl flex-1 flex-col gap-6 px-4 py-8 sm:px-6 lg:flex-row lg:px-8">
+        <div className="min-w-0 flex-1">
           <QuestionCard
             question={currentQuestion}
             questionNumber={currentIndex + 1}
@@ -270,8 +240,7 @@ export default function LiveExamPage() {
           />
         </div>
 
-        {/* Right: Question Navigator Palette (Desktop) */}
-        <div className="hidden lg:block w-80 flex-shrink-0">
+        <div className="hidden w-80 flex-shrink-0 lg:block">
           <div className="sticky top-24">
             <QuestionNavigator
               totalQuestions={totalQuestions}
@@ -287,15 +256,12 @@ export default function LiveExamPage() {
       {/* ── MOBILE QUESTION PALETTE DRAWER ── */}
       {mobilePaletteOpen && (
         <div className="fixed inset-0 z-50 lg:hidden">
-          {/* Backdrop */}
           <div
-            className="absolute inset-0 bg-black/40 backdrop-blur-xs"
+            className="absolute inset-0 bg-black/60"
             onClick={() => setMobilePaletteOpen(false)}
             aria-hidden="true"
           />
-
-          {/* Drawer Panel */}
-          <div className="absolute inset-y-0 right-0 max-w-xs w-full bg-white shadow-2xl p-4 overflow-y-auto animate-in slide-in-from-right duration-200">
+          <div className="absolute inset-y-0 right-0 w-full max-w-xs overflow-y-auto border-l border-zinc-800 bg-zinc-950 p-4">
             <QuestionNavigator
               totalQuestions={totalQuestions}
               currentIndex={currentIndex}
@@ -308,13 +274,11 @@ export default function LiveExamPage() {
         </div>
       )}
 
-      {/* ── BOTTOM STICKY NAVIGATION BAR ── */}
-      <footer className="sticky bottom-0 z-20 bg-white border-t border-slate-200/90 py-3 px-4 sm:px-6 shadow-md">
-        <div className="max-w-7xl mx-auto flex items-center justify-between gap-3">
-          {/* Left: Previous Button */}
+      {/* ── BOTTOM NAVIGATION BAR ── */}
+      <footer className="sticky bottom-0 z-20 border-t border-zinc-800 bg-zinc-950 px-4 py-4 sm:px-6">
+        <div className="mx-auto flex max-w-7xl items-center justify-between gap-2 lg:px-2">
           <Button
             variant="secondary"
-            size="md"
             disabled={currentIndex === 0}
             onClick={handlePrev}
             leftIcon={<ChevronLeft size={16} />}
@@ -322,45 +286,30 @@ export default function LiveExamPage() {
             Previous
           </Button>
 
-          {/* Center: Mark for Review & Clear Answer */}
-          <div className="flex items-center gap-2">
-            <button
-              type="button"
-              onClick={handleToggleMark}
-              className={[
-                'inline-flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold border transition-all',
-                isCurrentMarked
-                  ? 'bg-amber-100 text-amber-800 border-amber-300'
-                  : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50',
-              ].join(' ')}
-            >
-              <Bookmark size={14} className={isCurrentMarked ? 'fill-current' : ''} />
-              <span>{isCurrentMarked ? 'Marked for Review' : 'Mark for Review'}</span>
-            </button>
-          </div>
+          <button
+            type="button"
+            onClick={handleToggleMark}
+            aria-pressed={isCurrentMarked}
+            className={[
+              'inline-flex items-center gap-2 rounded-lg border px-4 py-2 text-sm font-medium transition-colors',
+              isCurrentMarked
+                ? 'border-amber-500/50 text-amber-400'
+                : 'border-zinc-700 text-zinc-200 hover:bg-zinc-800',
+            ].join(' ')}
+          >
+            <Bookmark size={14} className={isCurrentMarked ? 'fill-current' : ''} />
+            {isCurrentMarked ? 'Marked for review' : 'Mark for review'}
+          </button>
 
-          {/* Right: Next or Submit */}
-          <div className="flex items-center gap-2">
-            {currentIndex < totalQuestions - 1 ? (
-              <Button
-                variant="primary"
-                size="md"
-                onClick={handleNext}
-                rightIcon={<ChevronRight size={16} />}
-              >
-                Next Question
-              </Button>
-            ) : (
-              <Button
-                variant="primary"
-                size="md"
-                onClick={() => setSubmissionModalOpen(true)}
-                rightIcon={<Send size={15} />}
-              >
-                Submit Exam
-              </Button>
-            )}
-          </div>
+          {currentIndex < totalQuestions - 1 ? (
+            <Button onClick={handleNext} rightIcon={<ChevronRight size={16} />}>
+              Next
+            </Button>
+          ) : (
+            <Button onClick={() => setSubmissionModalOpen(true)} rightIcon={<Send size={14} />}>
+              Submit exam
+            </Button>
+          )}
         </div>
       </footer>
 

@@ -39,8 +39,8 @@ const PALETTE = {
   emeraldDark: '#059669',
   red: '#ef4444',
   redDark: '#dc2626',
-  indigo: '#6366f1',
-  cyan: '#06b6d4',
+  accent: '#f59e0b',
+  neutral: '#a1a1aa',
   zinc400: '#a1a1aa',
   zinc500: '#71717a',
   zinc800: '#27272a',
@@ -48,7 +48,7 @@ const PALETTE = {
 
 const SCORE_BAND_COLORS = [
   '#ef4444', // 0-39% (Fail)
-  '#f97316', // 40-54% (Pass)
+  '#d97706', // 40-54% (Pass)
   '#f59e0b', // 55-69% (Average)
   '#10b981', // 70-84% (Good)
   '#059669', // 85-100% (Distinction)
@@ -114,7 +114,7 @@ const ANALYTICS_DATA = {
 function CustomChartTooltip({ active, payload, label, unit = '', extraLabel = '' }) {
   if (active && payload && payload.length) {
     return (
-      <div className="rounded-lg border border-zinc-700 bg-zinc-900/95 p-3 shadow-2xl backdrop-blur-md text-xs space-y-1">
+      <div className="rounded-lg border border-zinc-700 bg-zinc-900 p-3 text-xs space-y-1">
         {label && <p className="font-bold text-zinc-100">{label}</p>}
         {payload.map((item, index) => (
           <div key={`tooltip-${index}`} className="flex items-center gap-2 text-zinc-300">
@@ -129,7 +129,7 @@ function CustomChartTooltip({ active, payload, label, unit = '', extraLabel = ''
             </span>
           </div>
         ))}
-        {extraLabel && <p className="text-[10px] text-zinc-500 pt-1 border-t border-zinc-800">{extraLabel}</p>}
+        {extraLabel && <p className="text-xs text-zinc-500 pt-1 border-t border-zinc-800">{extraLabel}</p>}
       </div>
     )
   }
@@ -141,7 +141,7 @@ export default function AdminAnalyticsPage() {
   const { statistics, averageScoreData, passFailData, scoreDistributionData, questionPerformanceData, examParticipationData } = ANALYTICS_DATA
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       {/* ── Page Header ── */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
@@ -172,60 +172,60 @@ export default function AdminAnalyticsPage() {
       {/* ── Statistics Cards (5 Key Metrics) ── */}
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
         {/* Metric 1: Average Score */}
-        <Card padding="p-4" className="border-l-2 border-l-amber-500">
+        <Card>
           <div className="flex items-center justify-between">
             <span className="text-xs text-zinc-500 font-medium uppercase tracking-wider">Average Score</span>
             <Award size={16} className="text-amber-400" />
           </div>
           <p className="mt-2 text-2xl font-bold text-amber-400">{statistics.averageScore}%</p>
-          <p className="mt-1 text-[11px] text-zinc-400">Institutional aggregate</p>
+          <p className="mt-1 text-xs text-zinc-400">Institutional aggregate</p>
         </Card>
 
         {/* Metric 2: Highest Score */}
-        <Card padding="p-4" className="border-l-2 border-l-emerald-500">
+        <Card>
           <div className="flex items-center justify-between">
             <span className="text-xs text-zinc-500 font-medium uppercase tracking-wider">Highest Score</span>
             <TrendingUp size={16} className="text-emerald-400" />
           </div>
           <p className="mt-2 text-2xl font-bold text-emerald-400">{statistics.highestScore}%</p>
-          <p className="mt-1 text-[11px] text-zinc-400">Top candidate result</p>
+          <p className="mt-1 text-xs text-zinc-400">Top candidate result</p>
         </Card>
 
         {/* Metric 3: Lowest Score */}
-        <Card padding="p-4" className="border-l-2 border-l-red-500">
+        <Card>
           <div className="flex items-center justify-between">
             <span className="text-xs text-zinc-500 font-medium uppercase tracking-wider">Lowest Score</span>
             <AlertTriangle size={16} className="text-red-400" />
           </div>
           <p className="mt-2 text-2xl font-bold text-red-400">{statistics.lowestScore}%</p>
-          <p className="mt-1 text-[11px] text-zinc-400">Minimum recorded score</p>
+          <p className="mt-1 text-xs text-zinc-400">Minimum recorded score</p>
         </Card>
 
         {/* Metric 4: Pass Rate */}
-        <Card padding="p-4" className="border-l-2 border-l-emerald-400">
+        <Card>
           <div className="flex items-center justify-between">
             <span className="text-xs text-zinc-500 font-medium uppercase tracking-wider">Pass Rate</span>
             <CheckCircle2 size={16} className="text-emerald-400" />
           </div>
           <p className="mt-2 text-2xl font-bold text-emerald-400">{statistics.passRate}%</p>
-          <p className="mt-1 text-[11px] text-zinc-400">Pass mark ≥ 40%</p>
+          <p className="mt-1 text-xs text-zinc-400">Pass mark ≥ 40%</p>
         </Card>
 
         {/* Metric 5: Average Completion Time */}
-        <Card padding="p-4" className="border-l-2 border-l-indigo-500">
+        <Card>
           <div className="flex items-center justify-between">
             <span className="text-xs text-zinc-500 font-medium uppercase tracking-wider">Avg Completion Time</span>
-            <Clock size={16} className="text-indigo-400" />
+            <Clock size={16} className="text-zinc-400" />
           </div>
           <p className="mt-2 text-2xl font-bold text-zinc-100">{statistics.avgCompletionTime}</p>
-          <p className="mt-1 text-[11px] text-zinc-400">Across all exams</p>
+          <p className="mt-1 text-xs text-zinc-400">Across all exams</p>
         </Card>
       </div>
 
       {/* ── Section 1: Average Score Chart & Pass/Fail Chart ── */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         {/* Chart 1: Average Score Chart (2 cols) */}
-        <Card padding="p-5" className="lg:col-span-2">
+        <Card className="lg:col-span-2">
           <div className="flex items-start justify-between mb-4">
             <div>
               <h2 className="text-sm font-bold text-zinc-200 uppercase tracking-wide flex items-center gap-2">
@@ -261,9 +261,9 @@ export default function AdminAnalyticsPage() {
                     if (active && payload && payload.length) {
                       const data = payload[0].payload
                       return (
-                        <div className="rounded-lg border border-zinc-700 bg-zinc-900/95 p-3 text-xs shadow-xl backdrop-blur-md">
+                        <div className="rounded-lg border border-zinc-700 bg-zinc-900 p-3 text-xs">
                           <p className="font-bold text-zinc-100">{label}</p>
-                          <p className="text-[11px] text-zinc-400 font-mono mt-0.5">Code: {data.code}</p>
+                          <p className="text-xs text-zinc-400 tabular-nums mt-0.5">Code: {data.code}</p>
                           <div className="mt-2 space-y-1">
                             <p className="text-amber-400 font-semibold">Average: {data.avgScore}%</p>
                             <p className="text-zinc-400">Total Attempts: {data.attempts.toLocaleString()}</p>
@@ -293,7 +293,7 @@ export default function AdminAnalyticsPage() {
         </Card>
 
         {/* Chart 2: Pass/Fail Chart (1 col) */}
-        <Card padding="p-5">
+        <Card>
           <div className="flex items-start justify-between mb-4">
             <div>
               <h2 className="text-sm font-bold text-zinc-200 uppercase tracking-wide flex items-center gap-2">
@@ -328,10 +328,10 @@ export default function AdminAnalyticsPage() {
                     if (active && payload && payload.length) {
                       const data = payload[0].payload
                       return (
-                        <div className="rounded-lg border border-zinc-700 bg-zinc-900/95 p-2.5 text-xs shadow-xl backdrop-blur-md">
+                        <div className="rounded-lg border border-zinc-700 bg-zinc-900 p-2.5 text-xs">
                           <p className="font-bold text-zinc-100">{data.name}</p>
                           <p className="text-zinc-300 font-semibold">{data.value}% of attempts</p>
-                          <p className="text-zinc-400 text-[11px] mt-0.5">Count: {data.count.toLocaleString()} students</p>
+                          <p className="text-zinc-400 text-xs mt-0.5">Count: {data.count.toLocaleString()} students</p>
                         </div>
                       )
                     }
@@ -344,7 +344,7 @@ export default function AdminAnalyticsPage() {
             {/* Centered Donut Stat */}
             <div className="absolute inset-0 top-[-8px] flex flex-col items-center justify-center pointer-events-none">
               <span className="text-2xl font-bold text-zinc-100">{statistics.passRate}%</span>
-              <span className="text-[10px] uppercase font-bold text-emerald-400 tracking-wider">Pass Rate</span>
+              <span className="text-xs uppercase font-bold text-emerald-400 tracking-wider">Pass Rate</span>
             </div>
           </div>
 
@@ -355,7 +355,7 @@ export default function AdminAnalyticsPage() {
                 <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: d.color }} />
                 <span className="text-zinc-400 font-medium">{d.name}:</span>
                 <strong className="text-zinc-200">{d.value}%</strong>
-                <span className="text-zinc-500 text-[11px]">({d.count})</span>
+                <span className="text-zinc-500 text-xs">({d.count})</span>
               </div>
             ))}
           </div>
@@ -365,7 +365,7 @@ export default function AdminAnalyticsPage() {
       {/* ── Section 2: Score Distribution & Question Performance ── */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         {/* Chart 3: Score Distribution */}
-        <Card padding="p-5">
+        <Card>
           <div className="flex items-start justify-between mb-4">
             <div>
               <h2 className="text-sm font-bold text-zinc-200 uppercase tracking-wide flex items-center gap-2">
@@ -399,12 +399,12 @@ export default function AdminAnalyticsPage() {
                     if (active && payload && payload.length) {
                       const data = payload[0].payload
                       return (
-                        <div className="rounded-lg border border-zinc-700 bg-zinc-900/95 p-3 text-xs shadow-xl backdrop-blur-md">
+                        <div className="rounded-lg border border-zinc-700 bg-zinc-900 p-3 text-xs">
                           <p className="font-bold text-zinc-100">Bracket: {label}</p>
                           <p className="text-zinc-300 font-semibold">{data.label}</p>
                           <div className="mt-1.5 pt-1 border-t border-zinc-800 space-y-0.5">
                             <p className="text-amber-400 font-medium">{data.count.toLocaleString()} Students</p>
-                            <p className="text-zinc-400 text-[11px]">{data.share}% of total examinees</p>
+                            <p className="text-zinc-400 text-xs">{data.share}% of total examinees</p>
                           </div>
                         </div>
                       )
@@ -421,12 +421,12 @@ export default function AdminAnalyticsPage() {
             </ResponsiveContainer>
           </div>
 
-          <div className="flex flex-wrap items-center justify-between gap-2 mt-3 pt-3 border-t border-zinc-800 text-[11px] text-zinc-400">
+          <div className="flex flex-wrap items-center justify-between gap-2 mt-3 pt-3 border-t border-zinc-800 text-xs text-zinc-400">
             <span className="flex items-center gap-1.5">
               <span className="w-2 h-2 rounded-full bg-red-500" /> Fail (&lt;40%)
             </span>
             <span className="flex items-center gap-1.5">
-              <span className="w-2 h-2 rounded-full bg-orange-500" /> Pass (40-54%)
+              <span className="w-2 h-2 rounded-full bg-amber-500" /> Pass (40-54%)
             </span>
             <span className="flex items-center gap-1.5">
               <span className="w-2 h-2 rounded-full bg-amber-500" /> Average (55-69%)
@@ -441,11 +441,11 @@ export default function AdminAnalyticsPage() {
         </Card>
 
         {/* Chart 4: Question Performance */}
-        <Card padding="p-5">
+        <Card>
           <div className="flex items-start justify-between mb-4">
             <div>
               <h2 className="text-sm font-bold text-zinc-200 uppercase tracking-wide flex items-center gap-2">
-                <HelpCircle size={16} className="text-cyan-400" />
+                <HelpCircle size={16} className="text-zinc-400" />
                 4. Question Performance by Topic
               </h2>
               <p className="text-xs text-zinc-400 mt-0.5">
@@ -484,13 +484,13 @@ export default function AdminAnalyticsPage() {
                     if (active && payload && payload.length) {
                       const data = payload[0].payload
                       return (
-                        <div className="rounded-lg border border-zinc-700 bg-zinc-900/95 p-3 text-xs shadow-xl backdrop-blur-md space-y-1">
+                        <div className="rounded-lg border border-zinc-700 bg-zinc-900 p-3 text-xs space-y-1">
                           <p className="font-bold text-zinc-100">{data.topic}</p>
                           <p className="text-zinc-400">Subject: {data.subject}</p>
                           <div className="pt-1 border-t border-zinc-800">
                             <p className="text-emerald-400 font-semibold">Accuracy: {data.accuracy}%</p>
-                            <p className="text-zinc-400 text-[11px]">Difficulty: {data.difficulty}</p>
-                            <p className="text-zinc-500 text-[11px]">Attempted: {data.attempts.toLocaleString()} times</p>
+                            <p className="text-zinc-400 text-xs">Difficulty: {data.difficulty}</p>
+                            <p className="text-zinc-500 text-xs">Attempted: {data.attempts.toLocaleString()} times</p>
                           </div>
                         </div>
                       )
@@ -507,7 +507,7 @@ export default function AdminAnalyticsPage() {
                 <Bar
                   dataKey="accuracy"
                   name="Accuracy Rate"
-                  fill={PALETTE.indigo}
+                  fill={PALETTE.accent}
                   radius={[0, 4, 4, 0]}
                   maxBarSize={20}
                 >
@@ -516,7 +516,7 @@ export default function AdminAnalyticsPage() {
                       entry.accuracy >= 80
                         ? PALETTE.emerald
                         : entry.accuracy >= 70
-                        ? PALETTE.indigo
+                        ? PALETTE.accent
                         : entry.accuracy >= 60
                         ? PALETTE.amber
                         : PALETTE.red
@@ -527,14 +527,14 @@ export default function AdminAnalyticsPage() {
             </ResponsiveContainer>
           </div>
 
-          <div className="flex items-center justify-between text-[11px] text-zinc-500 pt-3 border-t border-zinc-800">
-            <span>Color code: High (&ge;80%) in green, Moderate in purple/amber, Critical (&lt;60%) in red.</span>
+          <div className="flex items-center justify-between text-xs text-zinc-500 pt-3 border-t border-zinc-800">
+            <span>Color code: High (&ge;80%) in green, Moderate in amber, Critical (&lt;60%) in red.</span>
           </div>
         </Card>
       </div>
 
       {/* ── Section 3: Exam Participation Chart ── */}
-      <Card padding="p-5">
+      <Card>
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-4">
           <div>
             <h2 className="text-sm font-bold text-zinc-200 uppercase tracking-wide flex items-center gap-2">
@@ -560,16 +560,6 @@ export default function AdminAnalyticsPage() {
         <div className="h-72 w-full">
           <ResponsiveContainer width="100%" height="100%">
             <AreaChart data={examParticipationData} margin={{ top: 15, right: 10, left: -10, bottom: 0 }}>
-              <defs>
-                <linearGradient id="studentGradient" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor={PALETTE.amber} stopOpacity={0.4} />
-                  <stop offset="95%" stopColor={PALETTE.amber} stopOpacity={0.0} />
-                </linearGradient>
-                <linearGradient id="examGradient" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor={PALETTE.emerald} stopOpacity={0.3} />
-                  <stop offset="95%" stopColor={PALETTE.emerald} stopOpacity={0.0} />
-                </linearGradient>
-              </defs>
               <CartesianGrid strokeDasharray="3 3" stroke="#27272a" vertical={false} />
               <XAxis
                 dataKey="month"
@@ -596,12 +586,12 @@ export default function AdminAnalyticsPage() {
                   if (active && payload && payload.length) {
                     const data = payload[0].payload
                     return (
-                      <div className="rounded-lg border border-zinc-700 bg-zinc-900/95 p-3 text-xs shadow-xl backdrop-blur-md space-y-1">
+                      <div className="rounded-lg border border-zinc-700 bg-zinc-900 p-3 text-xs space-y-1">
                         <p className="font-bold text-zinc-100">{label} 2025 Cycle</p>
                         <div className="mt-1 pt-1 border-t border-zinc-800 space-y-1">
                           <p className="text-amber-400 font-semibold">Examinees: {data.students.toLocaleString()}</p>
                           <p className="text-emerald-400 font-semibold">Exams Conducted: {data.exams}</p>
-                          <p className="text-zinc-400 text-[11px]">Completion Rate: {data.completionRate}%</p>
+                          <p className="text-zinc-400 text-xs">Completion Rate: {data.completionRate}%</p>
                         </div>
                       </div>
                     )
@@ -616,8 +606,8 @@ export default function AdminAnalyticsPage() {
                 name="Students"
                 stroke={PALETTE.amber}
                 strokeWidth={2}
-                fillOpacity={1}
-                fill="url(#studentGradient)"
+                fillOpacity={0.12}
+                fill={PALETTE.amber}
               />
               <Area
                 yAxisId="right"
@@ -626,8 +616,8 @@ export default function AdminAnalyticsPage() {
                 name="Exams Held"
                 stroke={PALETTE.emerald}
                 strokeWidth={2}
-                fillOpacity={1}
-                fill="url(#examGradient)"
+                fillOpacity={0.12}
+                fill={PALETTE.emerald}
               />
             </AreaChart>
           </ResponsiveContainer>

@@ -2,24 +2,18 @@ import { useState, useMemo } from 'react'
 import { Link } from 'react-router-dom'
 import {
   FileText,
-  Search,
-  Filter,
   LayoutGrid,
   List,
-  Calendar,
-  Clock,
-  Timer,
   Play,
   ArrowRight,
   RotateCcw,
-  BookOpen,
 } from 'lucide-react'
 import { SearchBar, Select, Badge, Button, EmptyState, Table } from '../../components/common'
 import ExamCard from '../../components/student/ExamCard'
 import { mockExams } from '../../data/mockData'
 
 const TABS = [
-  { id: 'all',       label: 'All Examinations' },
+  { id: 'all',       label: 'All' },
   { id: 'upcoming',  label: 'Upcoming' },
   { id: 'active',    label: 'Active' },
   { id: 'completed', label: 'Completed' },
@@ -106,25 +100,23 @@ export default function StudentExamsPage() {
   const tableColumns = [
     {
       key: 'title',
-      label: 'Exam Title & Subject',
+      label: 'Exam',
       render: (val, row) => (
         <div>
-          <p className="font-semibold text-slate-900">{row.title}</p>
-          <div className="flex items-center gap-2 mt-0.5 text-xs text-slate-500">
-            <span>{row.subject}</span>
-            <span className="text-slate-300">•</span>
-            <span className="font-mono text-slate-400">{row.code}</span>
-          </div>
+          <p className="font-medium text-zinc-100">{row.title}</p>
+          <p className="text-xs text-zinc-400">
+            {row.subject} · <span className="tabular-nums">{row.code}</span>
+          </p>
         </div>
       ),
     },
     {
       key: 'startTime',
-      label: 'Date & Time',
+      label: 'Date & time',
       render: (val, row) => (
-        <div className="text-xs">
-          <p className="font-medium text-slate-800">{formatDate(val)}</p>
-          <p className="text-slate-500 mt-0.5">
+        <div>
+          <p className="text-zinc-100">{formatDate(val)}</p>
+          <p className="text-xs tabular-nums text-zinc-400">
             {formatTime(val)} {row.endTime && `– ${formatTime(row.endTime)}`}
           </p>
         </div>
@@ -133,16 +125,14 @@ export default function StudentExamsPage() {
     {
       key: 'duration',
       label: 'Duration',
-      render: (val) => (
-        <span className="text-xs font-medium text-slate-700">{val} mins</span>
-      ),
+      render: (val) => <span className="tabular-nums text-zinc-200">{val} min</span>,
     },
     {
       key: 'totalQuestions',
       label: 'Questions',
       render: (val, row) => (
-        <span className="text-xs text-slate-700">
-          {val} Qs <span className="text-slate-400">({row.totalMarks} Marks)</span>
+        <span className="tabular-nums text-zinc-200">
+          {val} <span className="text-zinc-500">({row.totalMarks} marks)</span>
         </span>
       ),
     },
@@ -150,21 +140,21 @@ export default function StudentExamsPage() {
       key: 'status',
       label: 'Status',
       render: (val) => {
-        if (val === 'active') return <Badge variant="success" dot>Active</Badge>
-        if (val === 'upcoming') return <Badge variant="primary" dot>Upcoming</Badge>
-        if (val === 'completed') return <Badge variant="default">Completed</Badge>
-        return <Badge variant="danger" dot>Unavailable</Badge>
+        if (val === 'active') return <Badge variant="primary" dot>Live</Badge>
+        if (val === 'upcoming') return <Badge dot>Upcoming</Badge>
+        if (val === 'completed') return <Badge>Completed</Badge>
+        return <Badge>Unavailable</Badge>
       },
     },
     {
       key: 'action',
-      label: 'Action',
+      label: '',
       align: 'right',
       render: (val, row) => {
         if (row.status === 'active') {
           return (
             <Link to={`/student/exams/${row.id}`}>
-              <Button variant="success" size="xs" rightIcon={<Play size={12} className="fill-current" />}>
+              <Button size="xs" rightIcon={<Play size={12} className="fill-current" />}>
                 Start
               </Button>
             </Link>
@@ -197,34 +187,28 @@ export default function StudentExamsPage() {
     },
   ]
 
+  const filtersActive = searchQuery || selectedSubject || activeTab !== 'all'
+
+  const viewButton = (mode) =>
+    `rounded-md p-2 transition-colors ${
+      viewMode === mode ? 'bg-zinc-800 text-zinc-100' : 'text-zinc-500 hover:text-zinc-200'
+    }`
+
   return (
-    <div className="space-y-6 animate-in fade-in duration-200">
+    <div className="space-y-8">
       {/* ── Page Header ── */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-2 border-b border-slate-200/80">
+      <header className="page-header">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
-            Examinations
-          </h1>
-          <p className="text-sm text-slate-500 mt-1 leading-relaxed">
-            Browse upcoming assessments, participate in active examination sessions, and review past test records.
+          <h1 className="page-title">Examinations</h1>
+          <p className="page-subtitle">
+            Upcoming assessments, live sessions, and past test records.
           </p>
         </div>
+      </header>
 
-        {/* Live exam pulse badge if active */}
-        {tabCounts.active > 0 && (
-          <div className="flex items-center gap-2 self-start sm:self-center px-3 py-1.5 rounded-full bg-emerald-50 border border-emerald-200 text-xs font-semibold text-emerald-800">
-            <span className="flex h-2 w-2 relative">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
-            </span>
-            <span>{tabCounts.active} Active Examination Live</span>
-          </div>
-        )}
-      </div>
-
-      {/* ── Status Tabs ── */}
-      <div className="border-b border-slate-200">
-        <nav aria-label="Exam status tabs" className="-mb-px flex space-x-2 sm:space-x-4 overflow-x-auto pb-1">
+      <div className="space-y-4">
+        {/* ── Status Tabs ── */}
+        <nav aria-label="Exam status" className="flex gap-6 overflow-x-auto border-b border-zinc-800">
           {TABS.map((tab) => {
             const count = tabCounts[tab.id] ?? 0
             const isActive = activeTab === tab.id
@@ -233,124 +217,87 @@ export default function StudentExamsPage() {
                 key={tab.id}
                 type="button"
                 onClick={() => setActiveTab(tab.id)}
-                className={`flex items-center gap-2 py-3 px-3.5 text-xs sm:text-sm font-semibold rounded-t-lg border-b-2 transition-all whitespace-nowrap ${
+                aria-current={isActive ? 'page' : undefined}
+                className={`-mb-px flex items-center gap-2 whitespace-nowrap border-b-2 py-3 text-sm font-medium transition-colors ${
                   isActive
-                    ? 'border-primary-600 text-primary-700 bg-primary-50/50'
-                    : 'border-transparent text-slate-500 hover:text-slate-800 hover:border-slate-300'
+                    ? 'border-amber-500 text-zinc-50'
+                    : 'border-transparent text-zinc-400 hover:text-zinc-100'
                 }`}
               >
-                <span>{tab.label}</span>
-                <span
-                  className={`text-[11px] font-bold px-2 py-0.5 rounded-full ${
-                    isActive
-                      ? 'bg-primary-100 text-primary-800'
-                      : 'bg-slate-100 text-slate-500'
-                  }`}
-                >
-                  {count}
-                </span>
+                {tab.label}
+                <span className="tabular-nums text-zinc-500">{count}</span>
               </button>
             )
           })}
         </nav>
-      </div>
 
-      {/* ── Search, Filters, and View Switcher ── */}
-      <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3 bg-white p-3.5 rounded-2xl border border-slate-200/90 shadow-xs">
-        {/* Search bar */}
-        <div className="flex-1 min-w-[240px]">
+        {/* ── Search, Filters, View Switcher ── */}
+        <div className="flex flex-col gap-4 md:flex-row md:items-center">
           <SearchBar
             value={searchQuery}
             onChange={setSearchQuery}
-            placeholder="Search by exam title, subject, or code (e.g. CSE2001)…"
+            placeholder="Search by title, subject, or code"
+            className="flex-1"
           />
-        </div>
 
-        {/* Filter controls */}
-        <div className="flex flex-wrap items-center gap-2.5">
-          {/* Subject Filter */}
-          <div className="min-w-[170px]">
+          <div className="flex items-center gap-2">
             <Select
               id="subject-filter"
-              placeholder="All Subjects"
+              placeholder="All subjects"
               value={selectedSubject}
               onChange={(e) => setSelectedSubject(e.target.value)}
               options={subjects.map((sub) => ({ value: sub, label: sub }))}
+              className="min-w-[180px]"
             />
-          </div>
 
-          {/* Reset Filters button if any filter active */}
-          {(searchQuery || selectedSubject || activeTab !== 'all') && (
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={handleResetFilters}
-              leftIcon={<RotateCcw size={13} />}
-            >
-              Reset
-            </Button>
-          )}
+            {filtersActive && (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={handleResetFilters}
+                leftIcon={<RotateCcw size={14} />}
+              >
+                Reset
+              </Button>
+            )}
 
-          {/* View toggle (Grid / Table) */}
-          <div className="flex items-center bg-slate-100 p-1 rounded-lg border border-slate-200/60 ml-auto md:ml-0">
-            <button
-              type="button"
-              onClick={() => setViewMode('grid')}
-              aria-label="Grid view"
-              className={`p-1.5 rounded-md transition-colors ${
-                viewMode === 'grid'
-                  ? 'bg-white text-slate-900 shadow-xs font-semibold'
-                  : 'text-slate-500 hover:text-slate-700'
-              }`}
-            >
-              <LayoutGrid size={16} />
-            </button>
-            <button
-              type="button"
-              onClick={() => setViewMode('table')}
-              aria-label="Table view"
-              className={`p-1.5 rounded-md transition-colors ${
-                viewMode === 'table'
-                  ? 'bg-white text-slate-900 shadow-xs font-semibold'
-                  : 'text-slate-500 hover:text-slate-700'
-              }`}
-            >
-              <List size={16} />
-            </button>
+            <div className="ml-auto flex items-center gap-1 rounded-lg border border-zinc-800 p-1 md:ml-0">
+              <button
+                type="button"
+                onClick={() => setViewMode('grid')}
+                aria-label="Grid view"
+                aria-pressed={viewMode === 'grid'}
+                className={viewButton('grid')}
+              >
+                <LayoutGrid size={16} />
+              </button>
+              <button
+                type="button"
+                onClick={() => setViewMode('table')}
+                aria-label="Table view"
+                aria-pressed={viewMode === 'table'}
+                className={viewButton('table')}
+              >
+                <List size={16} />
+              </button>
+            </div>
           </div>
         </div>
+
+        {filtersActive && (
+          <p className="text-sm text-zinc-400">
+            {filteredExams.length} {filteredExams.length === 1 ? 'match' : 'matches'}
+          </p>
+        )}
       </div>
 
-      {/* ── Active Filter Summary Chip ── */}
-      {(searchQuery || selectedSubject || activeTab !== 'all') && (
-        <div className="flex items-center gap-2 text-xs text-slate-500">
-          <span>Filtered by:</span>
-          {activeTab !== 'all' && (
-            <Badge variant="primary" size="sm">
-              Status: {activeTab}
-            </Badge>
-          )}
-          {selectedSubject && (
-            <Badge variant="default" size="sm">
-              Subject: {selectedSubject}
-            </Badge>
-          )}
-          {searchQuery && (
-            <Badge variant="default" size="sm">
-              Query: "{searchQuery}"
-            </Badge>
-          )}
-          <span className="text-slate-400">({filteredExams.length} matches found)</span>
-        </div>
-      )}
-
-      {/* ── Exam Content Display (Grid or Table) ── */}
+      {/* ── Results (Grid or Table) ── */}
       {filteredExams.length === 0 ? (
-        <div className="bg-white rounded-2xl border border-slate-200 p-8 shadow-xs">
+        <div className="card">
           <EmptyState
-            icon={<FileText size={32} className="text-slate-400" />}
-            title="No examinations match your criteria"
-            message="Try adjusting your search terms, changing the status tab, or clearing the subject filter."
+            icon={<FileText size={28} />}
+            title="No examinations match your filters"
+            message="Try a different search, status, or subject."
             action={
               <Button
                 variant="secondary"
@@ -358,27 +305,19 @@ export default function StudentExamsPage() {
                 onClick={handleResetFilters}
                 leftIcon={<RotateCcw size={14} />}
               >
-                Clear all filters
+                Clear filters
               </Button>
             }
           />
         </div>
       ) : viewMode === 'grid' ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
           {filteredExams.map((exam) => (
-            <ExamCard
-              key={exam.id}
-              exam={exam}
-              isActive={exam.status === 'active'}
-            />
+            <ExamCard key={exam.id} exam={exam} isActive={exam.status === 'active'} />
           ))}
         </div>
       ) : (
-        <Table
-          columns={tableColumns}
-          data={filteredExams}
-          emptyTitle="No examinations found"
-        />
+        <Table columns={tableColumns} data={filteredExams} emptyTitle="No examinations found" />
       )}
     </div>
   )

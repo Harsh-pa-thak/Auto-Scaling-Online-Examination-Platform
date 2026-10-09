@@ -32,7 +32,7 @@ const Input = forwardRef(function Input(
   ref
 ) {
   return (
-    <div className={`space-y-1 ${className}`}>
+    <div className={`space-y-2 ${className}`}>
       {label && (
         <label htmlFor={id} className="form-label">
           {label}
@@ -46,7 +46,7 @@ const Input = forwardRef(function Input(
 
       <div className="relative">
         {leftIcon && (
-          <div className="pointer-events-none absolute inset-y-0 left-0 pl-3 flex items-center text-slate-400">
+          <div className="pointer-events-none absolute inset-y-0 left-0 pl-3 flex items-center text-zinc-500">
             {leftIcon}
           </div>
         )}
@@ -79,13 +79,13 @@ const Input = forwardRef(function Input(
       </div>
 
       {error && (
-        <p id={`${id}-error`} role="alert" className="text-xs text-red-600 flex items-center gap-1">
+        <p id={`${id}-error`} role="alert" className="text-xs text-red-400 flex items-center gap-1">
           {error}
         </p>
       )}
 
       {helperText && !error && (
-        <p id={`${id}-helper`} className="text-xs text-slate-500">
+        <p id={`${id}-helper`} className="text-xs text-zinc-400">
           {helperText}
         </p>
       )}
