@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useParams, Link, useNavigate } from 'react-router-dom'
 import {
   ArrowLeft,
@@ -14,7 +14,7 @@ import {
   ErrorState,
 } from '../../components/common'
 import ExamInstructions from '../../components/student/ExamInstructions'
-import { mockExams } from '../../data/mockData'
+import { api } from '../../lib/api'
 import { useToast } from '../../hooks/useToast'
 
 // Format date nicely
@@ -56,9 +56,13 @@ export default function ExamDetailsPage() {
   const [confirmModalOpen, setConfirmModalOpen] = useState(false)
   const [agreementChecked, setAgreementChecked] = useState(false)
 
-  // Find exam by ID from mockExams
-  const exam = mockExams.find((e) => e.id === id)
+  const [exam, setExam] = useState(null)
+  const [loading, setLoading] = useState(true)
+  useEffect(() => {
+    api(`/exams/${id}`).then(setExam).catch(() => setExam(null)).finally(() => setLoading(false))
+  }, [id])
 
+  if (loading) return <div className="py-12 text-center text-zinc-400">Loading examination...</div>
   if (!exam) {
     return (
       <div className="py-12">

@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import {
   FileText,
@@ -10,7 +10,7 @@ import {
 } from 'lucide-react'
 import { SearchBar, Select, Badge, Button, EmptyState, Table } from '../../components/common'
 import ExamCard from '../../components/student/ExamCard'
-import { mockExams } from '../../data/mockData'
+import { api } from '../../lib/api'
 
 const TABS = [
   { id: 'all',       label: 'All' },
@@ -45,26 +45,32 @@ export default function StudentExamsPage() {
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedSubject, setSelectedSubject] = useState('')
   const [viewMode, setViewMode] = useState('grid') // 'grid' | 'table'
+  const [exams, setExams] = useState([])
+  const [error, setError] = useState(null)
+
+  useEffect(() => {
+    api('/exams').then(setExams).catch((err) => setError(err.message))
+  }, [])
 
   // Extract unique subjects for dropdown filter
   const subjects = useMemo(() => {
-    const set = new Set(mockExams.map((e) => e.subject).filter(Boolean))
+    const set = new Set(exams.map((e) => e.subject).filter(Boolean))
     return Array.from(set).sort()
-  }, [])
+  }, [exams])
 
   // Calculate counts per tab
   const tabCounts = useMemo(() => {
     return {
-      all: mockExams.length,
-      upcoming: mockExams.filter((e) => e.status === 'upcoming').length,
-      active: mockExams.filter((e) => e.status === 'active').length,
-      completed: mockExams.filter((e) => e.status === 'completed').length,
+      all: exams.length,
+      upcoming: exams.filter((e) => e.status === 'upcoming').length,
+      active: exams.filter((e) => e.status === 'active').length,
+      completed: exams.filter((e) => e.status === 'completed').length,
     }
-  }, [])
+  }, [exams])
 
   // Filter exams based on tab, search query, and subject filter
   const filteredExams = useMemo(() => {
-    return mockExams.filter((exam) => {
+    return exams.filter((exam) => {
       // 1. Tab filter
       if (activeTab !== 'all' && exam.status !== activeTab) {
         return false
@@ -88,7 +94,7 @@ export default function StudentExamsPage() {
 
       return true
     })
-  }, [activeTab, selectedSubject, searchQuery])
+  }, [exams, activeTab, selectedSubject, searchQuery])
 
   const handleResetFilters = () => {
     setActiveTab('all')

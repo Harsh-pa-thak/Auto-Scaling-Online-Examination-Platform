@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { Input, Button } from '../../components/common'
 import { useToast } from '../../hooks/useToast'
+import { api } from '../../lib/api'
 import {
   User,
   IdCard,
@@ -141,15 +142,18 @@ export default function RegisterPage() {
     if (hasError) return
 
     setIsSubmitting(true)
-    // Simulate API registration call delay
-    await new Promise((resolve) => setTimeout(resolve, 800))
-    setIsSubmitting(false)
-
-    toast.success(
-      'Registration Complete',
-      `Student account registered for ${formData.name} (${formData.studentId}). You may now sign in.`
-    )
-    navigate('/login')
+    try {
+      await api('/auth/register', {
+        method: 'POST',
+        body: { name: formData.name, studentId: formData.studentId, email: formData.email, password: formData.password },
+      })
+      toast.success('Registration Complete', 'Your account has been created. You may now sign in.')
+      navigate('/login')
+    } catch (err) {
+      toast.error('Registration Failed', err.message)
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   return (

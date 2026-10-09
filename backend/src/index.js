@@ -1,31 +1,18 @@
-import 'dotenv/config'
-import express from 'express'
-import cors from 'cors'
-import healthRouter from './routes/health.js'
+import app from './app.js'
+import { env } from './config/env.js'
+import { prisma } from './config/prisma.js'
 
-const app = express()
-const PORT = process.env.PORT || 5000
-
-// ── Middleware ────────────────────────────────────────────────────────────────
-app.use(cors())
-app.use(express.json())
-app.use(express.urlencoded({ extended: true }))
-
-// ── Routes ────────────────────────────────────────────────────────────────────
-app.use('/api/health', healthRouter)
-
-// ── 404 handler ──────────────────────────────────────────────────────────────
-app.use((_req, res) => {
-  res.status(404).json({ error: 'Route not found' })
+const server = app.listen(env.port, () => {
+  console.log(`Server running on port ${env.port}`)
 })
 
-// ── Global error handler ─────────────────────────────────────────────────────
-app.use((err, _req, res, _next) => {
-  console.error(err.stack)
-  res.status(500).json({ error: 'Internal Server Error' })
-})
+async function shutdown(signal) {
+  console.log(`${signal} received; shutting down`)
+  server.close(async () => {
+    await prisma.$disconnect()
+    process.exit(0)
+  })
+}
 
-// ── Start ─────────────────────────────────────────────────────────────────────
-app.listen(PORT, () => {
-  console.log(`🚀 Server running at http://localhost:${PORT}`)
-})
+process.on('SIGTERM', () => shutdown('SIGTERM'))
+process.on('SIGINT', () => shutdown('SIGINT'))

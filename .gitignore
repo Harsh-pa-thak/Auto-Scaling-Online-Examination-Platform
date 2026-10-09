@@ -8,6 +8,8 @@ frontend/dist/
 
 # Environment
 backend/.env
+backend/.env.*
+!backend/.env.example
 .env
 
 # Logs

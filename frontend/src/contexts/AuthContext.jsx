@@ -1,48 +1,42 @@
-import { createContext, useState, useCallback } from 'react'
-import { mockUsers } from '../data/mockData'
+import { createContext, useState, useCallback, useEffect } from 'react'
+import { api, authToken } from '../lib/api'
 
 export const AuthContext = createContext(null)
 
 export function AuthProvider({ children }) {
   const [user, setUser]       = useState(null)
-  const [isLoading, setIsLoading] = useState(false)
+  const [isLoading, setIsLoading] = useState(true)
   const [error, setError]     = useState(null)
 
-  /**
-   * Simulate a login API call.
-   * In production, replace with a real fetch/axios call.
-   */
   const login = useCallback(async ({ email, password, role }) => {
     setIsLoading(true)
     setError(null)
-
-    // Simulate network delay
-    await new Promise((resolve) => setTimeout(resolve, 800))
-
-    const mockUser = mockUsers[role]
-
-    // Basic mock validation
-    if (!email || !password) {
-      setError('Email and password are required.')
+    try {
+      const result = await api('/auth/login', { method: 'POST', body: { email, password, role } })
+      authToken.set(result.token)
+      setUser(result.user)
+      return result.user
+    } catch (err) {
+      setError(err.message)
+      throw err
+    } finally {
       setIsLoading(false)
-      throw new Error('Email and password are required.')
     }
-
-    if (password.length < 6) {
-      setError('Password must be at least 6 characters.')
-      setIsLoading(false)
-      throw new Error('Password must be at least 6 characters.')
-    }
-
-    // Accept any email + password ≥6 chars for mock purposes
-    setUser({ ...mockUser, email })
-    setIsLoading(false)
-    return { ...mockUser, email }
   }, [])
 
-  const logout = useCallback(() => {
+  const logout = useCallback(async () => {
+    await api('/auth/logout', { method: 'POST' }).catch(() => {})
+    authToken.clear()
     setUser(null)
     setError(null)
+  }, [])
+
+  useEffect(() => {
+    if (!authToken.get()) {
+      setIsLoading(false)
+      return
+    }
+    api('/auth/me').then((result) => setUser(result.user)).catch(() => authToken.clear()).finally(() => setIsLoading(false))
   }, [])
 
   const value = { user, isLoading, error, login, logout }
