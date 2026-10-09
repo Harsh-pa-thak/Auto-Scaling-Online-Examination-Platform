@@ -58,7 +58,7 @@ export default function Modal({
     >
       {/* Backdrop */}
       <div
-        className="absolute inset-0 bg-black/70 backdrop-blur-sm"
+        className="absolute inset-0 bg-black/70"
         onClick={closeOnOverlay ? onClose : undefined}
         aria-hidden="true"
       />
@@ -66,14 +66,14 @@ export default function Modal({
       {/* Panel */}
       <div
         className={[
-          'relative z-10 w-full bg-zinc-900 border border-zinc-800 rounded-2xl shadow-2xl',
+          'relative z-10 w-full bg-zinc-900 border border-zinc-800 rounded-xl',
           'flex flex-col max-h-[90vh]',
           sizes[size] ?? sizes.md,
           className,
         ].join(' ')}
       >
         {/* Header */}
-        <div className="flex items-start justify-between px-6 pt-5 pb-4 border-b border-zinc-800">
+        <div className="flex items-start justify-between gap-4 px-6 py-4 border-b border-zinc-800">
           {title && (
             <h2 id="modal-title" className="text-base font-semibold text-zinc-100">
               {title}
@@ -89,7 +89,7 @@ export default function Modal({
         </div>
 
         {/* Body */}
-        <div className="flex-1 overflow-y-auto px-6 py-5 text-zinc-200">{children}</div>
+        <div className="flex-1 overflow-y-auto px-6 py-6 text-zinc-200">{children}</div>
 
         {/* Footer */}
         {footer && (

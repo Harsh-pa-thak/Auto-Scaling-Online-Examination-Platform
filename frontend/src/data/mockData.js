@@ -408,11 +408,11 @@ export const mockAnalytics = {
   },
 
   subjectStats: [
-    { subject: 'Data Structures',   avgScore: 68.3, passRate: 78, totalAttempts: 920, color: '#4f46e5' },
-    { subject: 'DBMS',              avgScore: 73.1, passRate: 85, totalAttempts: 780, color: '#0891b2' },
-    { subject: 'Operating Systems', avgScore: 66.9, passRate: 74, totalAttempts: 860, color: '#059669' },
-    { subject: 'Computer Networks', avgScore: 74.8, passRate: 88, totalAttempts: 720, color: '#d97706' },
-    { subject: 'Cloud Computing',   avgScore: 71.2, passRate: 86, totalAttempts: 640, color: '#dc2626' },
+    { subject: 'Data Structures',   avgScore: 68.3, passRate: 78, totalAttempts: 920, color: '#f59e0b' },
+    { subject: 'DBMS',              avgScore: 73.1, passRate: 85, totalAttempts: 780, color: '#a1a1aa' },
+    { subject: 'Operating Systems', avgScore: 66.9, passRate: 74, totalAttempts: 860, color: '#d97706' },
+    { subject: 'Computer Networks', avgScore: 74.8, passRate: 88, totalAttempts: 720, color: '#71717a' },
+    { subject: 'Cloud Computing',   avgScore: 71.2, passRate: 86, totalAttempts: 640, color: '#fbbf24' },
   ],
 
   monthlyExams: [

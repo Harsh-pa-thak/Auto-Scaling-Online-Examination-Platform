@@ -355,7 +355,7 @@ function ResultDetailModal({ result, onClose, onOpenAnswers }) {
         </div>
       }
     >
-      <div className="space-y-5">
+      <div className="space-y-4">
         {/* Top Header Card */}
         <div className="p-4 rounded-xl border border-zinc-800 bg-zinc-900/80 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div className="flex items-center gap-3">
@@ -364,7 +364,7 @@ function ResultDetailModal({ result, onClose, onOpenAnswers }) {
             </div>
             <div>
               <h3 className="text-base font-semibold text-zinc-100">{result.studentName}</h3>
-              <p className="text-xs font-mono text-zinc-400">
+              <p className="text-xs tabular-nums text-zinc-400">
                 {result.studentId} • {result.studentBranch} • Sem {result.studentSemester}-{result.studentSection}
               </p>
             </div>
@@ -381,26 +381,26 @@ function ResultDetailModal({ result, onClose, onOpenAnswers }) {
 
         {/* Quick Performance Grid */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-          <div className="p-3.5 rounded-xl border border-zinc-800 bg-zinc-900/60">
-            <p className="text-[11px] font-medium text-zinc-500 uppercase tracking-wider">Total Score</p>
+          <div className="p-4 rounded-xl border border-zinc-800 bg-zinc-900/60">
+            <p className="text-xs font-medium text-zinc-500 uppercase tracking-wider">Total Score</p>
             <p className="mt-1 text-xl font-bold text-zinc-100">
               {result.score} <span className="text-xs font-normal text-zinc-500">/ {result.totalMarks}</span>
             </p>
           </div>
-          <div className="p-3.5 rounded-xl border border-zinc-800 bg-zinc-900/60">
-            <p className="text-[11px] font-medium text-zinc-500 uppercase tracking-wider">Percentage</p>
+          <div className="p-4 rounded-xl border border-zinc-800 bg-zinc-900/60">
+            <p className="text-xs font-medium text-zinc-500 uppercase tracking-wider">Percentage</p>
             <p className={`mt-1 text-xl font-bold ${isPassed ? 'text-emerald-400' : 'text-red-400'}`}>
               {result.percentage}%
             </p>
           </div>
-          <div className="p-3.5 rounded-xl border border-zinc-800 bg-zinc-900/60">
-            <p className="text-[11px] font-medium text-zinc-500 uppercase tracking-wider">Grade Awarded</p>
+          <div className="p-4 rounded-xl border border-zinc-800 bg-zinc-900/60">
+            <p className="text-xs font-medium text-zinc-500 uppercase tracking-wider">Grade Awarded</p>
             <p className="mt-1 text-xl font-bold text-amber-400">
               {result.grade}
             </p>
           </div>
-          <div className="p-3.5 rounded-xl border border-zinc-800 bg-zinc-900/60">
-            <p className="text-[11px] font-medium text-zinc-500 uppercase tracking-wider">Accuracy</p>
+          <div className="p-4 rounded-xl border border-zinc-800 bg-zinc-900/60">
+            <p className="text-xs font-medium text-zinc-500 uppercase tracking-wider">Accuracy</p>
             <p className="mt-1 text-xl font-bold text-zinc-200">
               {accuracy}%
             </p>
@@ -408,7 +408,7 @@ function ResultDetailModal({ result, onClose, onOpenAnswers }) {
         </div>
 
         {/* Progress Bar */}
-        <div className="space-y-1.5 p-3.5 rounded-xl border border-zinc-800/80 bg-zinc-900/40">
+        <div className="space-y-2 p-4 rounded-xl border border-zinc-800/80 bg-zinc-900/40">
           <div className="flex justify-between text-xs text-zinc-400">
             <span>Score Attainment</span>
             <span className="font-semibold text-zinc-200">{result.percentage}% of maximum</span>
@@ -423,8 +423,8 @@ function ResultDetailModal({ result, onClose, onOpenAnswers }) {
 
         {/* Exam & Audit Details */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
-          <div className="space-y-2.5 p-3.5 rounded-xl border border-zinc-800 bg-zinc-900/40">
-            <h4 className="text-[11px] font-bold text-zinc-400 uppercase tracking-wider flex items-center gap-1.5">
+          <div className="space-y-3 p-4 rounded-xl border border-zinc-800 bg-zinc-900/40">
+            <h4 className="text-xs font-bold text-zinc-400 uppercase tracking-wider flex items-center gap-1.5">
               <GraduationCap size={14} className="text-amber-400" />
               Examination Details
             </h4>
@@ -446,8 +446,8 @@ function ResultDetailModal({ result, onClose, onOpenAnswers }) {
             </div>
           </div>
 
-          <div className="space-y-2.5 p-3.5 rounded-xl border border-zinc-800 bg-zinc-900/40">
-            <h4 className="text-[11px] font-bold text-zinc-400 uppercase tracking-wider flex items-center gap-1.5">
+          <div className="space-y-3 p-4 rounded-xl border border-zinc-800 bg-zinc-900/40">
+            <h4 className="text-xs font-bold text-zinc-400 uppercase tracking-wider flex items-center gap-1.5">
               <ShieldCheck size={14} className="text-emerald-400" />
               Questions Evaluation
             </h4>
@@ -511,11 +511,11 @@ function AnswersDetailModal({ result, onClose }) {
     >
       <div className="space-y-4">
         {/* Candidate & Exam Summary */}
-        <div className="p-3.5 rounded-xl border border-zinc-800 bg-zinc-900/60 flex flex-wrap items-center justify-between gap-3 text-xs">
+        <div className="p-4 rounded-xl border border-zinc-800 bg-zinc-900/60 flex flex-wrap items-center justify-between gap-3 text-xs">
           <div>
             <span className="text-zinc-500">Candidate: </span>
             <strong className="text-zinc-200">{result.studentName}</strong>
-            <span className="text-zinc-500 font-mono ml-1.5">({result.studentId})</span>
+            <span className="text-zinc-500 tabular-nums ml-1.5">({result.studentId})</span>
           </div>
           <div>
             <span className="text-zinc-500">Exam: </span>
@@ -603,15 +603,15 @@ function AnswersDetailModal({ result, onClose }) {
                   <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-2">
                     <div className="space-y-1">
                       <div className="flex items-center gap-2">
-                        <span className="font-mono font-bold text-amber-400">Q{q.number}.</span>
+                        <span className="tabular-nums font-bold text-amber-400">Q{q.number}.</span>
                         <Badge variant={diffBadge.variant} size="xs">{diffBadge.label}</Badge>
                         {q.topic && (
-                          <span className="text-[11px] text-zinc-500 font-medium">
+                          <span className="text-xs text-zinc-500 font-medium">
                             • {q.topic}
                           </span>
                         )}
                       </div>
-                      <p className="font-medium text-zinc-100 text-sm leading-relaxed mt-1">
+                      <p className="font-medium text-zinc-100 text-sm mt-1">
                         {q.text}
                       </p>
                     </div>
@@ -644,7 +644,7 @@ function AnswersDetailModal({ result, onClose }) {
                         // Student chose correctly
                         optClass = 'border-emerald-700/80 bg-emerald-950/40 text-emerald-200 ring-1 ring-emerald-500/30'
                         statusBadge = (
-                          <span className="inline-flex items-center gap-1 text-[10px] font-bold text-emerald-400 uppercase tracking-wider bg-emerald-950 px-2 py-0.5 rounded border border-emerald-800">
+                          <span className="inline-flex items-center gap-1 text-xs font-bold text-emerald-400 uppercase tracking-wider bg-emerald-950 px-2 py-0.5 rounded border border-emerald-800">
                             <Check size={11} /> Correct & Selected
                           </span>
                         )
@@ -652,7 +652,7 @@ function AnswersDetailModal({ result, onClose }) {
                         // Correct answer key (student missed or skipped)
                         optClass = 'border-emerald-700/80 bg-emerald-950/30 text-emerald-200'
                         statusBadge = (
-                          <span className="inline-flex items-center gap-1 text-[10px] font-bold text-emerald-400 uppercase tracking-wider bg-emerald-950 px-2 py-0.5 rounded border border-emerald-800">
+                          <span className="inline-flex items-center gap-1 text-xs font-bold text-emerald-400 uppercase tracking-wider bg-emerald-950 px-2 py-0.5 rounded border border-emerald-800">
                             <Check size={11} /> Correct Answer Key
                           </span>
                         )
@@ -660,7 +660,7 @@ function AnswersDetailModal({ result, onClose }) {
                         // Student selected wrong answer
                         optClass = 'border-red-700/80 bg-red-950/40 text-red-200 ring-1 ring-red-500/30'
                         statusBadge = (
-                          <span className="inline-flex items-center gap-1 text-[10px] font-bold text-red-400 uppercase tracking-wider bg-red-950 px-2 py-0.5 rounded border border-red-800">
+                          <span className="inline-flex items-center gap-1 text-xs font-bold text-red-400 uppercase tracking-wider bg-red-950 px-2 py-0.5 rounded border border-red-800">
                             <X size={11} /> Student Selected
                           </span>
                         )
@@ -671,8 +671,8 @@ function AnswersDetailModal({ result, onClose }) {
                           key={optIdx}
                           className={`p-2.5 rounded-lg border flex items-center justify-between gap-3 transition-colors ${optClass}`}
                         >
-                          <div className="flex items-center gap-2.5">
-                            <span className="w-5 h-5 rounded flex items-center justify-center font-bold text-[11px] bg-zinc-800 text-zinc-300">
+                          <div className="flex items-center gap-3">
+                            <span className="w-5 h-5 rounded flex items-center justify-center font-bold text-xs bg-zinc-800 text-zinc-300">
                               {String.fromCharCode(65 + optIdx)}
                             </span>
                             <span className="text-xs">{option}</span>
@@ -771,7 +771,7 @@ export default function AdminResultsPage() {
     scoreRange.max !== 100
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       {/* ── Page Header ── */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
@@ -798,7 +798,7 @@ export default function AdminResultsPage() {
 
       {/* ── Metrics Cards ── */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-        <Card padding="p-4">
+        <Card>
           <p className="text-xs text-zinc-500 font-medium uppercase tracking-wider">Total Submissions</p>
           <div className="mt-1 flex items-baseline justify-between">
             <span className="text-2xl font-bold text-zinc-100">{totalRecords}</span>
@@ -806,7 +806,7 @@ export default function AdminResultsPage() {
           </div>
         </Card>
 
-        <Card padding="p-4">
+        <Card>
           <p className="text-xs text-zinc-500 font-medium uppercase tracking-wider">Passed Count</p>
           <div className="mt-1 flex items-baseline justify-between">
             <span className="text-2xl font-bold text-emerald-400">{passedCount}</span>
@@ -816,7 +816,7 @@ export default function AdminResultsPage() {
           </div>
         </Card>
 
-        <Card padding="p-4">
+        <Card>
           <p className="text-xs text-zinc-500 font-medium uppercase tracking-wider">Failed Count</p>
           <div className="mt-1 flex items-baseline justify-between">
             <span className="text-2xl font-bold text-red-400">{failedCount}</span>
@@ -826,7 +826,7 @@ export default function AdminResultsPage() {
           </div>
         </Card>
 
-        <Card padding="p-4">
+        <Card>
           <p className="text-xs text-zinc-500 font-medium uppercase tracking-wider">Average Score</p>
           <div className="mt-1 flex items-baseline justify-between">
             <span className="text-2xl font-bold text-amber-400">{averagePercentage}%</span>
@@ -836,7 +836,7 @@ export default function AdminResultsPage() {
       </div>
 
       {/* ── Filter Controls ── */}
-      <Card padding="p-4">
+      <Card>
         <div className="space-y-3">
           <div className="grid grid-cols-1 md:grid-cols-12 gap-3 items-center">
             {/* Student Search */}
@@ -929,21 +929,21 @@ export default function AdminResultsPage() {
                 <button
                   type="button"
                   onClick={() => { setScoreRange({ min: 75, max: 100 }); setPage(1) }}
-                  className="px-2 py-0.5 rounded text-[11px] bg-zinc-800/80 hover:bg-zinc-700 text-zinc-300"
+                  className="px-2 py-0.5 rounded text-xs bg-zinc-800/80 hover:bg-zinc-700 text-zinc-300"
                 >
                   Distinction (≥75%)
                 </button>
                 <button
                   type="button"
                   onClick={() => { setScoreRange({ min: 40, max: 74 }); setPage(1) }}
-                  className="px-2 py-0.5 rounded text-[11px] bg-zinc-800/80 hover:bg-zinc-700 text-zinc-300"
+                  className="px-2 py-0.5 rounded text-xs bg-zinc-800/80 hover:bg-zinc-700 text-zinc-300"
                 >
                   Pass (40-74%)
                 </button>
                 <button
                   type="button"
                   onClick={() => { setScoreRange({ min: 0, max: 39 }); setPage(1) }}
-                  className="px-2 py-0.5 rounded text-[11px] bg-red-950/40 hover:bg-red-900/50 text-red-400 border border-red-900/40"
+                  className="px-2 py-0.5 rounded text-xs bg-red-950/40 hover:bg-red-900/50 text-red-400 border border-red-900/40"
                 >
                   Fail (&lt;40%)
                 </button>
@@ -972,13 +972,13 @@ export default function AdminResultsPage() {
           <table className="w-full text-left text-sm">
             <thead className="bg-zinc-900/80 border-b border-zinc-800 text-xs font-semibold text-zinc-400 uppercase tracking-wider">
               <tr>
-                <th className="px-5 py-3.5">Student</th>
-                <th className="px-5 py-3.5">Exam</th>
-                <th className="px-5 py-3.5 text-center">Score</th>
-                <th className="px-5 py-3.5 text-center">Percentage</th>
-                <th className="px-5 py-3.5 text-center">Status</th>
-                <th className="px-5 py-3.5">Submission Time</th>
-                <th className="px-5 py-3.5 text-right">Actions</th>
+                <th className="px-6 py-4">Student</th>
+                <th className="px-6 py-4">Exam</th>
+                <th className="px-6 py-4 text-center">Score</th>
+                <th className="px-6 py-4 text-center">Percentage</th>
+                <th className="px-6 py-4 text-center">Status</th>
+                <th className="px-6 py-4">Submission Time</th>
+                <th className="px-6 py-4 text-right">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-zinc-800/60">
@@ -1013,11 +1013,11 @@ export default function AdminResultsPage() {
                           <div className="w-8 h-8 rounded-lg bg-zinc-800 border border-zinc-700/60 text-zinc-300 font-bold text-xs flex items-center justify-center shrink-0">
                             {r.studentName.charAt(0)}
                           </div>
-                          <div>
-                            <p className="font-semibold text-zinc-200 leading-tight">
+                          <div className="min-w-0">
+                            <p className="font-semibold text-zinc-200 whitespace-nowrap">
                               {r.studentName}
                             </p>
-                            <p className="text-xs font-mono text-zinc-400 mt-0.5">
+                            <p className="text-xs tabular-nums text-zinc-400 mt-0.5">
                               {r.studentId}
                             </p>
                           </div>
@@ -1030,7 +1030,7 @@ export default function AdminResultsPage() {
                           <p className="font-medium text-zinc-200 line-clamp-1">
                             {r.examTitle}
                           </p>
-                          <span className="inline-block mt-0.5 text-xs text-zinc-400 font-mono">
+                          <span className="inline-block mt-0.5 text-xs text-zinc-400 tabular-nums">
                             {r.subject}
                           </span>
                         </div>
@@ -1056,7 +1056,7 @@ export default function AdminResultsPage() {
                           >
                             {r.percentage}%
                           </span>
-                          <span className="text-[10px] text-zinc-400 font-medium">
+                          <span className="text-xs text-zinc-400 font-medium">
                             Grade: {r.grade}
                           </span>
                         </div>

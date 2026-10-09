@@ -5,13 +5,11 @@ import { ArrowUpRight, ArrowDownRight, Minus } from 'lucide-react'
  *
  * @param {string}        title        - Metric title (e.g. 'Active Exams')
  * @param {string|number} value        - Metric value (e.g. '24' or '83.2%')
- * @param {string}        change       - Trend value (e.g. '+12.5%')
+ * @param {string}        change       - Optional trend value backed by real data (e.g. '+12.5%')
  * @param {string}        changeType   - 'positive' | 'negative' | 'neutral'
- * @param {string}        changeLabel  - Subtitle next to change (e.g. 'vs last month')
- * @param {ReactNode}     icon         - Lucide icon element
- * @param {string}        iconBg       - Tailwind background color for icon container
- * @param {string}        iconColor    - Tailwind color for icon
- * @param {string}        description  - Optional descriptive footer
+ * @param {string}        changeLabel  - Text after the change (e.g. 'vs last month')
+ * @param {ReactNode}     icon         - Lucide icon element (rendered muted)
+ * @param {string}        description  - Optional one-line context under the value
  */
 export default function StatsCard({
   title,
@@ -20,8 +18,6 @@ export default function StatsCard({
   changeType,
   changeLabel = 'vs last month',
   icon,
-  iconBg = 'bg-primary-50',
-  iconColor = 'text-primary-600',
   description,
   className = '',
 }) {
@@ -34,55 +30,33 @@ export default function StatsCard({
       ? 'negative'
       : 'neutral')
 
-  return (
-    <div
-      className={`card p-5 transition-shadow duration-150 hover:shadow-card-md ${className}`}
-    >
-      <div className="flex items-start justify-between gap-3">
-        <div className="flex-1 min-w-0">
-          <p className="text-xs font-semibold uppercase tracking-wider text-slate-500">
-            {title}
-          </p>
-          <p className="mt-1.5 text-2xl font-bold tracking-tight text-slate-900">
-            {value}
-          </p>
-        </div>
+  const TrendIcon = trend === 'positive' ? ArrowUpRight : trend === 'negative' ? ArrowDownRight : Minus
+  const trendColor =
+    trend === 'positive' ? 'text-emerald-400' : trend === 'negative' ? 'text-red-400' : 'text-zinc-400'
 
-        {icon && (
-          <div
-            className={`flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-xl ${iconBg} ${iconColor} shadow-sm border border-black/5`}
-          >
-            {icon}
-          </div>
-        )}
+  return (
+    <div className={`card p-6 ${className}`}>
+      <div className="flex items-center justify-between gap-4">
+        <p className="eyebrow">{title}</p>
+        {icon && <span className="flex-shrink-0 text-zinc-500">{icon}</span>}
       </div>
 
-      {(change || description) && (
-        <div className="mt-3.5 pt-3 border-t border-slate-100 flex items-center justify-between text-xs">
-          {change && (
-            <div className="flex items-center gap-1.5 font-medium">
-              <span
-                className={`inline-flex items-center gap-0.5 rounded px-1.5 py-0.5 font-semibold ${
-                  trend === 'positive'
-                    ? 'bg-emerald-50 text-emerald-700'
-                    : trend === 'negative'
-                    ? 'bg-red-50 text-red-700'
-                    : 'bg-slate-100 text-slate-600'
-                }`}
-              >
-                {trend === 'positive' && <ArrowUpRight size={13} />}
-                {trend === 'negative' && <ArrowDownRight size={13} />}
-                {trend === 'neutral' && <Minus size={13} />}
-                {change}
-              </span>
-              {changeLabel && <span className="text-slate-400">{changeLabel}</span>}
-            </div>
-          )}
+      <p className="mt-2 text-3xl font-semibold tracking-tight tabular-nums text-zinc-50">
+        {value}
+      </p>
 
-          {description && (
-            <span className="text-slate-500 truncate">{description}</span>
-          )}
-        </div>
+      {description && (
+        <p className="mt-1 text-sm text-zinc-400">{description}</p>
+      )}
+
+      {change && (
+        <p className="mt-4 flex items-center gap-1 text-xs text-zinc-400">
+          <span className={`inline-flex items-center gap-0.5 font-medium ${trendColor}`}>
+            <TrendIcon size={14} />
+            {change}
+          </span>
+          {changeLabel && <span>{changeLabel}</span>}
+        </p>
       )}
     </div>
   )

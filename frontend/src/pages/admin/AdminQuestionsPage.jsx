@@ -1,11 +1,9 @@
 import { useState, useMemo } from 'react'
 import {
   Plus,
-  Search,
   Edit2,
   Trash2,
   HelpCircle,
-  Filter,
   ChevronDown,
   ChevronUp,
   CheckCircle2,
@@ -19,6 +17,7 @@ import {
   EmptyState,
   ConfirmDialog,
   Pagination,
+  StatsCard,
 } from '../../components/common'
 import QuestionForm, {
   CATEGORY_OPTIONS,
@@ -28,12 +27,6 @@ import QuestionForm, {
 } from '../../components/admin/QuestionForm'
 import { mockQuestions } from '../../data/mockData'
 import { useToast } from '../../hooks/useToast'
-
-const DIFFICULTY_CONFIG = {
-  Easy:   { label: 'Easy',   variant: 'success' },
-  Medium: { label: 'Medium', variant: 'warning' },
-  Hard:   { label: 'Hard',   variant: 'danger'  },
-}
 
 const CATEGORIES = ['All', 'DSA', 'DBMS', 'OS', 'Networks', 'Cloud']
 const DIFFICULTIES = ['All', 'Easy', 'Medium', 'Hard']
@@ -142,242 +135,190 @@ export default function AdminQuestionsPage() {
   )
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       {/* ── Page Header ── */}
-      <div className="flex items-start justify-between gap-4">
+      <header className="page-header">
         <div>
-          <h1 className="text-xl font-bold text-zinc-100">Question Management</h1>
-          <p className="mt-0.5 text-sm text-zinc-400">
+          <h1 className="page-title">Questions</h1>
+          <p className="page-subtitle">
             Add, edit, and remove examination questions across all subjects.
           </p>
         </div>
         <Button leftIcon={<Plus size={16} />} onClick={() => setAddOpen(true)}>
-          Add Question
+          Add question
         </Button>
-      </div>
+      </header>
 
-      {/* ── Stats Row ── */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-        {[
-          { label: 'Total Questions', value: stats.total, variant: 'default' },
-          { label: 'Easy', value: stats.easy, variant: 'success' },
-          { label: 'Medium', value: stats.medium, variant: 'warning' },
-          { label: 'Hard', value: stats.hard, variant: 'danger' },
-        ].map(({ label, value, variant }) => (
-          <Card key={label} padding="p-4">
-            <p className="text-xs text-zinc-500 uppercase tracking-wide font-medium">{label}</p>
-            <p className="mt-1 text-2xl font-bold text-zinc-100">{value}</p>
-            <div className="mt-1">
-              <Badge variant={variant} size="sm" dot>{label}</Badge>
-            </div>
-          </Card>
-        ))}
-      </div>
+      {/* ── Stats ── */}
+      <section className="grid grid-cols-2 gap-4 lg:grid-cols-4">
+        <StatsCard title="Total" value={stats.total} description="Questions in rotation" />
+        <StatsCard title="Easy" value={stats.easy} description="Difficulty: easy" />
+        <StatsCard title="Medium" value={stats.medium} description="Difficulty: medium" />
+        <StatsCard title="Hard" value={stats.hard} description="Difficulty: hard" />
+      </section>
 
-      {/* ── Filters ── */}
-      <Card padding="p-4">
-        <div className="flex flex-col sm:flex-row gap-3">
-          <div className="flex-1">
-            <SearchBar
-              value={search}
-              onChange={(e) => { setSearch(e.target.value); setPage(1) }}
-              placeholder="Search questions..."
-            />
-          </div>
-          <div className="flex gap-2 flex-wrap">
-            {/* Category Filter */}
-            <div className="flex items-center gap-1">
-              <Filter size={14} className="text-zinc-500" />
-              <select
-                aria-label="Filter by category"
-                value={categoryFilter}
-                onChange={(e) => {
-                  setCategoryFilter(e.target.value)
-                  setPage(1)
-                }}
-                className="input-base py-1.5 text-sm pr-8"
-              >
-                {CATEGORIES.map((c) => (
-                  <option key={c} value={c}>
-                    {c === 'All' ? 'All Categories' : c}
-                  </option>
-                ))}
-              </select>
-            </div>
-            {/* Difficulty Filter */}
-            <select
-              aria-label="Filter by difficulty"
-              value={diffFilter}
-              onChange={(e) => {
-                setDiffFilter(e.target.value)
-                setPage(1)
-              }}
-              className="input-base py-1.5 text-sm pr-8"
-            >
-              {DIFFICULTIES.map((d) => (
-                <option key={d} value={d}>
-                  {d === 'All' ? 'All Difficulties' : d}
-                </option>
-              ))}
-            </select>
-          </div>
+      <div className="space-y-4">
+        {/* ── Filters ── */}
+        <div className="flex flex-col gap-2 sm:flex-row">
+          <SearchBar
+            value={search}
+            onChange={(val) => {
+              setSearch(val)
+              setPage(1)
+            }}
+            placeholder="Search questions"
+            className="flex-1"
+          />
+          <select
+            aria-label="Filter by category"
+            value={categoryFilter}
+            onChange={(e) => {
+              setCategoryFilter(e.target.value)
+              setPage(1)
+            }}
+            className="input-base sm:w-44"
+          >
+            {CATEGORIES.map((c) => (
+              <option key={c} value={c}>
+                {c === 'All' ? 'All categories' : c}
+              </option>
+            ))}
+          </select>
+          <select
+            aria-label="Filter by difficulty"
+            value={diffFilter}
+            onChange={(e) => {
+              setDiffFilter(e.target.value)
+              setPage(1)
+            }}
+            className="input-base sm:w-44"
+          >
+            {DIFFICULTIES.map((d) => (
+              <option key={d} value={d}>
+                {d === 'All' ? 'All difficulties' : d}
+              </option>
+            ))}
+          </select>
         </div>
-      </Card>
 
-      {/* ── Question List ── */}
-      <Card padding="p-0">
-        {paged.length === 0 ? (
-          <div className="p-8">
+        {/* ── Question List ── */}
+        <Card padding="p-0">
+          {paged.length === 0 ? (
             <EmptyState
-              icon={<HelpCircle size={32} />}
+              icon={<HelpCircle size={28} />}
               title="No questions found"
-              description="Try adjusting your filters or add a new question."
+              message="Try adjusting your filters or add a new question."
               action={
                 <Button size="sm" onClick={() => setAddOpen(true)}>
-                  Add Question
+                  Add question
                 </Button>
               }
             />
-          </div>
-        ) : (
-          <div className="divide-y divide-zinc-800">
-            {paged.map((q) => {
-              const diff = DIFFICULTY_CONFIG[q.difficulty] ?? DIFFICULTY_CONFIG.Easy
-              const isExpanded = expandedId === q.id
-              return (
-                <div key={q.id} className="px-5 py-4">
-                  {/* Row */}
-                  <div className="flex items-start gap-3">
-                    {/* Question ID + Expand toggle */}
-                    <button
-                      onClick={() => setExpandedId(isExpanded ? null : q.id)}
-                      className="flex-shrink-0 mt-0.5 p-1 rounded text-zinc-500 hover:text-zinc-300 hover:bg-zinc-800 transition-colors"
-                      aria-label={isExpanded ? 'Collapse' : 'Expand'}
-                    >
-                      {isExpanded ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
-                    </button>
+          ) : (
+            <ul className="divide-y divide-zinc-800">
+              {paged.map((q) => {
+                const isExpanded = expandedId === q.id
+                return (
+                  <li key={q.id} className="px-6 py-4">
+                    <div className="flex items-start gap-4">
+                      <button
+                        onClick={() => setExpandedId(isExpanded ? null : q.id)}
+                        className="mt-0.5 flex-shrink-0 rounded p-1 text-zinc-500 transition-colors hover:bg-zinc-800 hover:text-zinc-300"
+                        aria-label={isExpanded ? 'Collapse' : 'Expand'}
+                        aria-expanded={isExpanded}
+                      >
+                        {isExpanded ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
+                      </button>
 
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-start justify-between gap-3 flex-wrap">
-                        <div className="flex-1 min-w-0">
-                          <span className="text-xs font-mono text-zinc-500 mr-2">{q.id}</span>
-                          <span className="text-sm font-medium text-zinc-100 leading-snug">
+                      <div className="min-w-0 flex-1">
+                        <div className="flex flex-wrap items-start justify-between gap-4">
+                          <p className="min-w-0 flex-1 text-sm text-zinc-100">
+                            <span className="mr-2 tabular-nums text-zinc-500">{q.id}</span>
                             {q.text}
-                          </span>
+                          </p>
+                          <div className="flex flex-shrink-0 items-center gap-2">
+                            <Badge size="sm">{q.difficulty}</Badge>
+                            <Badge size="sm">{q.category}</Badge>
+                            <span className="text-xs tabular-nums text-zinc-400">
+                              {q.marks} {q.marks === 1 ? 'mark' : 'marks'}
+                            </span>
+                          </div>
                         </div>
-                        <div className="flex items-center gap-2 flex-shrink-0">
-                          <Badge variant={diff.variant} size="sm" dot>
-                            {q.difficulty}
-                          </Badge>
-                          <Badge variant="default" size="sm">
-                            {q.category}
-                          </Badge>
-                          <Badge variant="primary" size="sm">
-                            {q.marks} {q.marks === 1 ? 'Mark' : 'Marks'}
-                          </Badge>
-                        </div>
+
+                        {isExpanded && (
+                          <ul className="mt-4 grid grid-cols-1 gap-2 sm:grid-cols-2">
+                            {q.options.map((opt, idx) => {
+                              const isCorrect = idx === q.correctAnswer
+                              const letter = String.fromCharCode(65 + idx)
+                              return (
+                                <li
+                                  key={idx}
+                                  className={[
+                                    'flex items-center gap-2 rounded-lg border px-3 py-2 text-sm',
+                                    isCorrect
+                                      ? 'border-emerald-500/40 text-emerald-300'
+                                      : 'border-zinc-800 text-zinc-300',
+                                  ].join(' ')}
+                                >
+                                  <span className="text-zinc-500">{letter}.</span>
+                                  <span>{opt}</span>
+                                  {isCorrect && (
+                                    <span className="ml-auto flex items-center gap-1 text-xs font-medium text-emerald-400">
+                                      <CheckCircle2 size={14} />
+                                      Correct
+                                    </span>
+                                  )}
+                                </li>
+                              )
+                            })}
+                          </ul>
+                        )}
                       </div>
 
-                      {/* Expanded Options */}
-                      {isExpanded && (
-                        <div className="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-2">
-                          {q.options.map((opt, idx) => {
-                            const isCorrect = idx === q.correctAnswer
-                            const letter = String.fromCharCode(65 + idx)
-                            return (
-                              <div
-                                key={idx}
-                                className={[
-                                  'flex items-center gap-2 px-3 py-2 rounded-lg text-sm border',
-                                  isCorrect
-                                    ? 'bg-emerald-950/40 border-emerald-800/50 text-emerald-300 font-medium'
-                                    : 'bg-zinc-800/50 border-zinc-700/40 text-zinc-300',
-                                ].join(' ')}
-                              >
-                                <span className="font-semibold text-xs text-zinc-400">
-                                  Option {letter}:
-                                </span>
-                                <span>{opt}</span>
-                                {isCorrect && (
-                                  <span className="ml-auto flex items-center gap-1 text-xs font-semibold text-emerald-400">
-                                    <CheckCircle2 size={13} />
-                                    Correct Answer
-                                  </span>
-                                )}
-                              </div>
-                            )
-                          })}
-                        </div>
-                      )}
+                      <div className="flex flex-shrink-0 items-center gap-1">
+                        <Button variant="ghost" size="xs" onClick={() => setEditTarget(q)} aria-label="Edit question">
+                          <Edit2 size={14} />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="xs"
+                          onClick={() => setDeleteTarget(q)}
+                          aria-label="Delete question"
+                          className="hover:text-red-400"
+                        >
+                          <Trash2 size={14} />
+                        </Button>
+                      </div>
                     </div>
+                  </li>
+                )
+              })}
+            </ul>
+          )}
 
-                    {/* Actions */}
-                    <div className="flex items-center gap-1 flex-shrink-0">
-                      <Button
-                        variant="ghost"
-                        size="xs"
-                        onClick={() => setEditTarget(q)}
-                        aria-label="Edit question"
-                      >
-                        <Edit2 size={14} />
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        size="xs"
-                        onClick={() => setDeleteTarget(q)}
-                        aria-label="Delete question"
-                        className="text-red-400 hover:text-red-300 hover:bg-red-950/40"
-                      >
-                        <Trash2 size={14} />
-                      </Button>
-                    </div>
-                  </div>
-                </div>
-              )
-            })}
-          </div>
-        )}
-
-        {/* Pagination */}
-        {filtered.length > PAGE_SIZE && (
-          <div className="px-5 py-4 border-t border-zinc-800">
-            <Pagination
-              currentPage={safePage}
-              totalPages={totalPages}
-              totalItems={filtered.length}
-              pageSize={PAGE_SIZE}
-              onPageChange={setPage}
-            />
-          </div>
-        )}
-      </Card>
+          {filtered.length > PAGE_SIZE && (
+            <div className="border-t border-zinc-800 px-6">
+              <Pagination
+                currentPage={safePage}
+                totalPages={totalPages}
+                totalItems={filtered.length}
+                pageSize={PAGE_SIZE}
+                onPageChange={setPage}
+              />
+            </div>
+          )}
+        </Card>
+      </div>
 
       {/* ── Add Question Modal ── */}
-      <Modal
-        isOpen={addOpen}
-        onClose={() => setAddOpen(false)}
-        title="Add New Question"
-        size="2xl"
-      >
-        <QuestionForm
-          onSubmit={handleAdd}
-          onCancel={() => setAddOpen(false)}
-        />
+      <Modal isOpen={addOpen} onClose={() => setAddOpen(false)} title="Add question" size="2xl">
+        <QuestionForm onSubmit={handleAdd} onCancel={() => setAddOpen(false)} />
       </Modal>
 
       {/* ── Edit Question Modal ── */}
-      <Modal
-        isOpen={!!editTarget}
-        onClose={() => setEditTarget(null)}
-        title="Edit Question"
-        size="2xl"
-      >
+      <Modal isOpen={!!editTarget} onClose={() => setEditTarget(null)} title="Edit question" size="2xl">
         {editTarget && (
-          <QuestionForm
-            initialData={editTarget}
-            onSubmit={handleEdit}
-            onCancel={() => setEditTarget(null)}
-          />
+          <QuestionForm initialData={editTarget} onSubmit={handleEdit} onCancel={() => setEditTarget(null)} />
         )}
       </Modal>
 
@@ -386,10 +327,10 @@ export default function AdminQuestionsPage() {
         isOpen={!!deleteTarget}
         onClose={() => setDeleteTarget(null)}
         onConfirm={handleDelete}
-        title="Delete Question"
+        title="Delete question"
         message={
           deleteTarget
-            ? `Are you sure you want to delete question "${deleteTarget.id}"? This action cannot be undone.`
+            ? `Delete question "${deleteTarget.id}"? This cannot be undone.`
             : ''
         }
         confirmLabel="Delete"

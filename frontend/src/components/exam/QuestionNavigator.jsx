@@ -1,4 +1,4 @@
-import { Bookmark, Check, Flag, X } from 'lucide-react'
+import { X } from 'lucide-react'
 
 /**
  * QuestionNavigator component — Palette grid of all questions with status states
@@ -39,15 +39,20 @@ export default function QuestionNavigator({
     }
   }
 
+  const legend = [
+    { label: 'Answered',          count: answeredCount,          swatch: 'border-zinc-200 bg-zinc-200' },
+    { label: 'Not answered',      count: unansweredCount,        swatch: 'border-zinc-600' },
+    { label: 'Marked',            count: markedCount,            swatch: 'border-amber-500' },
+    { label: 'Answered & marked', count: answeredAndMarkedCount, swatch: 'border-amber-500 bg-amber-500' },
+  ]
+
   return (
-    <div className="bg-white rounded-2xl border border-slate-200 shadow-card p-5 flex flex-col space-y-4">
+    <div className="card space-y-4 p-6">
       {/* Header */}
-      <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+      <div className="flex items-center justify-between gap-4">
         <div>
-          <h3 className="text-sm font-bold text-slate-900 tracking-tight">
-            Question Palette
-          </h3>
-          <p className="text-xs text-slate-400 mt-0.5">
+          <h3 className="text-sm font-semibold text-zinc-100">Questions</h3>
+          <p className="text-xs tabular-nums text-zinc-400">
             {answeredCount + answeredAndMarkedCount} of {totalQuestions} answered
           </p>
         </div>
@@ -57,52 +62,31 @@ export default function QuestionNavigator({
             type="button"
             onClick={onCloseMobile}
             aria-label="Close question palette"
-            className="lg:hidden p-1.5 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100"
+            className="rounded-lg p-2 text-zinc-500 hover:bg-zinc-800 hover:text-zinc-200 lg:hidden"
           >
             <X size={18} />
           </button>
         )}
       </div>
 
-      {/* Legend */}
-      <div className="grid grid-cols-2 gap-2 text-[11px] p-2.5 rounded-xl bg-slate-50 border border-slate-100">
-        <div className="flex items-center gap-1.5 text-slate-700">
-          <span className="h-3 w-3 rounded bg-emerald-600 flex-shrink-0" />
-          <span>Answered ({answeredCount})</span>
-        </div>
-        <div className="flex items-center gap-1.5 text-slate-700">
-          <span className="h-3 w-3 rounded bg-slate-200 border border-slate-300 flex-shrink-0" />
-          <span>Unanswered ({unansweredCount})</span>
-        </div>
-        <div className="flex items-center gap-1.5 text-slate-700">
-          <span className="h-3 w-3 rounded bg-amber-500 flex-shrink-0" />
-          <span>Marked ({markedCount})</span>
-        </div>
-        <div className="flex items-center gap-1.5 text-slate-700">
-          <span className="h-3 w-3 rounded bg-purple-600 flex-shrink-0" />
-          <span>Ans & Marked ({answeredAndMarkedCount})</span>
-        </div>
-      </div>
-
       {/* Questions Grid */}
-      <div className="grid grid-cols-5 gap-2 max-h-[320px] overflow-y-auto p-1">
+      <div className="grid max-h-[320px] grid-cols-5 gap-2 overflow-y-auto p-1">
         {Array.from({ length: totalQuestions }, (_, i) => {
           const isCurrent = i === currentIndex
           const isAnswered = answers[i] != null
           const isMarked = !!marked[i]
 
-          // Derive visual state
-          let stateStyle = 'bg-slate-100 text-slate-700 border-slate-200 hover:bg-slate-200'
-          let stateLabel = 'Unanswered'
+          let stateStyle = 'border-zinc-700 text-zinc-300 hover:border-zinc-500'
+          let stateLabel = 'Not answered'
 
           if (isAnswered && isMarked) {
-            stateStyle = 'bg-purple-600 text-white border-purple-700 hover:bg-purple-700'
-            stateLabel = 'Answered & Marked for Review'
+            stateStyle = 'border-amber-500 bg-amber-500 text-zinc-950'
+            stateLabel = 'Answered and marked for review'
           } else if (isMarked) {
-            stateStyle = 'bg-amber-500 text-white border-amber-600 hover:bg-amber-600'
-            stateLabel = 'Marked for Review'
+            stateStyle = 'border-amber-500 text-amber-400'
+            stateLabel = 'Marked for review'
           } else if (isAnswered) {
-            stateStyle = 'bg-emerald-600 text-white border-emerald-700 hover:bg-emerald-700'
+            stateStyle = 'border-zinc-200 bg-zinc-200 text-zinc-950'
             stateLabel = 'Answered'
           }
 
@@ -114,27 +98,31 @@ export default function QuestionNavigator({
                 onSelectQuestion(i)
                 if (onCloseMobile) onCloseMobile()
               }}
-              aria-label={`Question ${i + 1}: ${stateLabel}${isCurrent ? ' (Current)' : ''}`}
+              aria-label={`Question ${i + 1}: ${stateLabel}${isCurrent ? ' (current)' : ''}`}
+              aria-current={isCurrent ? 'step' : undefined}
               className={[
-                'relative flex items-center justify-center h-10 rounded-xl text-xs font-bold border transition-all duration-150',
+                'flex h-10 items-center justify-center rounded-lg border text-sm font-semibold tabular-nums transition-colors',
                 stateStyle,
-                isCurrent
-                  ? 'ring-2 ring-primary-600 ring-offset-2 scale-105 shadow-sm font-extrabold z-10'
-                  : '',
+                isCurrent ? 'ring-2 ring-zinc-50 ring-offset-2 ring-offset-zinc-900' : '',
               ].join(' ')}
             >
-              <span>{i + 1}</span>
-
-              {/* Status Indicator Badges */}
-              {isMarked && (
-                <span className="absolute -top-1 -right-1 flex h-3.5 w-3.5 items-center justify-center rounded-full bg-amber-400 text-slate-900 ring-1 ring-white">
-                  <Bookmark size={8} className="fill-current" />
-                </span>
-              )}
+              {i + 1}
             </button>
           )
         })}
       </div>
+
+      {/* Legend */}
+      <ul className="grid grid-cols-2 gap-2 border-t border-zinc-800 pt-4 text-xs text-zinc-400">
+        {legend.map(({ label, count, swatch }) => (
+          <li key={label} className="flex items-center gap-2">
+            <span className={`h-3 w-3 flex-shrink-0 rounded border ${swatch}`} />
+            <span>
+              {label} <span className="tabular-nums text-zinc-500">({count})</span>
+            </span>
+          </li>
+        ))}
+      </ul>
     </div>
   )
 }

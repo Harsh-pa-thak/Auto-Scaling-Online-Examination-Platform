@@ -64,23 +64,23 @@ export default function ExamTimer({ initialSeconds = 3600, onExpire, className =
       aria-live="polite"
       aria-atomic="true"
       className={[
-        'inline-flex items-center gap-2 px-3 py-1.5 rounded-xl font-mono text-sm sm:text-base font-bold transition-colors select-none',
+        'inline-flex items-center gap-2 rounded-lg border px-3 py-1 tabular-nums text-base font-semibold transition-colors select-none',
         isExpired
-          ? 'bg-red-600 text-white shadow-sm'
+          ? 'border-red-500 bg-red-600 text-white'
           : isCritical
-          ? 'bg-red-50 text-red-600 border border-red-300 ring-2 ring-red-400/20 animate-pulse'
+          ? 'border-red-500/40 text-red-400'
           : isWarning
-          ? 'bg-amber-50 text-amber-700 border border-amber-300'
-          : 'bg-slate-100 text-slate-800 border border-slate-200',
+          ? 'border-amber-500/40 text-amber-400'
+          : 'border-zinc-800 text-zinc-100',
         className,
       ].join(' ')}
     >
       {isCritical || isExpired ? (
-        <AlertCircle size={16} className="text-red-500 flex-shrink-0 animate-bounce" />
+        <AlertCircle size={16} className="flex-shrink-0" />
       ) : isWarning ? (
-        <AlertTriangle size={16} className="text-amber-500 flex-shrink-0" />
+        <AlertTriangle size={16} className="flex-shrink-0" />
       ) : (
-        <Clock size={16} className="text-slate-500 flex-shrink-0" />
+        <Clock size={16} className="flex-shrink-0 text-zinc-500" />
       )}
 
       <span>{formatTime(secondsLeft)}</span>

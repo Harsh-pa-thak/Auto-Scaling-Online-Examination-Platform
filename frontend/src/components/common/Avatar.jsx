@@ -1,7 +1,7 @@
 import { useState } from 'react'
 
 const sizes = {
-  xs: 'h-6 w-6 text-[10px]',
+  xs: 'h-6 w-6 text-xs',
   sm: 'h-8 w-8 text-xs',
   md: 'h-9 w-9 text-xs',
   lg: 'h-11 w-11 text-sm',
@@ -23,9 +23,9 @@ const statusSizes = {
   xl: 'h-3.5 w-3.5',
 }
 
-// Generate consistent background tint from initials/name
-function getInitialsColor(name = '') {
-  return 'bg-zinc-800 text-amber-400 border border-zinc-700/80'
+// Initials fallback styling (single neutral treatment)
+function getInitialsColor() {
+  return 'bg-zinc-800 text-zinc-200'
 }
 
 function getInitials(name = '') {
@@ -60,13 +60,13 @@ export default function Avatar({
           src={src}
           alt={name}
           onError={() => setImageFailed(true)}
-          className={`rounded-full object-cover ring-2 ring-zinc-800 ${sizes[size]}`}
+          className={`rounded-full object-cover ${sizes[size]}`}
         />
       ) : (
         <div
-          className={`inline-flex items-center justify-center rounded-full font-semibold ring-2 ring-zinc-800 ${
+          className={`inline-flex items-center justify-center rounded-full font-semibold ${
             sizes[size]
-          } ${getInitialsColor(name)}`}
+          } ${getInitialsColor()}`}
           aria-label={name}
         >
           {getInitials(name)}

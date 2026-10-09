@@ -14,8 +14,6 @@ import {
   ChevronRight,
   X,
   GraduationCap,
-  ExternalLink,
-  LogOut,
 } from 'lucide-react'
 import { useAuth } from '../../hooks/useAuth'
 import Avatar from '../common/Avatar'
@@ -46,7 +44,7 @@ export default function AdminSidebar({
   mobileOpen,
   onCloseMobile,
 }) {
-  const { user, logout } = useAuth()
+  const { user } = useAuth()
 
   const admin = user || {
     name: 'Dr. Ramesh Kumar',
@@ -56,12 +54,14 @@ export default function AdminSidebar({
     role: 'admin',
   }
 
+  const expanded = !collapsed || mobileOpen
+
   return (
     <>
       {/* ── Mobile Drawer Backdrop ── */}
       {mobileOpen && (
         <div
-          className="fixed inset-0 z-40 bg-black/60 backdrop-blur-xs md:hidden animate-in fade-in duration-200"
+          className="fixed inset-0 z-40 bg-black/60 md:hidden"
           onClick={onCloseMobile}
           aria-hidden="true"
         />
@@ -70,135 +70,105 @@ export default function AdminSidebar({
       {/* ── Sidebar Container ── */}
       <aside
         className={[
-          'fixed inset-y-0 left-0 z-50 bg-zinc-900 border-r border-zinc-800 flex flex-col',
+          'fixed inset-y-0 left-0 z-50 flex flex-col border-r border-zinc-800 bg-zinc-950',
           'transition-all duration-200 ease-in-out md:static md:z-auto',
-          // Desktop width
           collapsed ? 'md:w-20' : 'md:w-64',
-          // Mobile transform & width
-          mobileOpen ? 'w-64 translate-x-0 shadow-2xl' : '-translate-x-full md:translate-x-0',
+          mobileOpen ? 'w-64 translate-x-0' : '-translate-x-full md:translate-x-0',
         ].join(' ')}
       >
-        {/* ── Brand Header ── */}
-        <div className="h-16 px-4 border-b border-zinc-800 flex items-center justify-between">
+        {/* ── Brand ── */}
+        <div className="flex h-16 items-center justify-between border-b border-zinc-800 px-4">
           <Link
             to="/admin/dashboard"
             onClick={onCloseMobile}
-            className="flex items-center gap-3 overflow-hidden group"
+            className={`flex items-center gap-2 overflow-hidden ${expanded ? '' : 'md:mx-auto'}`}
           >
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-amber-500 text-zinc-950 font-bold flex-shrink-0 shadow-sm transition-transform duration-150 group-hover:scale-105">
-              <ShieldCheck size={20} />
-            </div>
-
-            {(!collapsed || mobileOpen) && (
-              <div className="min-w-0 transition-opacity duration-150">
-                <span className="text-base font-bold text-zinc-100 tracking-tight block truncate">
-                  ExamPortal
-                </span>
-                <span className="text-[10px] font-semibold uppercase tracking-wider text-amber-400 block truncate">
-                  Admin Console
-                </span>
-              </div>
+            <span className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg bg-amber-500 text-zinc-950">
+              <ShieldCheck size={18} />
+            </span>
+            {expanded && (
+              <span className="truncate text-base font-semibold text-zinc-100">
+                ExamPortal <span className="font-normal text-zinc-500">/ Admin</span>
+              </span>
             )}
           </Link>
 
-          {/* Mobile close button */}
           <button
             type="button"
             onClick={onCloseMobile}
             aria-label="Close sidebar drawer"
-            className="md:hidden p-1.5 rounded-lg text-zinc-400 hover:text-zinc-100 hover:bg-zinc-800 transition-colors"
+            className="rounded-lg p-2 text-zinc-400 transition-colors hover:bg-zinc-800 hover:text-zinc-100 md:hidden"
           >
             <X size={18} />
           </button>
         </div>
 
-        {/* ── Admin Mini Identity Card (Expanded only) ── */}
-        {(!collapsed || mobileOpen) && (
-          <div className="p-4 border-b border-zinc-800 bg-zinc-850/40">
-            <div className="flex items-center gap-3">
-              <Avatar name={admin.name} size="md" status="online" />
-              <div className="min-w-0 flex-1">
-                <p className="text-sm font-semibold text-zinc-100 truncate">
-                  {admin.name}
-                </p>
-                <p className="text-[11px] text-zinc-400 truncate">
-                  {admin.department || 'Computer Science'} • {admin.id}
-                </p>
-              </div>
+        {/* ── Identity (expanded only) ── */}
+        {expanded && (
+          <div className="flex items-center gap-3 border-b border-zinc-800 p-4">
+            <Avatar name={admin.name} size="md" />
+            <div className="min-w-0 flex-1">
+              <p className="truncate text-sm font-semibold text-zinc-100">{admin.name}</p>
+              <p className="truncate text-xs text-zinc-400">
+                {admin.department || 'Computer Science'} · {admin.id}
+              </p>
             </div>
           </div>
         )}
 
-        {/* ── Navigation Links ── */}
-        <nav className="flex-1 px-3 py-4 space-y-1.5 overflow-y-auto">
-          {(!collapsed || mobileOpen) && (
-            <p className="px-3 pb-2 text-[10px] font-semibold uppercase tracking-wider text-zinc-500">
-              Admin Navigation
-            </p>
-          )}
-
+        {/* ── Navigation ── */}
+        <nav className="flex-1 space-y-1 overflow-y-auto p-4">
           {navigationItems.map(({ to, label, icon: Icon }) => (
             <NavLink
               key={to}
               to={to}
               onClick={onCloseMobile}
-              title={collapsed && !mobileOpen ? label : undefined}
+              title={!expanded ? label : undefined}
               className={({ isActive }) =>
-                `flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all ${
+                `flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
                   isActive
-                    ? 'bg-zinc-800 text-amber-400 font-semibold border-l-2 border-amber-500 rounded-r-xl rounded-l-none shadow-xs'
-                    : 'text-zinc-400 hover:bg-zinc-800/60 hover:text-zinc-200'
-                } ${collapsed && !mobileOpen ? 'justify-center px-0' : ''}`
+                    ? 'bg-zinc-800 text-amber-400'
+                    : 'text-zinc-400 hover:bg-zinc-900 hover:text-zinc-100'
+                } ${!expanded ? 'justify-center px-0' : ''}`
               }
             >
               <Icon size={18} className="flex-shrink-0" />
-              {(!collapsed || mobileOpen) && (
-                <span className="truncate">{label}</span>
-              )}
+              {expanded && <span className="truncate">{label}</span>}
             </NavLink>
           ))}
         </nav>
 
-        {/* ── Sidebar Footer: Student View Switch & Collapse Toggle ── */}
-        <div className="p-3 border-t border-zinc-800 bg-zinc-850/40 space-y-2">
-          {/* Switch to Student Portal */}
+        {/* ── Footer: Student view link & collapse toggle ── */}
+        <div className="space-y-1 border-t border-zinc-800 p-4">
           <Link
             to="/student/dashboard"
             onClick={onCloseMobile}
-            title={collapsed && !mobileOpen ? 'Student Portal' : undefined}
-            className={`flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-semibold text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800 transition-colors ${
-              collapsed && !mobileOpen ? 'justify-center px-0' : 'justify-between'
+            title={!expanded ? 'Student Portal' : undefined}
+            className={`flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-zinc-400 transition-colors hover:bg-zinc-900 hover:text-zinc-100 ${
+              !expanded ? 'justify-center px-0' : ''
             }`}
           >
-            <span className="flex items-center gap-2.5 min-w-0">
-              <GraduationCap size={16} className="text-amber-400 flex-shrink-0" />
-              {(!collapsed || mobileOpen) && (
-                <span className="truncate">Student Portal</span>
-              )}
-            </span>
-            {(!collapsed || mobileOpen) && (
-              <ExternalLink size={12} className="text-zinc-500 flex-shrink-0" />
-            )}
+            <GraduationCap size={18} className="flex-shrink-0" />
+            {expanded && <span className="truncate">Student Portal</span>}
           </Link>
 
-          {/* Desktop Collapse / Expand Toggle Button */}
-          <div className="hidden md:block pt-1">
-            <button
-              type="button"
-              onClick={onToggleCollapse}
-              aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
-              className="w-full flex items-center justify-center gap-2 py-2 px-2.5 rounded-lg text-xs font-medium text-zinc-400 hover:text-zinc-100 hover:bg-zinc-800 transition-colors"
-            >
-              {collapsed ? (
-                <ChevronRight size={16} />
-              ) : (
-                <>
-                  <ChevronLeft size={16} />
-                  <span>Collapse sidebar</span>
-                </>
-              )}
-            </button>
-          </div>
+          <button
+            type="button"
+            onClick={onToggleCollapse}
+            aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+            className={`hidden w-full items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-zinc-400 transition-colors hover:bg-zinc-900 hover:text-zinc-100 md:flex ${
+              collapsed ? 'justify-center px-0' : ''
+            }`}
+          >
+            {collapsed ? (
+              <ChevronRight size={18} />
+            ) : (
+              <>
+                <ChevronLeft size={18} />
+                <span>Collapse sidebar</span>
+              </>
+            )}
+          </button>
         </div>
       </aside>
     </>

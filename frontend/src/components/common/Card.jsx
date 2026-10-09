@@ -1,17 +1,17 @@
 /**
- * Card component — generic white rounded container
+ * Card component — flat surface container
  *
  * @param {string}    title        - optional card title
  * @param {ReactNode} headerAction - optional element in the card header right side
- * @param {string}    padding      - Tailwind padding class (default: 'p-5')
- * @param {boolean}   hoverable    - adds hover shadow transition
+ * @param {string}    padding      - Tailwind padding class (default: 'p-6')
+ * @param {boolean}   hoverable    - border highlight on hover
  * @param {string}    className    - additional classes
  */
 export default function Card({
   children,
   title,
   headerAction,
-  padding = 'p-5',
+  padding = 'p-6',
   hoverable = false,
   className = '',
 }) {
@@ -21,18 +21,12 @@ export default function Card({
     <div
       className={[
         'card overflow-hidden',
-        hoverable ? 'transition-shadow duration-150 hover:shadow-card-md cursor-pointer' : '',
+        hoverable ? 'transition-colors duration-150 hover:border-zinc-700 cursor-pointer' : '',
         className,
       ].join(' ')}
     >
       {hasHeader && (
-        <div
-          className={[
-            'flex items-center justify-between border-b border-zinc-800',
-            padding,
-            'pb-4',
-          ].join(' ')}
-        >
+        <div className="flex items-center justify-between gap-4 border-b border-zinc-800 px-6 py-4">
           {title && (
             <h3 className="text-sm font-semibold text-zinc-100">{title}</h3>
           )}

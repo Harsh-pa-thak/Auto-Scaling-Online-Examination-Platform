@@ -1,30 +1,10 @@
 import { useState, useMemo } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
-import {
-  Award,
-  CheckCircle2,
-  XCircle,
-  HelpCircle,
-  ArrowLeft,
-  Calendar,
-  Clock,
-  Timer,
-  FileText,
-  User,
-  ShieldCheck,
-  ChevronDown,
-  ChevronRight,
-  BookOpen,
-  Eye,
-  Check,
-  X,
-  RotateCcw,
-} from 'lucide-react'
+import { ArrowLeft, Eye } from 'lucide-react'
 import {
   Card,
   Badge,
   Button,
-  ProgressBar,
   Modal,
   Select,
 } from '../../components/common'
@@ -82,10 +62,10 @@ export default function StudentResultsPage() {
 
   if (!activeResult) {
     return (
-      <div className="py-16 text-center space-y-4">
+      <div className="space-y-4 py-16 text-center">
         <p className="text-zinc-400">No examination results found.</p>
         <Link to="/student/dashboard" className="inline-block">
-          <Button variant="secondary" size="sm">Back to Dashboard</Button>
+          <Button variant="secondary" size="sm">Back to dashboard</Button>
         </Link>
       </div>
     )
@@ -103,284 +83,148 @@ export default function StudentResultsPage() {
   const wrongPct = ((activeResult.wrong / activeResult.totalQuestions) * 100).toFixed(1)
   const unansweredPct = ((unansweredCount / activeResult.totalQuestions) * 100).toFixed(1)
 
+  const breakdown = [
+    { label: 'Correct',    value: activeResult.correct, pct: correctPct,    color: 'bg-emerald-500', text: 'text-emerald-400' },
+    { label: 'Wrong',      value: activeResult.wrong,   pct: wrongPct,      color: 'bg-red-500',     text: 'text-red-400' },
+    { label: 'Unanswered', value: unansweredCount,      pct: unansweredPct, color: 'bg-zinc-600',    text: 'text-zinc-300' },
+  ]
+
+  const summary = [
+    { label: 'Attempt accuracy',     value: `${accuracyRate}%` },
+    { label: 'Questions attempted',  value: `${attemptedCount} of ${activeResult.totalQuestions}` },
+    { label: 'Average pace',         value: `${((activeResult.timeTaken * 60) / activeResult.totalQuestions).toFixed(0)} s per question` },
+    { label: 'Time taken',           value: `${activeResult.timeTaken} min` },
+  ]
+
+  const info = [
+    { label: 'Student ID',   value: activeResult.studentId },
+    { label: 'Result ID',    value: activeResult.id },
+    { label: 'Submitted at', value: activeResult.submittedAt.replace('T', ' ') },
+  ]
+
   return (
-    <div className="space-y-6 max-w-5xl mx-auto animate-in fade-in duration-200">
-      {/* ── Top Bar with Back Link & Exam Switcher ── */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-2 border-b border-zinc-800">
-        <Link
-          to="/student/dashboard"
-          className="inline-flex items-center gap-1.5 text-xs font-semibold text-zinc-400 hover:text-amber-400 transition-colors"
-        >
-          <ArrowLeft size={14} />
-          <span>Back to Dashboard</span>
-        </Link>
+    <div className="max-w-5xl space-y-8">
+      {/* ── Header ── */}
+      <header className="space-y-6">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <Link
+            to="/student/dashboard"
+            className="inline-flex items-center gap-2 text-sm font-medium text-zinc-400 transition-colors hover:text-zinc-100"
+          >
+            <ArrowLeft size={14} />
+            Back to dashboard
+          </Link>
 
-        {/* Dropdown to switch between completed exams */}
-        {studentResults.length > 1 && (
-          <div className="flex items-center gap-2">
-            <span className="text-xs text-zinc-400 font-medium whitespace-nowrap">Switch Result:</span>
-            <div className="w-64">
-              <Select
-                id="result-selector"
-                value={activeResult.id}
-                onChange={(e) => setSearchParams({ id: e.target.value })}
-                options={studentResults.map((r) => ({
-                  value: r.id,
-                  label: `${r.examTitle} (${r.percentage}%)`,
-                }))}
-              />
-            </div>
-          </div>
-        )}
-      </div>
+          {studentResults.length > 1 && (
+            <Select
+              id="result-selector"
+              aria-label="Choose a result"
+              value={activeResult.id}
+              onChange={(e) => setSearchParams({ id: e.target.value })}
+              options={studentResults.map((r) => ({
+                value: r.id,
+                label: `${r.examTitle} (${r.percentage}%)`,
+              }))}
+              className="w-full sm:w-96"
+            />
+          )}
+        </div>
 
-      {/* ── Main Scorecard Banner ── */}
-      <div className="bg-zinc-900 rounded-2xl border border-zinc-800 p-6 sm:p-8 space-y-6 shadow-sm">
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-6 border-b border-zinc-800">
+        <div className="page-header">
           <div>
-            <div className="flex items-center gap-2 mb-2">
-              <span className="text-xs font-semibold uppercase tracking-wider px-2.5 py-0.5 rounded-md bg-zinc-800 text-zinc-300 border border-zinc-700/60 font-mono">
-                {activeResult.subject}
-              </span>
-              <Badge variant={isPassed ? 'success' : 'danger'} dot size="md">
+            <div className="flex flex-wrap items-center gap-2 text-sm text-zinc-400">
+              <span>{activeResult.subject}</span>
+              <Badge variant={isPassed ? 'success' : 'danger'} dot>
                 {isPassed ? 'Passed' : 'Failed'}
               </Badge>
-              {activeResult.grade && (
-                <Badge variant="primary" size="md">
-                  Grade {activeResult.grade}
-                </Badge>
-              )}
+              {activeResult.grade && <Badge>Grade {activeResult.grade}</Badge>}
             </div>
+            <h1 className="mt-2 page-title">{activeResult.examTitle}</h1>
+            <p className="page-subtitle">Submitted {formatDate(activeResult.submittedAt)}</p>
+          </div>
 
-            <h1 className="text-2xl sm:text-3xl font-bold text-zinc-100 tracking-tight">
-              {activeResult.examTitle}
-            </h1>
-            <p className="text-xs sm:text-sm text-zinc-400 mt-1">
-              Submitted on {formatDate(activeResult.submittedAt)} • Time Taken: {activeResult.timeTaken} minutes
+          <div className="sm:text-right">
+            <p className="eyebrow">Final score</p>
+            <p className="mt-1 text-3xl font-semibold tabular-nums text-zinc-50">
+              {activeResult.score}
+              <span className="text-base font-normal text-zinc-500"> / {activeResult.totalMarks}</span>
             </p>
-          </div>
-
-          {/* Large Score Showcase */}
-          <div className="flex items-center gap-4 sm:flex-col sm:items-end flex-shrink-0 bg-zinc-850/60 sm:bg-transparent p-3 sm:p-0 rounded-xl border border-zinc-800 sm:border-0">
-            <div className="text-left sm:text-right">
-              <span className="text-[11px] uppercase font-bold tracking-wider text-zinc-500">
-                Final Score
-              </span>
-              <p className="text-3xl sm:text-4xl font-extrabold text-zinc-100 leading-tight">
-                {activeResult.score}{' '}
-                <span className="text-sm sm:text-base font-normal text-zinc-500">
-                  / {activeResult.totalMarks}
-                </span>
-              </p>
-            </div>
-            <div className="text-2xl sm:text-3xl font-extrabold text-amber-400">
-              {activeResult.percentage}%
-            </div>
+            <p className="text-sm tabular-nums text-zinc-400">{activeResult.percentage}%</p>
           </div>
         </div>
+      </header>
 
-        {/* ── Question Statistics with Visual Progress Indicators ── */}
-        <div className="space-y-3">
-          <div className="flex items-center justify-between text-xs font-semibold text-zinc-400 uppercase tracking-wider">
-            <span>Question Statistics Breakdown</span>
-            <span>{activeResult.totalQuestions} Total Questions</span>
-          </div>
-
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-            {/* Card 1: Score Rate */}
-            <div className="p-4 rounded-xl bg-zinc-850/70 border border-zinc-800 flex flex-col justify-between space-y-2">
-              <div className="flex items-center justify-between text-zinc-400">
-                <span className="text-xs font-bold uppercase tracking-wider">Score Rate</span>
-                <Award size={16} className="text-amber-400" />
-              </div>
-              <p className="text-2xl font-extrabold text-zinc-100">
-                {activeResult.percentage}%
-              </p>
-              <ProgressBar
-                value={activeResult.percentage}
-                max={100}
-                size="xs"
-                variant={isPassed ? 'primary' : 'danger'}
-              />
-            </div>
-
-            {/* Card 2: Correct Answers */}
-            <div className="p-4 rounded-xl bg-zinc-850/70 border border-zinc-800 flex flex-col justify-between space-y-2">
-              <div className="flex items-center justify-between text-emerald-400">
-                <span className="text-xs font-bold uppercase tracking-wider">Correct</span>
-                <CheckCircle2 size={16} />
-              </div>
-              <p className="text-2xl font-extrabold text-emerald-400">
-                {activeResult.correct}
-              </p>
-              <ProgressBar
-                value={activeResult.correct}
-                max={activeResult.totalQuestions}
-                size="xs"
-                variant="success"
-              />
-            </div>
-
-            {/* Card 3: Wrong Answers */}
-            <div className="p-4 rounded-xl bg-zinc-850/70 border border-zinc-800 flex flex-col justify-between space-y-2">
-              <div className="flex items-center justify-between text-red-400">
-                <span className="text-xs font-bold uppercase tracking-wider">Wrong</span>
-                <XCircle size={16} />
-              </div>
-              <p className="text-2xl font-extrabold text-red-400">
-                {activeResult.wrong}
-              </p>
-              <ProgressBar
-                value={activeResult.wrong}
-                max={activeResult.totalQuestions}
-                size="xs"
-                variant="danger"
-              />
-            </div>
-
-            {/* Card 4: Unanswered */}
-            <div className="p-4 rounded-xl bg-zinc-850/70 border border-zinc-800 flex flex-col justify-between space-y-2">
-              <div className="flex items-center justify-between text-amber-400">
-                <span className="text-xs font-bold uppercase tracking-wider">Unanswered</span>
-                <HelpCircle size={16} />
-              </div>
-              <p className="text-2xl font-extrabold text-amber-400">
-                {unansweredCount}
-              </p>
-              <ProgressBar
-                value={unansweredCount}
-                max={activeResult.totalQuestions}
-                size="xs"
-                variant="warning"
-              />
-            </div>
-          </div>
-
-          {/* Segmented Visual Progress Bar */}
-          <div className="pt-2">
-            <div className="w-full h-2 rounded-full overflow-hidden flex bg-zinc-800">
-              <div
-                style={{ width: `${correctPct}%` }}
-                className="bg-emerald-500 h-full transition-all duration-300"
-                title={`Correct: ${activeResult.correct} (${correctPct}%)`}
-              />
-              <div
-                style={{ width: `${wrongPct}%` }}
-                className="bg-red-500 h-full transition-all duration-300"
-                title={`Wrong: ${activeResult.wrong} (${wrongPct}%)`}
-              />
-              <div
-                style={{ width: `${unansweredPct}%` }}
-                className="bg-amber-500 h-full transition-all duration-300"
-                title={`Unanswered: ${unansweredCount} (${unansweredPct}%)`}
-              />
-            </div>
-            <div className="flex flex-wrap items-center justify-between gap-2 mt-2 text-[11px] text-zinc-400">
-              <div className="flex items-center gap-1.5">
-                <span className="h-2 w-2 rounded-full bg-emerald-500" />
-                <span>Correct ({correctPct}%)</span>
-              </div>
-              <div className="flex items-center gap-1.5">
-                <span className="h-2 w-2 rounded-full bg-red-500" />
-                <span>Wrong ({wrongPct}%)</span>
-              </div>
-              <div className="flex items-center gap-1.5">
-                <span className="h-2 w-2 rounded-full bg-amber-500" />
-                <span>Unanswered ({unansweredPct}%)</span>
-              </div>
-            </div>
-          </div>
+      {/* ── Question breakdown ── */}
+      <Card>
+        <div className="flex items-center justify-between gap-4">
+          <h2 className="section-title">Question breakdown</h2>
+          <span className="text-sm tabular-nums text-zinc-400">
+            {activeResult.totalQuestions} questions
+          </span>
         </div>
 
-        {/* ── Action Buttons ── */}
-        <div className="pt-4 border-t border-zinc-800 flex flex-wrap items-center justify-between gap-3">
-          <div className="flex items-center gap-3">
-            <Button
-              variant="primary"
-              size="md"
-              onClick={() => setReviewModalOpen(true)}
-              leftIcon={<Eye size={16} />}
-            >
-              View Answers
-            </Button>
-            <Link to="/student/history">
-              <Button variant="secondary" size="md">
-                Exam History
-              </Button>
-            </Link>
-          </div>
+        <dl className="mt-4 grid grid-cols-3 gap-4">
+          {breakdown.map(({ label, value, text }) => (
+            <div key={label}>
+              <dt className="eyebrow">{label}</dt>
+              <dd className={`mt-1 text-2xl font-semibold tabular-nums ${text}`}>{value}</dd>
+            </div>
+          ))}
+        </dl>
 
-          <Link to="/student/dashboard">
-            <Button variant="ghost" size="md" leftIcon={<ArrowLeft size={14} />}>
-              Back to Dashboard
-            </Button>
+        <div className="mt-6 flex h-2 w-full overflow-hidden rounded-full bg-zinc-800">
+          {breakdown.map(({ label, value, pct, color }) => (
+            <div
+              key={label}
+              style={{ width: `${pct}%` }}
+              className={`h-full ${color}`}
+              title={`${label}: ${value} (${pct}%)`}
+            />
+          ))}
+        </div>
+        <ul className="mt-2 flex flex-wrap gap-x-6 gap-y-1 text-xs text-zinc-400">
+          {breakdown.map(({ label, pct, color }) => (
+            <li key={label} className="flex items-center gap-2">
+              <span className={`h-2 w-2 rounded-full ${color}`} />
+              {label} ({pct}%)
+            </li>
+          ))}
+        </ul>
+
+        <div className="mt-6 flex flex-wrap items-center gap-2 border-t border-zinc-800 pt-6">
+          <Button onClick={() => setReviewModalOpen(true)} leftIcon={<Eye size={16} />}>
+            View answers
+          </Button>
+          <Link to="/student/history">
+            <Button variant="secondary">Exam history</Button>
           </Link>
         </div>
-      </div>
+      </Card>
 
-      {/* ── Detailed Breakdown & Information Section ── */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {/* Performance Summary */}
-        <Card padding="p-6">
-          <h2 className="text-sm font-bold text-zinc-100 uppercase tracking-wider mb-4 flex items-center gap-2">
-            <Award size={16} className="text-amber-400" />
-            Performance Summary
-          </h2>
-
-          <div className="space-y-3.5 text-xs">
-            <div className="flex items-center justify-between py-2 border-b border-zinc-800">
-              <span className="text-zinc-400">Attempt Accuracy</span>
-              <span className="font-bold text-zinc-100">{accuracyRate}%</span>
-            </div>
-            <div className="flex items-center justify-between py-2 border-b border-zinc-800">
-              <span className="text-zinc-400">Questions Attempted</span>
-              <span className="font-semibold text-zinc-200">
-                {attemptedCount} of {activeResult.totalQuestions}
-              </span>
-            </div>
-            <div className="flex items-center justify-between py-2 border-b border-zinc-800">
-              <span className="text-zinc-400">Average Pace</span>
-              <span className="font-semibold text-zinc-200">
-                {((activeResult.timeTaken * 60) / activeResult.totalQuestions).toFixed(0)} seconds / question
-              </span>
-            </div>
-            <div className="flex items-center justify-between py-2">
-              <span className="text-zinc-400">Assessment Verdict</span>
-              <span className={`font-semibold ${isPassed ? 'text-emerald-400' : 'text-red-400'}`}>
-                {isPassed ? 'Meets Academic Passing Standard' : 'Requires Syllabus Revision'}
-              </span>
-            </div>
-          </div>
+      {/* ── Details ── */}
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+        <Card>
+          <h2 className="section-title">Performance</h2>
+          <dl className="mt-4 divide-y divide-zinc-800 text-sm">
+            {summary.map(({ label, value }) => (
+              <div key={label} className="flex items-center justify-between gap-4 py-2">
+                <dt className="text-zinc-400">{label}</dt>
+                <dd className="font-medium tabular-nums text-zinc-100">{value}</dd>
+              </div>
+            ))}
+          </dl>
         </Card>
 
-        {/* Exam Information */}
-        <Card padding="p-6">
-          <h2 className="text-sm font-bold text-zinc-100 uppercase tracking-wider mb-4 flex items-center gap-2">
-            <ShieldCheck size={16} className="text-amber-400" />
-            Exam Information
-          </h2>
-
-          <div className="space-y-3.5 text-xs">
-            <div className="flex items-center justify-between py-2 border-b border-zinc-800">
-              <span className="text-zinc-400">Candidate Student ID</span>
-              <span className="font-mono font-bold text-zinc-100">{activeResult.studentId}</span>
-            </div>
-            <div className="flex items-center justify-between py-2 border-b border-zinc-800">
-              <span className="text-zinc-400">Result Reference ID</span>
-              <span className="font-mono text-zinc-300">{activeResult.id}-EXAM2025</span>
-            </div>
-            <div className="flex items-center justify-between py-2 border-b border-zinc-800">
-              <span className="text-zinc-400">Submission Timestamp</span>
-              <span className="font-medium text-zinc-200">{activeResult.submittedAt.replace('T', ' ')}</span>
-            </div>
-            <div className="flex items-center justify-between py-2">
-              <span className="text-zinc-400">Audit Status</span>
-              <span className="inline-flex items-center gap-1 font-semibold text-emerald-400">
-                <CheckCircle2 size={13} />
-                Submission Recorded
-              </span>
-            </div>
-          </div>
+        <Card>
+          <h2 className="section-title">Exam information</h2>
+          <dl className="mt-4 divide-y divide-zinc-800 text-sm">
+            {info.map(({ label, value }) => (
+              <div key={label} className="flex items-center justify-between gap-4 py-2">
+                <dt className="text-zinc-400">{label}</dt>
+                <dd className="font-medium tabular-nums text-zinc-100">{value}</dd>
+              </div>
+            ))}
+          </dl>
         </Card>
       </div>
 
@@ -388,74 +232,67 @@ export default function StudentResultsPage() {
       <Modal
         isOpen={reviewModalOpen}
         onClose={() => setReviewModalOpen(false)}
-        title={`Answer Key & Solutions — ${activeResult.subject}`}
+        title={`Answer key — ${activeResult.subject}`}
         size="xl"
         footer={
           <Button variant="secondary" onClick={() => setReviewModalOpen(false)}>
-            Close Review
+            Close
           </Button>
         }
       >
         <div className="space-y-4">
-          <p className="text-xs text-zinc-400">
-            Recorded answers evaluated against official faculty answer keys.
+          <p className="text-sm text-zinc-400">
+            Your recorded answers compared with the official answer key.
           </p>
 
-          <div className="space-y-4 max-h-[60vh] overflow-y-auto pr-1">
+          <ol className="max-h-[60vh] space-y-4 overflow-y-auto pr-1">
             {reviewQuestions.map((q, idx) => {
-              const isCorrect = idx % 3 !== 1 // simulated realistic correctness
+              const isCorrect = idx % 3 !== 1 // simulated correctness for mock data
               const selectedIdx = isCorrect ? q.correctAnswer : (q.correctAnswer + 1) % 4
 
               return (
-                <div
-                  key={q.id}
-                  className="p-4 rounded-xl border border-zinc-800 bg-zinc-850/60 space-y-3 text-xs"
-                >
-                  <div className="flex items-start justify-between gap-2">
-                    <span className="font-bold text-zinc-100 leading-snug">
-                      Q{idx + 1}. {q.text}
-                    </span>
+                <li key={q.id} className="space-y-4 rounded-lg border border-zinc-800 p-4 text-sm">
+                  <div className="flex items-start justify-between gap-4">
+                    <p className="font-medium text-zinc-100">
+                      {idx + 1}. {q.text}
+                    </p>
                     <Badge variant={isCorrect ? 'success' : 'danger'} size="sm">
-                      {isCorrect ? `+${q.marks} Marks` : '0 Marks'}
+                      {isCorrect ? `+${q.marks}` : '0'} marks
                     </Badge>
                   </div>
 
-                  <div className="space-y-1.5 pl-2 border-l-2 border-zinc-800">
+                  <ul className="space-y-2">
                     {q.options.map((opt, oIdx) => {
                       const isOptionCorrect = oIdx === q.correctAnswer
                       const isOptionSelected = oIdx === selectedIdx
 
                       return (
-                        <div
+                        <li
                           key={oIdx}
                           className={[
-                            'p-2.5 rounded-lg flex items-center justify-between',
+                            'flex items-center justify-between gap-4 rounded-lg border px-3 py-2',
                             isOptionCorrect
-                              ? 'bg-emerald-950/40 text-emerald-300 font-semibold border border-emerald-800/60'
+                              ? 'border-emerald-500/40 text-emerald-300'
                               : isOptionSelected
-                              ? 'bg-red-950/40 text-red-300 font-semibold border border-red-800/60'
-                              : 'bg-zinc-900/60 text-zinc-400 border border-zinc-800/60',
+                              ? 'border-red-500/40 text-red-300'
+                              : 'border-zinc-800 text-zinc-400',
                           ].join(' ')}
                         >
-                          <span>{String.fromCharCode(65 + oIdx)}. {opt}</span>
-                          {isOptionCorrect && (
-                            <span className="text-[10px] uppercase font-bold text-emerald-400 ml-2">
-                              Correct Key
-                            </span>
-                          )}
+                          <span>
+                            {String.fromCharCode(65 + oIdx)}. {opt}
+                          </span>
+                          {isOptionCorrect && <span className="text-xs font-medium">Correct answer</span>}
                           {!isCorrect && isOptionSelected && (
-                            <span className="text-[10px] uppercase font-bold text-red-400 ml-2">
-                              Your Answer
-                            </span>
+                            <span className="text-xs font-medium">Your answer</span>
                           )}
-                        </div>
+                        </li>
                       )
                     })}
-                  </div>
-                </div>
+                  </ul>
+                </li>
               )
             })}
-          </div>
+          </ol>
         </div>
       </Modal>
     </div>

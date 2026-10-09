@@ -1,17 +1,14 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { Input, Button, Badge } from '../../components/common'
+import { Input, Button } from '../../components/common'
 import { useToast } from '../../hooks/useToast'
 import {
   Mail,
   Lock,
-  KeyRound,
   Eye,
   EyeOff,
   ArrowLeft,
   CheckCircle2,
-  RefreshCw,
-  ShieldCheck,
 } from 'lucide-react'
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
@@ -117,13 +114,8 @@ export default function ForgotPasswordPage() {
       {step === 'email' && (
         <div className="space-y-6">
           <div className="text-center">
-            <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-primary-50 text-primary-600 mb-3 border border-primary-100 shadow-sm">
-              <KeyRound size={22} />
-            </div>
-            <h2 className="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight">
-              Reset Your Password
-            </h2>
-            <p className="text-xs sm:text-sm text-slate-500 mt-1.5 leading-relaxed">
+            <h1 className="text-xl font-semibold text-zinc-50">Reset your password</h1>
+            <p className="mt-2 text-sm text-zinc-400">
               Enter your registered institutional email to receive a verification reset code.
             </p>
           </div>
@@ -131,7 +123,7 @@ export default function ForgotPasswordPage() {
           <form onSubmit={handleSendCode} className="space-y-4" noValidate>
             <Input
               id="forgot-email"
-              label="Institutional Email"
+              label="Institutional email"
               type="email"
               required
               placeholder="e.g. harsh.pathak@vit.ac.in"
@@ -151,17 +143,17 @@ export default function ForgotPasswordPage() {
               size="lg"
               loading={isSubmitting}
             >
-              Send Verification Code
+              Send verification code
             </Button>
           </form>
 
-          <div className="text-center pt-2">
+          <div className="border-t border-zinc-800 pt-6 text-center">
             <Link
               to="/login"
-              className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-600 hover:text-slate-900 transition-colors"
+              className="inline-flex items-center gap-2 text-sm font-medium text-zinc-400 transition-colors hover:text-zinc-100"
             >
               <ArrowLeft size={14} />
-              <span>Back to Sign In</span>
+              <span>Back to sign in</span>
             </Link>
           </div>
         </div>
@@ -171,33 +163,28 @@ export default function ForgotPasswordPage() {
       {step === 'otp' && (
         <div className="space-y-6">
           <div className="text-center">
-            <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-amber-50 text-amber-600 mb-3 border border-amber-100 shadow-sm">
-              <Mail size={22} />
-            </div>
-            <h2 className="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight">
-              Check Your Inbox
-            </h2>
-            <p className="text-xs sm:text-sm text-slate-500 mt-1.5">
-              Enter the 6-digit code sent to <strong className="text-slate-700">{email}</strong>
+            <h1 className="text-xl font-semibold text-zinc-50">Check your inbox</h1>
+            <p className="mt-2 text-sm text-zinc-400">
+              Enter the 6-digit code sent to <strong className="text-zinc-200">{email}</strong>
             </p>
           </div>
 
-          {/* Demo helper pill */}
-          <div className="rounded-xl bg-amber-50 border border-amber-200/60 p-3 text-xs text-amber-900 flex items-center justify-between">
-            <span>Demo Test PIN:</span>
+          <p className="text-center text-xs text-zinc-500">
+            Demo mode: the code is{' '}
             <button
               type="button"
               onClick={() => setOtp('123456')}
-              className="font-mono font-bold bg-white px-2 py-0.5 rounded border border-amber-300 text-amber-800 hover:bg-amber-100 transition-colors"
+              className="font-medium tabular-nums text-amber-400 hover:text-amber-300"
             >
-              Click to prefill: 123456
-            </button>
-          </div>
+              123456
+            </button>{' '}
+            (click to fill).
+          </p>
 
           <form onSubmit={handleVerifyOtp} className="space-y-4" noValidate>
             <Input
               id="otp-code"
-              label="6-Digit Verification Code"
+              label="6-digit verification code"
               required
               placeholder="123456"
               value={otp}
@@ -206,7 +193,7 @@ export default function ForgotPasswordPage() {
                 if (errors.otp) setErrors({})
               }}
               error={errors.otp}
-              className="text-center tracking-widest text-lg font-mono"
+              className="text-center tracking-widest text-lg tabular-nums"
             />
 
             <Button
@@ -215,23 +202,23 @@ export default function ForgotPasswordPage() {
               size="lg"
               loading={isSubmitting}
             >
-              Verify Code
+              Verify code
             </Button>
           </form>
 
-          <div className="flex items-center justify-between text-xs text-slate-500 pt-2 border-t border-slate-100">
+          <div className="flex items-center justify-between border-t border-zinc-800 pt-6 text-sm">
             <button
               type="button"
               onClick={() => setStep('email')}
-              className="text-slate-600 hover:text-slate-900 font-medium inline-flex items-center gap-1"
+              className="inline-flex items-center gap-2 font-medium text-zinc-400 transition-colors hover:text-zinc-100"
             >
-              <ArrowLeft size={13} />
+              <ArrowLeft size={14} />
               Change email
             </button>
             <button
               type="button"
               onClick={() => toast.info('Code Resent', 'A new verification code was dispatched.')}
-              className="text-primary-600 hover:underline font-semibold"
+              className="font-medium text-amber-400 hover:text-amber-300"
             >
               Resend code
             </button>
@@ -243,14 +230,9 @@ export default function ForgotPasswordPage() {
       {step === 'new_password' && (
         <div className="space-y-6">
           <div className="text-center">
-            <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-primary-50 text-primary-600 mb-3 border border-primary-100 shadow-sm">
-              <Lock size={22} />
-            </div>
-            <h2 className="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight">
-              Create New Password
-            </h2>
-            <p className="text-xs sm:text-sm text-slate-500 mt-1.5">
-              Choose a strong password for your university credentials
+            <h1 className="text-xl font-semibold text-zinc-50">Create a new password</h1>
+            <p className="mt-2 text-sm text-zinc-400">
+              Choose a strong password for your university credentials.
             </p>
           </div>
 
@@ -258,7 +240,7 @@ export default function ForgotPasswordPage() {
             {/* New Password */}
             <Input
               id="reset-newpassword"
-              label="New Password"
+              label="New password"
               type={showPassword ? 'text' : 'password'}
               required
               placeholder="At least 8 characters"
@@ -274,7 +256,7 @@ export default function ForgotPasswordPage() {
                   type="button"
                   onClick={() => setShowPassword((prev) => !prev)}
                   aria-label={showPassword ? 'Hide password' : 'Show password'}
-                  className="p-1 rounded text-slate-400 hover:text-slate-600 focus:outline-none"
+                  className="rounded p-1 text-zinc-500 transition-colors hover:text-zinc-300 focus:outline-none focus:ring-1 focus:ring-amber-500"
                 >
                   {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
                 </button>
@@ -284,7 +266,7 @@ export default function ForgotPasswordPage() {
             {/* Confirm New Password */}
             <Input
               id="reset-confirmpassword"
-              label="Confirm New Password"
+              label="Confirm new password"
               type={showConfirmPassword ? 'text' : 'password'}
               required
               placeholder="Re-enter your new password"
@@ -300,7 +282,7 @@ export default function ForgotPasswordPage() {
                   type="button"
                   onClick={() => setShowConfirmPassword((prev) => !prev)}
                   aria-label={showConfirmPassword ? 'Hide confirm password' : 'Show confirm password'}
-                  className="p-1 rounded text-slate-400 hover:text-slate-600 focus:outline-none"
+                  className="rounded p-1 text-zinc-500 transition-colors hover:text-zinc-300 focus:outline-none focus:ring-1 focus:ring-amber-500"
                 >
                   {showConfirmPassword ? <EyeOff size={16} /> : <Eye size={16} />}
                 </button>
@@ -313,14 +295,14 @@ export default function ForgotPasswordPage() {
               size="lg"
               loading={isSubmitting}
             >
-              Update Password
+              Update password
             </Button>
           </form>
 
-          <div className="text-center pt-2">
+          <div className="border-t border-zinc-800 pt-6 text-center">
             <Link
               to="/login"
-              className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-600 hover:text-slate-900 transition-colors"
+              className="inline-flex items-center gap-2 text-sm font-medium text-zinc-400 transition-colors hover:text-zinc-100"
             >
               <ArrowLeft size={14} />
               <span>Cancel and return to sign in</span>
@@ -331,29 +313,23 @@ export default function ForgotPasswordPage() {
 
       {/* ── STEP 4: Success Confirmation ── */}
       {step === 'success' && (
-        <div className="space-y-6 text-center py-2 animate-in zoom-in-95 duration-200">
-          <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-emerald-50 text-emerald-600 border border-emerald-200 shadow-sm">
-            <CheckCircle2 size={30} />
-          </div>
+        <div className="space-y-6 text-center">
+          <CheckCircle2 size={32} className="mx-auto text-emerald-400" />
 
           <div>
-            <h2 className="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight">
-              Password Reset Complete!
-            </h2>
-            <p className="text-xs sm:text-sm text-slate-500 mt-2 leading-relaxed max-w-sm mx-auto">
+            <h1 className="text-xl font-semibold text-zinc-50">Password updated</h1>
+            <p className="mx-auto mt-2 max-w-sm text-sm text-zinc-400">
               Your institutional password has been securely updated. You can now use your new credentials to access the examination platform.
             </p>
           </div>
 
-          <div className="pt-2">
-            <Button
-              fullWidth
-              size="lg"
-              onClick={() => navigate('/login')}
-            >
-              Proceed to Sign In
-            </Button>
-          </div>
+          <Button
+            fullWidth
+            size="lg"
+            onClick={() => navigate('/login')}
+          >
+            Continue to sign in
+          </Button>
         </div>
       )}
     </div>

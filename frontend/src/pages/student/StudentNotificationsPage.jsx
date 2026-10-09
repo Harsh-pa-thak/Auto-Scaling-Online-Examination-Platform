@@ -5,20 +5,12 @@ import {
   Calendar,
   Clock,
   Award,
-  ShieldAlert,
-  CheckCircle2,
   CheckCheck,
-  Check,
-  ExternalLink,
+  ArrowRight,
   RotateCcw,
   Info,
-  AlertTriangle,
 } from 'lucide-react'
-import {
-  Badge,
-  Button,
-  EmptyState,
-} from '../../components/common'
+import { Button, EmptyState } from '../../components/common'
 import { mockNotifications } from '../../data/mockData'
 
 // Format date helper
@@ -38,36 +30,12 @@ function formatNotificationDate(dateStr) {
   }
 }
 
-// Config per notification type
+// Label + icon per notification type
 const TYPE_CONFIG = {
-  exam_scheduled: {
-    label: 'Exam Scheduled',
-    icon: Calendar,
-    badgeVariant: 'warning',
-    accentColor: 'text-amber-400',
-    borderColor: 'border-l-amber-500',
-  },
-  exam_starting_soon: {
-    label: 'Exam Starting Soon',
-    icon: Clock,
-    badgeVariant: 'danger',
-    accentColor: 'text-red-400',
-    borderColor: 'border-l-red-500',
-  },
-  result_published: {
-    label: 'Result Published',
-    icon: Award,
-    badgeVariant: 'success',
-    accentColor: 'text-emerald-400',
-    borderColor: 'border-l-emerald-500',
-  },
-  system: {
-    label: 'System Notification',
-    icon: Info,
-    badgeVariant: 'default',
-    accentColor: 'text-zinc-400',
-    borderColor: 'border-l-zinc-500',
-  },
+  exam_scheduled:     { label: 'Exam scheduled',     icon: Calendar },
+  exam_starting_soon: { label: 'Starting soon',      icon: Clock },
+  result_published:   { label: 'Result published',   icon: Award },
+  system:             { label: 'System',             icon: Info },
 }
 
 export default function StudentNotificationsPage() {
@@ -110,185 +78,135 @@ export default function StudentNotificationsPage() {
     { id: 'all',                label: 'All',            count: counts.all },
     { id: 'unread',             label: 'Unread',         count: counts.unread },
     { id: 'exam_scheduled',     label: 'Scheduled',      count: counts.exam_scheduled },
-    { id: 'exam_starting_soon', label: 'Starting Soon',  count: counts.exam_starting_soon },
+    { id: 'exam_starting_soon', label: 'Starting soon',  count: counts.exam_starting_soon },
     { id: 'result_published',   label: 'Results',        count: counts.result_published },
     { id: 'system',             label: 'System',         count: counts.system },
   ]
 
   return (
-    <div className="space-y-6 max-w-5xl mx-auto animate-in fade-in duration-200">
+    <div className="max-w-5xl space-y-8">
       {/* ── Page Header ── */}
-      <div className="pb-4 border-b border-zinc-800 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+      <header className="page-header">
         <div>
-          <div className="flex items-center gap-2 mb-1">
-            <h1 className="text-2xl sm:text-3xl font-bold text-zinc-100 tracking-tight">
-              Notifications
-            </h1>
+          <h1 className="page-title">Notifications</h1>
+          <p className="page-subtitle">
+            Exam schedules, reminders, result releases, and platform notices.
             {counts.unread > 0 && (
-              <span className="px-2 py-0.5 rounded-full text-xs font-semibold bg-amber-950/60 text-amber-400 border border-amber-800/60">
-                {counts.unread} unread
-              </span>
+              <span className="text-zinc-200"> {counts.unread} unread.</span>
             )}
-          </div>
-          <p className="text-sm text-zinc-400 leading-relaxed">
-            Exam schedules, starting-soon session reminders, score releases, and platform notices.
           </p>
         </div>
 
-        {/* Mark All As Read Button */}
         <Button
           variant="secondary"
           size="sm"
           disabled={counts.unread === 0}
           onClick={handleMarkAllAsRead}
-          leftIcon={<CheckCheck size={15} />}
+          leftIcon={<CheckCheck size={16} />}
         >
           Mark all as read
         </Button>
-      </div>
+      </header>
 
-      {/* ── Category Filter Tabs ── */}
-      <div className="flex items-center gap-2 overflow-x-auto pb-1 no-scrollbar">
-        {FILTER_TABS.map((tab) => {
-          const isActive = activeFilter === tab.id
-          return (
-            <button
-              key={tab.id}
-              type="button"
-              onClick={() => setActiveFilter(tab.id)}
-              className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-all ${
-                isActive
-                  ? 'bg-zinc-800 text-amber-400 border border-zinc-700/80 shadow-xs'
-                  : 'bg-zinc-900 text-zinc-400 border border-zinc-800 hover:text-zinc-200 hover:bg-zinc-850'
-              }`}
-            >
-              <span>{tab.label}</span>
-              <span
-                className={`text-[10px] px-1.5 py-0.2 rounded-full ${
+      <div className="space-y-4">
+        {/* ── Category Tabs ── */}
+        <nav aria-label="Notification type" className="flex gap-6 overflow-x-auto border-b border-zinc-800">
+          {FILTER_TABS.map((tab) => {
+            const isActive = activeFilter === tab.id
+            return (
+              <button
+                key={tab.id}
+                type="button"
+                onClick={() => setActiveFilter(tab.id)}
+                aria-current={isActive ? 'page' : undefined}
+                className={`-mb-px flex items-center gap-2 whitespace-nowrap border-b-2 py-3 text-sm font-medium transition-colors ${
                   isActive
-                    ? 'bg-amber-950/70 text-amber-300'
-                    : 'bg-zinc-800 text-zinc-500'
+                    ? 'border-amber-500 text-zinc-50'
+                    : 'border-transparent text-zinc-400 hover:text-zinc-100'
                 }`}
               >
-                {tab.count}
-              </span>
-            </button>
-          )
-        })}
-      </div>
+                {tab.label}
+                <span className="tabular-nums text-zinc-500">{tab.count}</span>
+              </button>
+            )
+          })}
+        </nav>
 
-      {/* ── Notifications List or Empty State ── */}
-      {filteredNotifications.length === 0 ? (
-        <div className="bg-zinc-900 rounded-2xl border border-zinc-800 p-8">
-          <EmptyState
-            icon={<Bell size={30} className="text-zinc-500" />}
-            title="No notifications found"
-            message={
-              activeFilter === 'unread'
-                ? 'All notifications have been marked as read.'
-                : 'There are no notifications matching your current filter selection.'
-            }
-            action={
-              activeFilter !== 'all' && (
-                <Button
-                  variant="secondary"
-                  size="sm"
-                  onClick={() => setActiveFilter('all')}
-                  leftIcon={<RotateCcw size={13} />}
-                >
-                  View All Notifications
-                </Button>
-              )
-            }
-          />
-        </div>
-      ) : (
-        <div className="space-y-3">
-          {filteredNotifications.map((item) => {
-            const config = TYPE_CONFIG[item.type] || TYPE_CONFIG.system
-            const Icon = config.icon
+        {/* ── List or Empty State ── */}
+        {filteredNotifications.length === 0 ? (
+          <div className="card">
+            <EmptyState
+              icon={<Bell size={28} />}
+              title="No notifications"
+              message={
+                activeFilter === 'unread'
+                  ? 'You are all caught up.'
+                  : 'Nothing matches this filter.'
+              }
+              action={
+                activeFilter !== 'all' && (
+                  <Button
+                    variant="secondary"
+                    size="sm"
+                    onClick={() => setActiveFilter('all')}
+                    leftIcon={<RotateCcw size={14} />}
+                  >
+                    Show all
+                  </Button>
+                )
+              }
+            />
+          </div>
+        ) : (
+          <ul className="card divide-y divide-zinc-800">
+            {filteredNotifications.map((item) => {
+              const config = TYPE_CONFIG[item.type] || TYPE_CONFIG.system
+              const Icon = config.icon
 
-            return (
-              <div
-                key={item.id}
-                className={[
-                  'rounded-xl p-5 border transition-all duration-150',
-                  item.read
-                    ? 'bg-zinc-900/60 border-zinc-800/80'
-                    : `bg-zinc-900 border-zinc-800 border-l-4 ${config.borderColor} shadow-sm`,
-                ].join(' ')}
-              >
-                <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
-                  {/* Left: Icon, Type Badge, Title, Message */}
-                  <div className="flex items-start gap-3.5 flex-1 min-w-0">
-                    <div
-                      className={`flex h-9 w-9 items-center justify-center rounded-lg flex-shrink-0 mt-0.5 ${
-                        item.read
-                          ? 'bg-zinc-800 text-zinc-500'
-                          : 'bg-zinc-850 border border-zinc-700/60 ' + config.accentColor
+              return (
+                <li key={item.id} className="flex flex-col gap-4 p-6 sm:flex-row sm:items-start">
+                  <Icon
+                    size={18}
+                    className={`mt-0.5 flex-shrink-0 ${item.read ? 'text-zinc-600' : 'text-zinc-400'}`}
+                  />
+
+                  <div className="min-w-0 flex-1">
+                    <p className="flex flex-wrap items-center gap-2 text-xs text-zinc-500">
+                      {!item.read && (
+                        <span className="h-2 w-2 rounded-full bg-amber-500" aria-label="Unread" />
+                      )}
+                      <span>{config.label}</span>
+                      <span>·</span>
+                      <span>{formatNotificationDate(item.createdAt)}</span>
+                    </p>
+                    <h2
+                      className={`mt-1 text-sm ${
+                        item.read ? 'font-medium text-zinc-300' : 'font-semibold text-zinc-50'
                       }`}
                     >
-                      <Icon size={18} />
-                    </div>
-
-                    <div className="space-y-1 flex-1 min-w-0">
-                      <div className="flex flex-wrap items-center gap-2">
-                        <Badge variant={config.badgeVariant} size="sm">
-                          {config.label}
-                        </Badge>
-                        {!item.read && (
-                          <span className="inline-flex items-center gap-1 text-[10px] font-bold text-amber-400">
-                            <span className="h-1.5 w-1.5 rounded-full bg-amber-400 animate-pulse" />
-                            New
-                          </span>
-                        )}
-                        <span className="text-zinc-500 text-[11px]">
-                          {formatNotificationDate(item.createdAt)}
-                        </span>
-                      </div>
-
-                      <h2
-                        className={`text-sm font-semibold tracking-tight ${
-                          item.read ? 'text-zinc-300' : 'text-zinc-100 font-bold'
-                        }`}
-                      >
-                        {item.title}
-                      </h2>
-
-                      <p className="text-xs text-zinc-400 leading-relaxed pr-2">
-                        {item.message}
-                      </p>
-                    </div>
+                      {item.title}
+                    </h2>
+                    <p className="mt-1 text-sm text-zinc-400">{item.message}</p>
                   </div>
 
-                  {/* Right: Actions */}
-                  <div className="flex items-center gap-2 self-end sm:self-start flex-shrink-0 pt-2 sm:pt-0">
+                  <div className="flex flex-shrink-0 items-center gap-2">
                     {item.link && (
                       <Link to={item.link}>
-                        <Button
-                          variant="secondary"
-                          size="xs"
-                          rightIcon={<ExternalLink size={12} />}
-                        >
+                        <Button variant="secondary" size="xs" rightIcon={<ArrowRight size={12} />}>
                           View
                         </Button>
                       </Link>
                     )}
-
-                    <Button
-                      variant="ghost"
-                      size="xs"
-                      onClick={() => handleToggleRead(item.id)}
-                    >
+                    <Button variant="ghost" size="xs" onClick={() => handleToggleRead(item.id)}>
                       {item.read ? 'Mark unread' : 'Mark read'}
                     </Button>
                   </div>
-                </div>
-              </div>
-            )
-          })}
-        </div>
-      )}
+                </li>
+              )
+            })}
+          </ul>
+        )}
+      </div>
     </div>
   )
 }

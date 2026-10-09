@@ -54,7 +54,7 @@ export default function Table({
     <div className={`relative overflow-hidden rounded-xl border border-zinc-800 bg-zinc-900 ${className}`}>
       {/* Loading overlay */}
       {loading && (
-        <div className="absolute inset-0 z-10 flex items-center justify-center bg-zinc-950/70 backdrop-blur-[1px]">
+        <div className="absolute inset-0 z-10 flex items-center justify-center bg-zinc-950/70">
           <LoadingSpinner size="lg" />
         </div>
       )}
@@ -62,16 +62,16 @@ export default function Table({
       <div className="overflow-x-auto">
         <table className="w-full text-sm">
           <thead>
-            <tr className="border-b border-zinc-800 bg-zinc-900/90">
+            <tr className="border-b border-zinc-800">
               {columns.map((col) => (
                 <th
                   key={col.key}
                   scope="col"
                   style={col.width ? { width: col.width } : undefined}
                   className={[
-                    'px-4 py-3 text-xs font-semibold uppercase tracking-wide text-zinc-400',
+                    'px-4 py-3 text-xs font-medium uppercase tracking-wide text-zinc-500',
                     alignClass(col.align),
-                    col.sortable ? 'cursor-pointer select-none hover:text-zinc-200 hover:bg-zinc-800/60' : '',
+                    col.sortable ? 'cursor-pointer select-none hover:text-zinc-200' : '',
                   ].join(' ')}
                   onClick={col.sortable ? () => handleSort(col.key) : undefined}
                 >
@@ -106,14 +106,14 @@ export default function Table({
                   onClick={onRowClick ? () => onRowClick(row) : undefined}
                   className={[
                     'transition-colors duration-100',
-                    onRowClick ? 'cursor-pointer hover:bg-zinc-800/60' : 'hover:bg-zinc-800/30',
+                    onRowClick ? 'cursor-pointer hover:bg-zinc-800/50' : '',
                   ].join(' ')}
                 >
                   {columns.map((col) => (
                     <td
                       key={col.key}
                       className={[
-                        'px-4 py-3 text-zinc-200',
+                        'px-4 py-4 text-zinc-200',
                         alignClass(col.align),
                       ].join(' ')}
                     >

@@ -28,7 +28,7 @@ const Select = forwardRef(function Select(
   ref
 ) {
   return (
-    <div className={`space-y-1 ${className}`}>
+    <div className={`space-y-2 ${className}`}>
       {label && (
         <label htmlFor={id} className="form-label">
           {label}
@@ -79,7 +79,7 @@ const Select = forwardRef(function Select(
       </div>
 
       {error && (
-        <p role="alert" className="text-xs text-red-500">
+        <p role="alert" className="text-xs text-red-400">
           {error}
         </p>
       )}

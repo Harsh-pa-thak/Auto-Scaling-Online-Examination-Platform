@@ -5,7 +5,6 @@ import {
   Trash2,
   FolderPlus,
   HelpCircle,
-  Filter,
   LayoutGrid,
   List,
   CheckCircle2,
@@ -164,7 +163,7 @@ export default function AdminQuestionBankPage() {
   }, [])
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       {/* ── Page Header ── */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-1 border-b border-zinc-800">
         <div>
@@ -189,7 +188,7 @@ export default function AdminQuestionBankPage() {
             className={[
               'flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition-colors',
               viewMode === 'table'
-                ? 'bg-zinc-800 text-amber-400 shadow-xs'
+                ? 'bg-zinc-800 text-amber-400'
                 : 'text-zinc-400 hover:text-zinc-200',
             ].join(' ')}
             aria-label="Table View"
@@ -203,7 +202,7 @@ export default function AdminQuestionBankPage() {
             className={[
               'flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition-colors',
               viewMode === 'cards'
-                ? 'bg-zinc-800 text-amber-400 shadow-xs'
+                ? 'bg-zinc-800 text-amber-400'
                 : 'text-zinc-400 hover:text-zinc-200',
             ].join(' ')}
             aria-label="Cards View"
@@ -237,7 +236,7 @@ export default function AdminQuestionBankPage() {
               <span>{cat === 'All' ? 'All Categories' : cat}</span>
               <span
                 className={[
-                  'px-1.5 py-0.2 rounded-full text-[10px] font-semibold',
+                  'px-1.5 py-0.2 rounded-full text-xs font-semibold',
                   isActive
                     ? 'bg-amber-500/30 text-amber-200'
                     : 'bg-zinc-800 text-zinc-400',
@@ -251,7 +250,7 @@ export default function AdminQuestionBankPage() {
       </div>
 
       {/* ── Search & Filter Controls ── */}
-      <Card padding="p-4">
+      <Card>
         <div className="flex flex-col sm:flex-row gap-3">
           <div className="flex-1">
             <SearchBar
@@ -264,27 +263,7 @@ export default function AdminQuestionBankPage() {
             />
           </div>
 
-          <div className="flex gap-2.5 flex-wrap">
-            {/* Category Dropdown */}
-            <div className="flex items-center gap-1.5">
-              <Filter size={14} className="text-zinc-500" />
-              <select
-                aria-label="Filter by category"
-                value={categoryFilter}
-                onChange={(e) => {
-                  setCategoryFilter(e.target.value)
-                  setPage(1)
-                }}
-                className="input-base py-1.5 text-sm pr-8"
-              >
-                {CATEGORIES.map((c) => (
-                  <option key={c} value={c}>
-                    {c === 'All' ? 'All Categories' : c}
-                  </option>
-                ))}
-              </select>
-            </div>
-
+          <div className="sm:w-48">
             {/* Difficulty Dropdown */}
             <select
               aria-label="Filter by difficulty"
@@ -293,7 +272,7 @@ export default function AdminQuestionBankPage() {
                 setDiffFilter(e.target.value)
                 setPage(1)
               }}
-              className="input-base py-1.5 text-sm pr-8"
+              className="input-base w-full"
             >
               {DIFFICULTIES.map((d) => (
                 <option key={d} value={d}>
@@ -305,7 +284,7 @@ export default function AdminQuestionBankPage() {
         </div>
 
         {/* Filter status summary */}
-        <div className="mt-2.5 pt-2 border-t border-zinc-800/80 flex items-center justify-between text-xs text-zinc-500">
+        <div className="mt-4 pt-4 border-t border-zinc-800/80 flex items-center justify-between text-xs text-zinc-500">
           <span>
             Showing <strong className="text-zinc-300">{filtered.length}</strong> of{' '}
             <strong className="text-zinc-300">{questions.length}</strong> repository questions
@@ -353,7 +332,7 @@ export default function AdminQuestionBankPage() {
         /* ── TABLE VIEW ── */
         <Card padding="p-0">
           {/* Table Header */}
-          <div className="hidden lg:grid grid-cols-12 px-5 py-3.5 border-b border-zinc-800 text-xs font-semibold uppercase tracking-wider text-zinc-400 bg-zinc-900/40">
+          <div className="hidden lg:grid grid-cols-12 px-6 py-4 border-b border-zinc-800 text-xs font-semibold uppercase tracking-wider text-zinc-400 bg-zinc-900/40">
             <div className="col-span-5">Question</div>
             <div className="col-span-2">Category</div>
             <div className="col-span-1">Difficulty</div>
@@ -389,7 +368,7 @@ export default function AdminQuestionBankPage() {
                       </button>
                       <div className="min-w-0 flex-1">
                         <div className="flex items-center gap-2 mb-1">
-                          <span className="text-[11px] font-mono px-1.5 py-0.5 rounded bg-zinc-800 text-zinc-400">
+                          <span className="text-xs tabular-nums px-1.5 py-0.5 rounded bg-zinc-800 text-zinc-400">
                             {q.id}
                           </span>
                           {isAllocated && (
@@ -398,7 +377,7 @@ export default function AdminQuestionBankPage() {
                             </Badge>
                           )}
                         </div>
-                        <p className="text-sm font-medium text-zinc-100 leading-snug line-clamp-2">
+                        <p className="text-sm font-medium text-zinc-100 line-clamp-2">
                           {q.text}
                         </p>
                       </div>
@@ -442,7 +421,7 @@ export default function AdminQuestionBankPage() {
                               </span>
                               <span className="flex-1">{opt}</span>
                               {isCorrect && (
-                                <span className="text-[11px] font-semibold text-emerald-400 flex items-center gap-1">
+                                <span className="text-xs font-semibold text-emerald-400 flex items-center gap-1">
                                   <Check size={12} /> Correct
                                 </span>
                               )}
@@ -477,7 +456,7 @@ export default function AdminQuestionBankPage() {
                   {/* 5. Correct Answer Column */}
                   <div className="hidden lg:flex lg:col-span-2 items-center gap-1.5 min-w-0 pr-2">
                     <div className="flex items-center gap-1.5 text-xs text-emerald-400 font-medium truncate">
-                      <span className="flex-shrink-0 flex items-center justify-center h-5 w-5 rounded bg-emerald-950/60 border border-emerald-800/60 text-emerald-400 font-bold text-[11px]">
+                      <span className="flex-shrink-0 flex items-center justify-center h-5 w-5 rounded bg-emerald-950/60 border border-emerald-800/60 text-emerald-400 font-bold text-xs">
                         {letter}
                       </span>
                       <span className="truncate text-zinc-300" title={correctOptionText}>
@@ -560,13 +539,13 @@ export default function AdminQuestionBankPage() {
               return (
                 <div
                   key={q.id}
-                  className="bg-zinc-900 border border-zinc-800 rounded-xl p-5 flex flex-col justify-between hover:border-zinc-700/80 transition-colors space-y-4"
+                  className="bg-zinc-900 border border-zinc-800 rounded-xl p-6 flex flex-col justify-between hover:border-zinc-700/80 transition-colors space-y-4"
                 >
                   {/* Top Bar: ID, Category, Difficulty, Marks */}
                   <div>
                     <div className="flex items-center justify-between gap-2 mb-2.5">
                       <div className="flex items-center gap-2">
-                        <span className="text-xs font-mono px-2 py-0.5 rounded bg-zinc-800 text-zinc-400">
+                        <span className="text-xs tabular-nums px-2 py-0.5 rounded bg-zinc-800 text-zinc-400">
                           {q.id}
                         </span>
                         <Badge variant="default" size="sm">
@@ -584,7 +563,7 @@ export default function AdminQuestionBankPage() {
                     </div>
 
                     {/* Question text */}
-                    <h3 className="text-sm font-semibold text-zinc-100 leading-snug mt-1">
+                    <h3 className="text-sm font-semibold text-zinc-100 mt-1">
                       {q.text}
                     </h3>
                   </div>
@@ -609,7 +588,7 @@ export default function AdminQuestionBankPage() {
                           </span>
                           <span className="flex-1">{opt}</span>
                           {isCorrect && (
-                            <span className="text-[11px] font-semibold text-emerald-400 flex items-center gap-1">
+                            <span className="text-xs font-semibold text-emerald-400 flex items-center gap-1">
                               <CheckCircle2 size={13} /> Correct Answer
                             </span>
                           )}
@@ -670,7 +649,7 @@ export default function AdminQuestionBankPage() {
 
           {/* Cards Pagination */}
           {filtered.length > PAGE_SIZE && (
-            <Card padding="p-4">
+            <Card>
               <Pagination
                 currentPage={safePage}
                 totalPages={totalPages}
@@ -709,7 +688,7 @@ export default function AdminQuestionBankPage() {
         title="Add Question to Exam"
         size="md"
         footer={
-          <div className="flex items-center justify-end gap-2.5 w-full">
+          <div className="flex items-center justify-end gap-3 w-full">
             <Button
               variant="secondary"
               onClick={() => {
@@ -734,7 +713,7 @@ export default function AdminQuestionBankPage() {
           <div className="space-y-4 text-left">
             <div className="p-3 rounded-lg bg-zinc-950 border border-zinc-800 space-y-1">
               <div className="flex items-center gap-2">
-                <span className="text-xs font-mono text-zinc-500">{addToExamTarget.id}</span>
+                <span className="text-xs tabular-nums text-zinc-500">{addToExamTarget.id}</span>
                 <Badge variant="default" size="sm">{addToExamTarget.category}</Badge>
                 <Badge variant="primary" size="sm">{addToExamTarget.marks} Marks</Badge>
               </div>
@@ -755,7 +734,7 @@ export default function AdminQuestionBankPage() {
                 onChange={(e) => setSelectedExamId(e.target.value)}
                 required
               />
-              <p className="text-[11px] text-zinc-500 mt-1.5">
+              <p className="text-xs text-zinc-500 mt-1.5">
                 The question will be associated with the selected exam paper and assigned {addToExamTarget.marks} marks.
               </p>
             </div>

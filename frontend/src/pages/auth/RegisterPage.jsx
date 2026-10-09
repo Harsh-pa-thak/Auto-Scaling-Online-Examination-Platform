@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { Input, Button, Badge } from '../../components/common'
+import { Input, Button } from '../../components/common'
 import { useToast } from '../../hooks/useToast'
 import {
   User,
@@ -11,8 +11,6 @@ import {
   EyeOff,
   UserPlus,
   CheckCircle2,
-  XCircle,
-  ShieldCheck,
 } from 'lucide-react'
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
@@ -56,11 +54,11 @@ export default function RegisterPage() {
   ].filter(Boolean).length
 
   const strengthConfig = [
-    { label: 'Very Weak', color: 'bg-slate-200', text: 'text-slate-400' },
-    { label: 'Weak',      color: 'bg-red-500',   text: 'text-red-500' },
-    { label: 'Fair',      color: 'bg-amber-500', text: 'text-amber-600' },
-    { label: 'Good',      color: 'bg-primary-500', text: 'text-primary-600' },
-    { label: 'Strong',    color: 'bg-emerald-500', text: 'text-emerald-600' },
+    { label: 'Very Weak', color: 'bg-zinc-800', text: 'text-zinc-500' },
+    { label: 'Weak',      color: 'bg-red-500',   text: 'text-red-400' },
+    { label: 'Fair',      color: 'bg-amber-500', text: 'text-amber-400' },
+    { label: 'Good',      color: 'bg-amber-500', text: 'text-amber-400' },
+    { label: 'Strong',    color: 'bg-emerald-500', text: 'text-emerald-400' },
   ]
 
   const currentStrength = formData.password.length === 0 ? 0 : passedCount
@@ -158,11 +156,9 @@ export default function RegisterPage() {
     <div className="space-y-6">
       {/* Header */}
       <div className="text-center">
-        <h2 className="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight">
-          Create Student Account
-        </h2>
-        <p className="text-xs sm:text-sm text-slate-500 mt-1.5">
-          Enroll for official university online examinations
+        <h1 className="text-xl font-semibold text-zinc-50">Create student account</h1>
+        <p className="mt-2 text-sm text-zinc-400">
+          Enroll for official university online examinations.
         </p>
       </div>
 
@@ -171,7 +167,7 @@ export default function RegisterPage() {
         {/* Full Name */}
         <Input
           id="reg-name"
-          label="Full Name"
+          label="Full name"
           required
           placeholder="e.g. Harsh Pathak"
           value={formData.name}
@@ -185,7 +181,7 @@ export default function RegisterPage() {
         {/* Student ID */}
         <Input
           id="reg-studentid"
-          label="Student Registration ID"
+          label="Student registration ID"
           required
           placeholder="e.g. 24BCE1234"
           value={formData.studentId}
@@ -199,7 +195,7 @@ export default function RegisterPage() {
         {/* Institutional Email */}
         <Input
           id="reg-email"
-          label="Institutional Email"
+          label="Institutional email"
           type="email"
           required
           placeholder="harsh.pathak@vit.ac.in"
@@ -230,7 +226,7 @@ export default function RegisterPage() {
                 type="button"
                 onClick={() => setShowPassword((prev) => !prev)}
                 aria-label={showPassword ? 'Hide password' : 'Show password'}
-                className="p-1 rounded text-slate-400 hover:text-slate-600 focus:outline-none focus:ring-1 focus:ring-primary-500 transition-colors"
+                className="rounded p-1 text-zinc-500 transition-colors hover:text-zinc-300 focus:outline-none focus:ring-1 focus:ring-amber-500"
               >
                 {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
               </button>
@@ -239,42 +235,42 @@ export default function RegisterPage() {
 
           {/* Password Strength Indicator */}
           {formData.password.length > 0 && (
-            <div className="mt-2.5 p-3 rounded-xl bg-slate-50 border border-slate-200/80 space-y-2 animate-in fade-in duration-150">
+            <div className="mt-2 space-y-2 rounded-lg border border-zinc-800 bg-zinc-950 p-4">
               <div className="flex items-center justify-between text-xs">
-                <span className="text-slate-500 font-medium">Strength:</span>
+                <span className="font-medium text-zinc-400">Strength</span>
                 <span className={`font-semibold ${strengthInfo.text}`}>
                   {strengthInfo.label}
                 </span>
               </div>
 
               {/* Strength Progress Segments */}
-              <div className="grid grid-cols-4 gap-1.5 h-1.5">
+              <div className="grid h-1 grid-cols-4 gap-1">
                 {[1, 2, 3, 4].map((seg) => (
                   <div
                     key={seg}
-                    className={`rounded-full transition-all duration-300 ${
-                      currentStrength >= seg ? strengthInfo.color : 'bg-slate-200'
+                    className={`rounded-full transition-colors ${
+                      currentStrength >= seg ? strengthInfo.color : 'bg-zinc-800'
                     }`}
                   />
                 ))}
               </div>
 
               {/* Requirement Checklist */}
-              <div className="grid grid-cols-2 gap-1.5 pt-1 text-[11px] text-slate-500">
-                <span className={`flex items-center gap-1 ${passwordCriteria.length ? 'text-emerald-600 font-medium' : ''}`}>
-                  {passwordCriteria.length ? <CheckCircle2 size={12} /> : <span className="w-3 h-3 rounded-full border border-slate-300 inline-block" />}
+              <div className="grid grid-cols-2 gap-2 pt-2 text-xs text-zinc-400">
+                <span className={`flex items-center gap-1 ${passwordCriteria.length ? 'text-emerald-400' : ''}`}>
+                  {passwordCriteria.length ? <CheckCircle2 size={12} /> : <span className="w-3 h-3 rounded-full border border-zinc-700 inline-block" />}
                   8+ characters
                 </span>
-                <span className={`flex items-center gap-1 ${passwordCriteria.hasUpper && passwordCriteria.hasLower ? 'text-emerald-600 font-medium' : ''}`}>
-                  {passwordCriteria.hasUpper && passwordCriteria.hasLower ? <CheckCircle2 size={12} /> : <span className="w-3 h-3 rounded-full border border-slate-300 inline-block" />}
+                <span className={`flex items-center gap-1 ${passwordCriteria.hasUpper && passwordCriteria.hasLower ? 'text-emerald-400' : ''}`}>
+                  {passwordCriteria.hasUpper && passwordCriteria.hasLower ? <CheckCircle2 size={12} /> : <span className="w-3 h-3 rounded-full border border-zinc-700 inline-block" />}
                   Upper & lower
                 </span>
-                <span className={`flex items-center gap-1 ${passwordCriteria.hasNumber ? 'text-emerald-600 font-medium' : ''}`}>
-                  {passwordCriteria.hasNumber ? <CheckCircle2 size={12} /> : <span className="w-3 h-3 rounded-full border border-slate-300 inline-block" />}
+                <span className={`flex items-center gap-1 ${passwordCriteria.hasNumber ? 'text-emerald-400' : ''}`}>
+                  {passwordCriteria.hasNumber ? <CheckCircle2 size={12} /> : <span className="w-3 h-3 rounded-full border border-zinc-700 inline-block" />}
                   At least 1 number
                 </span>
-                <span className={`flex items-center gap-1 ${passwordCriteria.hasSpecial ? 'text-emerald-600 font-medium' : ''}`}>
-                  {passwordCriteria.hasSpecial ? <CheckCircle2 size={12} /> : <span className="w-3 h-3 rounded-full border border-slate-300 inline-block" />}
+                <span className={`flex items-center gap-1 ${passwordCriteria.hasSpecial ? 'text-emerald-400' : ''}`}>
+                  {passwordCriteria.hasSpecial ? <CheckCircle2 size={12} /> : <span className="w-3 h-3 rounded-full border border-zinc-700 inline-block" />}
                   Special symbol
                 </span>
               </div>
@@ -285,7 +281,7 @@ export default function RegisterPage() {
         {/* Confirm Password */}
         <Input
           id="reg-confirmpassword"
-          label="Confirm Password"
+          label="Confirm password"
           type={showConfirmPassword ? 'text' : 'password'}
           required
           placeholder="Re-enter your password"
@@ -300,37 +296,32 @@ export default function RegisterPage() {
               type="button"
               onClick={() => setShowConfirmPassword((prev) => !prev)}
               aria-label={showConfirmPassword ? 'Hide confirm password' : 'Show confirm password'}
-              className="p-1 rounded text-slate-400 hover:text-slate-600 focus:outline-none focus:ring-1 focus:ring-primary-500 transition-colors"
+              className="rounded p-1 text-zinc-500 transition-colors hover:text-zinc-300 focus:outline-none focus:ring-1 focus:ring-amber-500"
             >
               {showConfirmPassword ? <EyeOff size={16} /> : <Eye size={16} />}
             </button>
           }
         />
 
-        {/* Submit Button */}
-        <div className="pt-2">
-          <Button
-            type="submit"
-            fullWidth
-            size="lg"
-            loading={isSubmitting}
-            rightIcon={<UserPlus size={16} />}
-          >
-            Complete Registration
-          </Button>
-        </div>
+        <Button
+          type="submit"
+          fullWidth
+          size="lg"
+          loading={isSubmitting}
+          rightIcon={<UserPlus size={16} />}
+          className="!mt-6"
+        >
+          Create account
+        </Button>
       </form>
 
       {/* Back to Login Link */}
-      <div className="text-center text-xs text-slate-500 pt-3 border-t border-slate-100">
-        <span>Already have an account? </span>
-        <Link
-          to="/login"
-          className="text-primary-600 font-semibold hover:text-primary-700 hover:underline transition-colors"
-        >
-          Sign in here
+      <p className="border-t border-zinc-800 pt-6 text-center text-sm text-zinc-400">
+        Already have an account?{' '}
+        <Link to="/login" className="text-link">
+          Sign in
         </Link>
-      </div>
+      </p>
     </div>
   )
 }

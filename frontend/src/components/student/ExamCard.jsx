@@ -6,7 +6,6 @@ import {
   ArrowRight,
   Play,
   Timer,
-  AlertCircle,
   Lock,
 } from 'lucide-react'
 import { Badge, Button } from '../common'
@@ -56,154 +55,83 @@ export default function ExamCard({ exam, isActive = false, className = '' }) {
   const isCompleted = exam.status === 'completed'
   const isUnavailable = exam.status === 'unavailable' || exam.status === 'draft'
 
+  const details = [
+    { icon: Calendar,   label: 'Date',      value: formatDate(exam.startTime) },
+    { icon: Clock,      label: 'Time',      value: `${formatTime(exam.startTime)}${exam.endTime ? ` – ${formatTime(exam.endTime)}` : ''}` },
+    { icon: Timer,      label: 'Duration',  value: `${exam.duration} minutes` },
+    { icon: HelpCircle, label: 'Questions', value: `${exam.totalQuestions} questions · ${exam.totalMarks} marks` },
+  ]
+
   return (
     <div
       className={[
-        'bg-white rounded-2xl border transition-all duration-200 flex flex-col justify-between overflow-hidden',
-        isLive
-          ? 'border-emerald-300 ring-2 ring-emerald-500/20 shadow-md hover:shadow-lg'
-          : isUnavailable
-          ? 'border-slate-200 bg-slate-50/50 opacity-90'
-          : 'border-slate-200/90 shadow-card hover:shadow-card-md hover:border-slate-300',
+        'card flex flex-col p-6',
+        isLive ? 'border-amber-500/50' : '',
+        isUnavailable ? 'opacity-70' : '',
         className,
       ].join(' ')}
     >
-      {/* Top Banner if Live */}
-      {isLive && (
-        <div className="bg-gradient-to-r from-emerald-600 to-teal-600 text-white px-4 py-1.5 text-xs font-semibold flex items-center justify-between">
-          <span className="flex items-center gap-1.5">
-            <span className="h-2 w-2 rounded-full bg-white animate-ping" />
-            <span className="h-2 w-2 rounded-full bg-white absolute" />
-            Examination Live Now
-          </span>
-          <span className="text-[11px] text-emerald-100 font-mono">
-            Ends at {formatTime(exam.endTime)}
-          </span>
-        </div>
-      )}
+      {/* Subject & Status */}
+      <div className="flex items-center justify-between gap-2">
+        <p className="truncate text-sm text-zinc-400">
+          {exam.subject}
+          {exam.code && <span className="tabular-nums text-zinc-500"> · {exam.code}</span>}
+        </p>
 
-      {/* Card Content Area */}
-      <div className="p-5 flex-1 flex flex-col">
-        {/* Subject & Status Row */}
-        <div className="flex items-center justify-between gap-2 mb-2.5">
-          <div className="flex items-center gap-2">
-            <span className="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-700">
-              {exam.subject}
-            </span>
-            {exam.code && (
-              <span className="text-[11px] font-mono text-slate-400 font-medium">
-                {exam.code}
-              </span>
-            )}
-          </div>
-
-          <div>
-            {isLive ? (
-              <Badge variant="success" dot>
-                Active
-              </Badge>
-            ) : isUpcoming ? (
-              <Badge variant="primary" dot>
-                Upcoming
-              </Badge>
-            ) : isCompleted ? (
-              <Badge variant="default">Completed</Badge>
-            ) : isUnavailable ? (
-              <Badge variant="danger" dot>Unavailable</Badge>
-            ) : (
-              <Badge variant="warning">{exam.status}</Badge>
-            )}
-          </div>
-        </div>
-
-        {/* Exam Title */}
-        <h3 className="text-base font-bold text-slate-900 tracking-tight leading-snug mb-3">
-          {exam.title}
-        </h3>
-
-        {/* Meta details list */}
-        <div className="mt-auto space-y-2 pt-2 border-t border-slate-100 text-xs text-slate-600">
-          <div className="flex items-center justify-between">
-            <span className="flex items-center gap-1.5 text-slate-500">
-              <Calendar size={13} className="text-slate-400" />
-              Date
-            </span>
-            <span className="font-medium text-slate-800">
-              {formatDate(exam.startTime)}
-            </span>
-          </div>
-
-          <div className="flex items-center justify-between">
-            <span className="flex items-center gap-1.5 text-slate-500">
-              <Clock size={13} className="text-slate-400" />
-              Start Time
-            </span>
-            <span className="font-medium text-slate-800">
-              {formatTime(exam.startTime)} {exam.endTime && `– ${formatTime(exam.endTime)}`}
-            </span>
-          </div>
-
-          <div className="flex items-center justify-between">
-            <span className="flex items-center gap-1.5 text-slate-500">
-              <Timer size={13} className="text-slate-400" />
-              Duration
-            </span>
-            <span className="font-medium text-slate-800">
-              {exam.duration} minutes
-            </span>
-          </div>
-
-          <div className="flex items-center justify-between">
-            <span className="flex items-center gap-1.5 text-slate-500">
-              <HelpCircle size={13} className="text-slate-400" />
-              Questions
-            </span>
-            <span className="font-medium text-slate-800">
-              {exam.totalQuestions} Questions • {exam.totalMarks} Marks
-            </span>
-          </div>
-        </div>
+        {isLive ? (
+          <Badge variant="primary" dot>
+            Live
+          </Badge>
+        ) : isUpcoming ? (
+          <Badge dot>Upcoming</Badge>
+        ) : isCompleted ? (
+          <Badge>Completed</Badge>
+        ) : isUnavailable ? (
+          <Badge>Unavailable</Badge>
+        ) : (
+          <Badge className="capitalize">{exam.status}</Badge>
+        )}
       </div>
 
-      {/* Card Action Footer */}
-      <div className="p-4 pt-0">
+      {/* Title */}
+      <h3 className="mt-2 text-base font-semibold text-zinc-100">{exam.title}</h3>
+
+      {/* Details */}
+      <dl className="mt-4 flex-1 space-y-2 border-t border-zinc-800 pt-4 text-sm">
+        {details.map(({ icon: Icon, label, value }) => (
+          <div key={label} className="flex items-center justify-between gap-4">
+            <dt className="flex items-center gap-2 text-zinc-400">
+              <Icon size={14} className="text-zinc-500" />
+              {label}
+            </dt>
+            <dd className="text-right tabular-nums text-zinc-200">{value}</dd>
+          </div>
+        ))}
+      </dl>
+
+      {/* Action */}
+      <div className="mt-6">
         {isLive ? (
           <Link to={`/student/exams/${exam.id}`}>
-            <Button
-              variant="success"
-              fullWidth
-              size="md"
-              rightIcon={<Play size={15} className="fill-current" />}
-            >
-              Start Exam Now
+            <Button fullWidth rightIcon={<Play size={14} className="fill-current" />}>
+              Start exam
             </Button>
           </Link>
         ) : isUpcoming ? (
           <Link to={`/student/exams/${exam.id}`}>
-            <Button
-              variant="secondary"
-              fullWidth
-              size="sm"
-              rightIcon={<ArrowRight size={14} />}
-            >
-              View Exam Details
+            <Button variant="secondary" fullWidth rightIcon={<ArrowRight size={14} />}>
+              View details
             </Button>
           </Link>
         ) : isCompleted ? (
           <Link to="/student/results">
-            <Button variant="ghost" fullWidth size="sm">
-              View Results
+            <Button variant="secondary" fullWidth>
+              View results
             </Button>
           </Link>
         ) : (
-          <Button
-            variant="secondary"
-            fullWidth
-            size="sm"
-            disabled
-            leftIcon={<Lock size={13} />}
-          >
-            Exam Unavailable
+          <Button variant="secondary" fullWidth disabled leftIcon={<Lock size={14} />}>
+            Not available
           </Button>
         )}
       </div>
