@@ -1,87 +1,164 @@
-# Backend Setup and API
+# Backend
 
-The backend is an Express REST API backed by PostgreSQL. AWS RDS is supported
-through one connection string; credentials are never hard-coded.
+The backend is an Express + Prisma + PostgreSQL API. It supports local
+PostgreSQL, Neon, Supabase, Railway, AWS RDS, and other PostgreSQL providers.
 
 ## Environment
 
-Copy the values into `backend/.env`:
+Copy `backend/.env.example` to `backend/.env` and set real private values:
 
 ```env
 PORT=5000
-NODE_ENV=development
-DATABASE_URL=postgresql://USER:PASSWORD@RDS_HOST:5432/DATABASE?sslmode=require
-JWT_SECRET=replace-with-a-long-random-secret
+DATABASE_URL=postgresql://USERNAME:PASSWORD@HOST:5432/DATABASE?sslmode=require
+JWT_SECRET=use-a-long-random-secret
 JWT_EXPIRES_IN=7d
+FRONTEND_URL=http://localhost:5173
+NODE_ENV=development
+SEED_ADMIN_PASSWORD=development-admin-password
+SEED_STUDENT_PASSWORD=development-student-password
 ```
 
-For AWS RDS, use the complete PostgreSQL connection URI supplied by AWS. In
-production the application enables TLS for the pool. Do not commit real
-credentials or the real RDS hostname if it is private.
+Never commit `backend/.env`. `DATABASE_URL` must be a PostgreSQL connection
+string. The application validates `DATABASE_URL` and `JWT_SECRET` at startup.
 
-## Run
+## Install and run
 
 ```bash
 cd backend
 npm install
+npm run prisma:generate
+npx prisma migrate dev --name init
+npm run prisma:seed
 npm run dev
 ```
 
-On startup, `src/db.js` creates the base tables if `DATABASE_URL` exists. The
-current schema includes `users`, `exams`, `questions`, and `attempts`.
+The frontend Vite proxy sends `/api/*` to `http://localhost:5000`.
 
-## Current routes
+## Prisma
+
+Schema: `backend/prisma/schema.prisma`
+
+Models:
+
+- `User`
+- `Exam`
+- `Question`
+- `ExamQuestion`
+- `Attempt`
+- `AttemptAnswer`
+- `Notification`
+
+Migrations are stored in `backend/prisma/migrations/`. Use
+`npx prisma migrate deploy` in a deployed environment.
+
+Seed users:
+
+```text
+Admin:   admin@example.com / SEED_ADMIN_PASSWORD
+Student: student@example.com / SEED_STUDENT_PASSWORD
+```
+
+## API
+
+All responses use `{ data }` on success and
+`{ error: { code, message, fields? } }` on failure.
 
 ### Health
 
-- `GET /api/health`
-
-### Authentication
-
-- `POST /api/auth/register`
-- `POST /api/auth/login`
-- `GET /api/auth/me`
-- `POST /api/auth/logout`
-
-Login returns a JWT. Send it on protected requests:
-
-```http
-Authorization: Bearer <token>
+```text
+GET /api/health
 ```
 
-### Exams
+### Auth
 
-- `GET /api/exams`
-- `GET /api/exams/:id`
-- `POST /api/exams` (admin)
-- `PATCH /api/exams/:id` (admin)
-- `DELETE /api/exams/:id` (admin)
+```text
+POST /api/auth/register
+POST /api/auth/login
+POST /api/auth/logout
+GET  /api/auth/me
+```
 
-### Attempts
+Protected requests use:
 
-- `POST /api/exams/:examId/attempts`
-- `GET /api/attempts/:id`
-- `PUT /api/attempts/:id/answers`
-- `POST /api/attempts/:id/submit`
+```text
+Authorization: Bearer <jwt>
+```
 
-## Frontend connection
+### Student
 
-The Vite proxy sends `/api/*` to `http://localhost:5000`. The shared client is
-`frontend/src/lib/api.js`; frontend code should call relative API paths through
-that client instead of using `fetch` directly.
+```text
+GET  /api/student/dashboard
+GET  /api/exams
+GET  /api/exams/:id
+POST /api/exams/:examId/attempts
+GET  /api/attempts/:id
+PUT  /api/attempts/:id/answers/:questionId
+POST /api/attempts/:id/submit
+GET  /api/student/results
+GET  /api/student/history
+GET  /api/student/notifications
+```
 
-## Important next backend additions
+Student exam responses never include `correctAnswer`.
 
-The basic foundation is in place. Add these next as the UI is wired:
+### Admin
 
-- question CRUD and exam-question assignment
-- student list/status endpoints
-- results and server-side scoring
-- notifications
-- profile/password updates
-- admin monitoring and analytics
-- migrations and a controlled seed script
-- rate limiting, request validation, audit logs, and automated tests
+```text
+GET    /api/admin/dashboard
+GET    /api/students
+PATCH  /api/students/:id/status
+GET    /api/admin/exams
+POST   /api/exams
+PATCH  /api/exams/:id
+DELETE /api/exams/:id
+POST   /api/exams/:id/publish
+GET    /api/questions
+POST   /api/questions
+PATCH  /api/questions/:id
+DELETE /api/questions/:id
+GET    /api/admin/monitoring
+GET    /api/admin/results
+GET    /api/admin/analytics
+```
 
-The server must remain authoritative for exam eligibility, time limits,
-submission idempotency, scoring, and role permissions.
+### Question assignment
+
+```text
+GET    /api/exams/:examId/questions
+PUT    /api/exams/:examId/questions
+PATCH  /api/exams/:examId/questions/:questionId
+DELETE /api/exams/:examId/questions/:questionId
+```
+
+`PUT` replaces the complete assignment list. Each assignment has:
+
+```json
+{
+  "questionId": "question-id",
+  "position": 1
+}
+```
+
+Question IDs and positions must be unique. Assignments cannot be changed after
+an exam becomes active or completed.
+
+## Attempt security
+
+- Every attempt is queried with the authenticated student ID.
+- Students cannot access another student's attempt.
+- Attempts can only start while the exam is published/active and inside its
+  schedule.
+- Expiry is calculated by the server from the exam end time and duration.
+- Answers must refer to a question assigned to that attempt's exam.
+- Answers cannot be changed after submission or expiry.
+- Submission and scoring run in a Prisma transaction.
+- Repeated submission returns the already-finalized attempt.
+- PostgreSQL advisory locking and a partial unique index prevent concurrent
+  duplicate active attempts.
+- Correct answers are only read by the server during scoring.
+
+## Security middleware
+
+The app includes Helmet, restricted CORS, JSON request-size limits, auth-route
+rate limiting, JWT authentication, role authorization, Zod validation, and a
+central error handler.

@@ -1,5 +1,9 @@
 # Frontend-to-Backend Implementation Blueprint
 
+> Current implementation status: the backend foundation described below is now
+> implemented with Prisma, PostgreSQL, JWT, Zod, admin question assignment, and
+> secured exam attempts. See [backend.md](./backend.md) for setup and routes.
+
 This document describes the current frontend, the backend work required to make it
 production-backed, the API contract to implement, and the exact frontend files that
 must change.
@@ -23,15 +27,18 @@ credentials, and exam submission never reaches a server.
 
 ### Backend
 
-The backend is an Express application in `backend/src/index.js`. It currently has:
+The backend is an Express application bootstrapped by `backend/src/app.js` and
+`backend/src/index.js`, using Prisma with PostgreSQL. It now includes:
 
-- `cors`, `dotenv`, and JSON/form body parsing.
-- `GET /api/health`.
-- A generic 404 response.
-- A generic error handler.
-- No database connection.
-- No authentication or authorization.
-- No user, exam, question, attempt, result, notification, or analytics routes.
+- Prisma models and migrations for users, exams, questions, assignments,
+  attempts, answers, and notifications.
+- JWT authentication with bcrypt password hashing.
+- Zod request validation.
+- Helmet, restricted CORS, request-size limits, auth rate limiting, role
+  authorization, and centralized errors.
+- Student and admin APIs.
+- Admin question assignment and ordering.
+- Server-authoritative, transactional, idempotent exam attempts and scoring.
 
 ### Development connection
 
@@ -471,7 +478,28 @@ exam payload.
 - Load test for many concurrent exam starts and answer saves, since autoscaling
   is a core project requirement.
 
-## 11. Definition of done
+## 11. Current implemented backend files
+
+- `backend/src/app.js`
+- `backend/src/index.js`
+- `backend/src/config/env.js`
+- `backend/src/config/prisma.js`
+- `backend/src/middleware/auth.js`
+- `backend/src/middleware/errorHandler.js`
+- `backend/src/middleware/validate.js`
+- `backend/src/routes/auth.js`
+- `backend/src/routes/exams.js`
+- `backend/src/routes/attempts.js`
+- `backend/src/routes/questions.js`
+- `backend/src/routes/student.js`
+- `backend/src/routes/students.js`
+- `backend/src/routes/admin.js`
+- `backend/src/validators/auth.js`
+- `backend/src/validators/exams.js`
+- `backend/prisma/schema.prisma`
+- `backend/prisma/seed.js`
+
+## 12. Definition of done
 
 The frontend/backend integration is complete when:
 
@@ -484,4 +512,3 @@ The frontend/backend integration is complete when:
 - API errors are visible to the user and never silently converted into fake
   success.
 - Backend and frontend builds/tests pass.
-
