@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import {
   Search,
   Edit2,
@@ -30,7 +30,7 @@ import QuestionForm, {
   SUBJECT_TO_CATEGORY,
   NORMALIZE_DIFFICULTY,
 } from '../../components/admin/QuestionForm'
-import { mockQuestions, mockExams } from '../../data/mockData'
+import { api } from '../../lib/api'
 import { useToast } from '../../hooks/useToast'
 
 const DIFFICULTY_CONFIG = {
@@ -47,18 +47,14 @@ const PAGE_SIZE = 8
 export default function AdminQuestionBankPage() {
   const { toast } = useToast()
 
-  // In-memory questions initialized from mockQuestions
-  const [questions, setQuestions] = useState(() =>
-    mockQuestions.map((q) => {
-      const rawCat = q.category || q.subject || ''
-      const rawDiff = q.difficulty || ''
-      return {
-        ...q,
-        category: SUBJECT_TO_CATEGORY[rawCat] ?? rawCat,
-        difficulty: NORMALIZE_DIFFICULTY[rawDiff] ?? rawDiff,
-      }
-    })
-  )
+  const [questions, setQuestions] = useState([])
+  const [exams, setExams] = useState([])
+  useEffect(() => {
+    Promise.all([api('/questions'), api('/admin/exams')]).then(([loadedQuestions, loadedExams]) => {
+      setQuestions(loadedQuestions)
+      setExams(loadedExams)
+    }).catch((error) => toast.error('Could not load question bank', error.message))
+  }, [toast])
 
   const [search, setSearch] = useState('')
   const [categoryFilter, setCategoryFilter] = useState('All')
@@ -111,13 +107,8 @@ export default function AdminQuestionBankPage() {
   const paged = filtered.slice((safePage - 1) * PAGE_SIZE, safePage * PAGE_SIZE)
 
   // Edit handler
-  function handleEdit(data) {
-    const updated = {
-      ...editTarget,
-      ...data,
-      category: SUBJECT_TO_CATEGORY[data.category] ?? data.category,
-      difficulty: NORMALIZE_DIFFICULTY[data.difficulty] ?? data.difficulty,
-    }
+  async function handleEdit(data) {
+    const updated = await api(`/questions/${editTarget.id}`, { method: 'PATCH', body: data })
     setQuestions((prev) =>
       prev.map((q) => (q.id === editTarget.id ? updated : q))
     )
@@ -126,9 +117,10 @@ export default function AdminQuestionBankPage() {
   }
 
   // Delete handler
-  function handleDelete() {
+  async function handleDelete() {
     if (!deleteTarget) return
     const idToDelete = deleteTarget.id
+    await api(`/questions/${idToDelete}`, { method: 'DELETE' })
     setQuestions((prev) => prev.filter((q) => q.id !== idToDelete))
     setDeleteTarget(null)
     toast.success('Question Deleted', `Question ${idToDelete} removed from the Question Bank.`)
@@ -759,4 +751,3 @@ export default function AdminQuestionBankPage() {
     </div>
   )
 }
-
