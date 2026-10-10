@@ -16,19 +16,38 @@ router.post('/exams/:examId/attempts', requireRole('STUDENT'), async (req, res, 
     if (!exam || !['PUBLISHED', 'ACTIVE'].includes(exam.status) || now < exam.startTime || now > exam.endTime) {
       return res.status(400).json({ error: { code: 'EXAM_UNAVAILABLE', message: 'Exam is not available at this time' } })
     }
-    const existing = await prisma.attempt.findFirst({ where: { examId: exam.id, studentId: req.user.id, status: 'IN_PROGRESS' } })
-    if (existing) return res.json({ data: { ...existing, questions: exam.questions.map((item) => studentQuestion(item.question, item.position)) } })
-    const expiresAt = new Date(Math.min(exam.endTime.getTime(), now.getTime() + exam.duration * 60 * 1000))
-    const attempt = await prisma.attempt.create({ data: { examId: exam.id, studentId: req.user.id, expiresAt } })
+    const attempt = await prisma.$transaction(async (tx) => {
+      await tx.$executeRaw`SELECT pg_advisory_xact_lock(hashtext(${`${req.user.id}:${exam.id}`}))`
+      const existing = await tx.attempt.findFirst({ where: { examId: exam.id, studentId: req.user.id, status: 'IN_PROGRESS' } })
+      if (existing && existing.expiresAt > now) return existing
+      if (existing) {
+        await tx.attempt.update({ where: { id: existing.id }, data: { status: 'EXPIRED', submittedAt: now } })
+      }
+      const expiresAt = new Date(Math.min(exam.endTime.getTime(), now.getTime() + exam.duration * 60 * 1000))
+      return tx.attempt.create({ data: { examId: exam.id, studentId: req.user.id, expiresAt } })
+    }, { isolationLevel: 'Serializable' })
     res.status(201).json({ data: { ...attempt, questions: exam.questions.map((item) => studentQuestion(item.question, item.position)) } })
   } catch (error) { next(error) }
 })
 
 router.get('/attempts/:id', async (req, res, next) => {
   try {
-    const attempt = await prisma.attempt.findFirst({ where: { id: req.params.id, studentId: req.user.id }, include: { exam: { include: { questions: { orderBy: { position: 'asc' }, include: { question: true } } } }, answers: true } })
+    const attempt = await prisma.attempt.findFirst({
+      where: { id: req.params.id, studentId: req.user.id },
+      include: {
+        exam: { include: { questions: { orderBy: { position: 'asc' }, include: { question: true } } } },
+        answers: { select: { id: true, attemptId: true, questionId: true, selectedOption: true } },
+      },
+    })
     if (!attempt) return res.status(404).json({ error: { code: 'NOT_FOUND', message: 'Attempt not found' } })
-    res.json({ data: { ...attempt, questions: attempt.exam.questions.map((item) => studentQuestion(item.question, item.position)) } })
+    const { exam, ...safeAttempt } = attempt
+    res.json({
+      data: {
+        ...safeAttempt,
+        exam: { id: exam.id, title: exam.title, subject: exam.subject, duration: exam.duration, endTime: exam.endTime },
+        questions: exam.questions.map((item) => studentQuestion(item.question, item.position)),
+      },
+    })
   } catch (error) { next(error) }
 })
 
@@ -36,9 +55,16 @@ router.put('/attempts/:id/answers/:questionId', requireRole('STUDENT'), async (r
   try {
     const selectedOption = Number(req.body.selectedOption)
     if (!Number.isInteger(selectedOption) || selectedOption < 0 || selectedOption > 3) return res.status(400).json({ error: { code: 'VALIDATION_ERROR', message: 'selectedOption must be between 0 and 3' } })
-    const attempt = await prisma.attempt.findFirst({ where: { id: req.params.id, studentId: req.user.id }, include: { exam: true } })
+    const attempt = await prisma.attempt.findFirst({
+      where: { id: req.params.id, studentId: req.user.id },
+      include: { exam: { include: { questions: { where: { questionId: req.params.questionId }, select: { questionId: true } } } } },
+    })
     if (!attempt || attempt.status !== 'IN_PROGRESS') return res.status(404).json({ error: { code: 'NOT_FOUND', message: 'Active attempt not found' } })
-    if (new Date() > attempt.expiresAt) return res.status(409).json({ error: { code: 'EXPIRED', message: 'Attempt has expired' } })
+    if (!attempt.exam.questions.length) return res.status(400).json({ error: { code: 'INVALID_QUESTION', message: 'Question is not assigned to this exam' } })
+    if (new Date() > attempt.expiresAt) {
+      await prisma.attempt.update({ where: { id: attempt.id }, data: { status: 'EXPIRED', submittedAt: new Date() } })
+      return res.status(409).json({ error: { code: 'EXPIRED', message: 'Attempt has expired' } })
+    }
     const answer = await prisma.attemptAnswer.upsert({
       where: { attemptId_questionId: { attemptId: attempt.id, questionId: req.params.questionId } },
       update: { selectedOption },

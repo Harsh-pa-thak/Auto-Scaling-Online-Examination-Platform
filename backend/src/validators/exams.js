@@ -20,3 +20,23 @@ export const questionSchema = z.object({
   category: z.string().optional(),
   difficulty: z.string().optional(),
 })
+
+export const examQuestionAssignmentsSchema = z.object({
+  assignments: z.array(z.object({
+    questionId: z.string().min(1),
+    position: z.coerce.number().int().positive(),
+  })).superRefine((assignments, context) => {
+    const questionIds = new Set()
+    const positions = new Set()
+    assignments.forEach((assignment, index) => {
+      if (questionIds.has(assignment.questionId)) {
+        context.addIssue({ code: z.ZodIssueCode.custom, path: [index, 'questionId'], message: 'Question is assigned more than once' })
+      }
+      if (positions.has(assignment.position)) {
+        context.addIssue({ code: z.ZodIssueCode.custom, path: [index, 'position'], message: 'Positions must be unique' })
+      }
+      questionIds.add(assignment.questionId)
+      positions.add(assignment.position)
+    })
+  }),
+})
