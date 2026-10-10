@@ -12,7 +12,8 @@ router.get('/dashboard', async (req, res, next) => {
       prisma.exam.findMany({ where: { status: { in: ['PUBLISHED', 'ACTIVE'] }, startTime: { gte: new Date() } }, orderBy: { startTime: 'asc' }, take: 5 }),
       prisma.attempt.count({ where: { studentId: req.user.id, status: { in: ['SUBMITTED', 'EXPIRED'] } } }),
     ])
-    res.json({ data: { user: req.user, examsTaken: results, upcomingExams: upcoming, recentResults: attempts } })
+    const { passwordHash, ...user } = req.user
+    res.json({ data: { user, examsTaken: results, upcomingExams: upcoming, recentResults: attempts } })
   } catch (error) { next(error) }
 })
 
@@ -24,5 +25,19 @@ router.get('/history', async (req, res, next) => {
 })
 router.get('/notifications', async (req, res, next) => {
   try { const notifications = await prisma.notification.findMany({ where: { userId: req.user.id }, orderBy: { createdAt: 'desc' } }); res.json({ data: notifications }) } catch (error) { next(error) }
+})
+router.patch('/notifications/:id/read', async (req, res, next) => {
+  try {
+    const notification = await prisma.notification.updateMany({ where: { id: req.params.id, userId: req.user.id }, data: { read: true } })
+    if (!notification.count) return res.status(404).json({ error: { code: 'NOT_FOUND', message: 'Notification not found' } })
+    res.status(204).end()
+  } catch (error) { next(error) }
+})
+router.post('/notifications/read-all', async (req, res, next) => {
+  try { await prisma.notification.updateMany({ where: { userId: req.user.id, read: false }, data: { read: true } }); res.status(204).end() } catch (error) { next(error) }
+})
+router.get('/profile', async (req, res) => {
+  const { passwordHash, ...profile } = req.user
+  res.json({ data: profile })
 })
 export default router

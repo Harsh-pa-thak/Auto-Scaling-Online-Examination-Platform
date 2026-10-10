@@ -15,7 +15,7 @@ import ExamTimer from '../../components/exam/ExamTimer'
 import QuestionCard from '../../components/exam/QuestionCard'
 import QuestionNavigator from '../../components/exam/QuestionNavigator'
 import ExamSubmissionModal from '../../components/exam/ExamSubmissionModal'
-import { mockExams, mockQuestions } from '../../data/mockData'
+import { api } from '../../lib/api'
 import { useToast } from '../../hooks/useToast'
 
 export default function LiveExamPage() {
@@ -23,21 +23,19 @@ export default function LiveExamPage() {
   const navigate = useNavigate()
   const { toast } = useToast()
 
-  // Find exam
-  const exam = mockExams.find((e) => e.id === id) || mockExams[0]
+  const [exam, setExam] = useState(null)
+  const [attempt, setAttempt] = useState(null)
+  const [loading, setLoading] = useState(true)
+  const [loadError, setLoadError] = useState(null)
+  const questions = attempt?.questions || []
 
-  // Retrieve matching questions or fallback to entire bank
-  const questions = useMemo(() => {
-    const subjectQuestions = mockQuestions.filter(
-      (q) => q.subject.toLowerCase() === exam.subject.toLowerCase()
-    )
-    if (subjectQuestions.length >= 8) return subjectQuestions
-    // Augment with other questions so exam is full and realistic
-    const others = mockQuestions.filter(
-      (q) => q.subject.toLowerCase() !== exam.subject.toLowerCase()
-    )
-    return [...subjectQuestions, ...others].slice(0, 15)
-  }, [exam.subject])
+  useEffect(() => {
+    api(`/exams/${id}/attempts`)
+      .then(setAttempt)
+      .catch((error) => { setLoadError(error.message) })
+      .finally(() => setLoading(false))
+    api(`/exams/${id}`).then(setExam).catch(() => {})
+  }, [id])
 
   const totalQuestions = questions.length
 
@@ -72,7 +70,13 @@ export default function LiveExamPage() {
 
   // Handlers for question actions
   const handleSelectOption = (optIndex) => {
+    const question = questions[currentIndex]
     setAnswers((prev) => ({ ...prev, [currentIndex]: optIndex }))
+    if (attempt && question) {
+      api(`/attempts/${attempt.id}/answers/${question.id}`, {
+        method: 'PUT', body: { selectedOption: optIndex },
+      }).catch((error) => toast.error('Answer not saved', error.message))
+    }
   }
 
   const handleClearAnswer = () => {
@@ -108,20 +112,31 @@ export default function LiveExamPage() {
   const markedCount = Object.values(marked).filter(Boolean).length
 
   // Final submission handler
-  const handleConfirmSubmit = useCallback(() => {
-    setSubmissionModalOpen(false)
-    setIsSubmitted(true)
-    toast.success('Exam Submitted', 'Your examination has been successfully submitted.')
-  }, [toast])
+  const handleConfirmSubmit = useCallback(async () => {
+    try {
+      await api(`/attempts/${attempt.id}/submit`, { method: 'POST' })
+      setSubmissionModalOpen(false)
+      setIsSubmitted(true)
+      toast.success('Exam Submitted', 'Your examination has been successfully submitted.')
+    } catch (error) {
+      toast.error('Submission failed', error.message)
+    }
+  }, [attempt, toast])
 
   // Timer auto-submit handler
   const handleTimerExpire = useCallback(() => {
     if (!isSubmitted) {
-      setAutoSubmitted(true)
-      setIsSubmitted(true)
-      toast.warning('Time Expired', 'The timer expired. Your exam was automatically submitted.')
+      api(`/attempts/${attempt.id}/submit`, { method: 'POST' })
+        .finally(() => {
+          setAutoSubmitted(true)
+          setIsSubmitted(true)
+          toast.warning('Time Expired', 'The timer expired. Your exam was automatically submitted.')
+        })
     }
-  }, [isSubmitted, toast])
+  }, [attempt, isSubmitted, toast])
+
+  if (loading) return <div className="flex min-h-screen items-center justify-center bg-zinc-950 text-zinc-400">Starting examination...</div>
+  if (loadError || !attempt) return <div className="flex min-h-screen items-center justify-center bg-zinc-950 text-red-400">{loadError || 'Unable to start examination.'}</div>
 
   // ── SUBMITTED STATE SCREEN ──
   if (isSubmitted) {

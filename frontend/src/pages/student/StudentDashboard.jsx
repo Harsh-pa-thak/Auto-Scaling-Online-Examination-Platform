@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+import { useEffect, useState } from 'react'
 import {
   BookOpen,
   Calendar,
@@ -9,7 +10,7 @@ import {
 import { useAuth } from '../../hooks/useAuth'
 import { StatsCard, Badge, EmptyState, Table } from '../../components/common'
 import ExamCard from '../../components/student/ExamCard'
-import { mockExams, mockResults } from '../../data/mockData'
+import { api } from '../../lib/api'
 
 // Get appropriate greeting based on local time
 function getGreeting() {
@@ -36,6 +37,8 @@ function formatResultDate(dateStr) {
 
 export default function StudentDashboard() {
   const { user } = useAuth()
+  const [dashboard, setDashboard] = useState({ upcomingExams: [], recentResults: [] })
+  useEffect(() => { api('/student/dashboard').then(setDashboard).catch(() => {}) }, [])
 
   const student = user || {
     name: 'Harsh Pathak',
@@ -47,14 +50,19 @@ export default function StudentDashboard() {
   // Extract first name for greeting
   const firstName = student.name ? student.name.split(' ')[0] : 'Harsh'
 
-  // Categorize exams from mockData
-  const activeExams = mockExams.filter((exam) => exam.status === 'active')
-  const upcomingExams = mockExams.filter((exam) => exam.status === 'upcoming')
+  const activeExams = dashboard.upcomingExams.filter((exam) => new Date(exam.startTime) <= new Date())
+  const upcomingExams = dashboard.upcomingExams.filter((exam) => new Date(exam.startTime) > new Date())
 
   // Filter student's results
-  const studentResults = mockResults.filter(
-    (res) => res.studentId === student.id || res.studentId === '24BCE1234'
-  )
+  const studentResults = dashboard.recentResults.map((attempt) => ({
+    ...attempt,
+    examTitle: attempt.exam?.title,
+    subject: attempt.exam?.subject,
+    totalMarks: attempt.exam?.totalMarks || 0,
+    percentage: attempt.exam?.totalMarks ? Math.round((attempt.score / attempt.exam.totalMarks) * 100) : 0,
+    status: attempt.score >= (attempt.exam?.passingMarks || 0) ? 'passed' : 'failed',
+    submittedAt: attempt.submittedAt,
+  }))
 
   // Compute statistics
   const examsTakenCount = studentResults.length

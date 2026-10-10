@@ -9,14 +9,14 @@ import {
 } from 'lucide-react'
 import { Card, Button, Avatar } from '../../components/common'
 import { useAuth } from '../../hooks/useAuth'
-import { mockUsers } from '../../data/mockData'
+import { api } from '../../lib/api'
 
 export default function StudentProfilePage() {
   const { user, logout } = useAuth()
   const navigate = useNavigate()
 
   // Fallback to mock student data
-  const student = user || mockUsers.student
+  const student = user || {}
 
   // Change password form state
   const [currentPassword, setCurrentPassword] = useState('')
@@ -57,13 +57,17 @@ export default function StudentProfilePage() {
     }
 
     setIsSubmitting(true)
-    setTimeout(() => {
+    api('/auth/password', { method: 'PATCH', body: { currentPassword, newPassword } }).then(() => {
       setIsSubmitting(false)
       setPasswordStatus('success')
       setCurrentPassword('')
       setNewPassword('')
       setConfirmPassword('')
-    }, 600)
+    }).catch((error) => {
+      setIsSubmitting(false)
+      setPasswordStatus('error')
+      setPasswordErrorMsg(error.message)
+    })
   }
 
   const handleLogout = () => {

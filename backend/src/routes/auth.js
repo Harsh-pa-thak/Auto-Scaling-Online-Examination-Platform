@@ -31,6 +31,15 @@ router.post('/login', validate(loginSchema), async (req, res, next) => {
 
 router.post('/logout', requireAuth, (_req, res) => res.status(204).end())
 router.get('/me', requireAuth, (req, res) => res.json({ data: { user: safeUser(req.user) } }))
+router.patch('/password', requireAuth, async (req, res, next) => {
+  try {
+    const { currentPassword, newPassword } = req.body
+    if (!currentPassword || !newPassword || newPassword.length < 8) return res.status(400).json({ error: { code: 'VALIDATION_ERROR', message: 'Valid current and new passwords are required' } })
+    if (!(await bcrypt.compare(currentPassword, req.user.passwordHash))) return res.status(400).json({ error: { code: 'INVALID_PASSWORD', message: 'Current password is incorrect' } })
+    await prisma.user.update({ where: { id: req.user.id }, data: { passwordHash: await bcrypt.hash(newPassword, 12) } })
+    res.status(204).end()
+  } catch (error) { next(error) }
+})
 
 export { safeUser }
 export default router

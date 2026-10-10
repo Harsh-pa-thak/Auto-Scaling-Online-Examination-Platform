@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import {
   FileText,
@@ -18,7 +18,8 @@ import {
   SearchBar,
   EmptyState,
 } from '../../components/common'
-import { mockExams } from '../../data/mockData'
+import { api } from '../../lib/api'
+import { useToast } from '../../hooks/useToast'
 
 // Date format helper
 function formatDateTime(dateStr) {
@@ -47,7 +48,8 @@ const STATUS_CONFIG = {
 }
 
 export default function AdminExamsPage() {
-  const [exams, setExams] = useState(mockExams)
+  const { toast } = useToast()
+  const [exams, setExams] = useState([])
   const [searchQuery, setSearchQuery] = useState('')
   const [statusFilter, setStatusFilter] = useState('all') // 'all' | 'draft' | 'published' | 'active' | 'completed' | 'cancelled'
 
@@ -63,6 +65,10 @@ export default function AdminExamsPage() {
     totalMarks: 100,
     passMark: 40,
   })
+
+  useEffect(() => {
+    api('/admin/exams').then(setExams).catch((error) => toast.error('Could not load exams', error.message))
+  }, [toast])
 
   // Filtered exams
   const filteredExams = useMemo(() => {
@@ -112,40 +118,35 @@ export default function AdminExamsPage() {
     setEditModal({ isOpen: true, exam })
   }
 
-  const handleSaveEdit = (e) => {
+  const handleSaveEdit = async (e) => {
     e.preventDefault()
     if (!editModal.exam) return
 
-    setExams((prev) =>
-      prev.map((item) =>
-        item.id === editModal.exam.id
-          ? {
-              ...item,
-              title: editForm.title,
-              duration: Number(editForm.duration),
-              totalMarks: Number(editForm.totalMarks),
-              passMark: Number(editForm.passMark),
-            }
-          : item
-      )
-    )
-
-    setEditModal({ isOpen: false, exam: null })
+    try {
+      const updated = await api(`/exams/${editModal.exam.id}`, {
+        method: 'PATCH',
+        body: { title: editForm.title, duration: Number(editForm.duration), totalMarks: Number(editForm.totalMarks), passingMarks: Number(editForm.passMark) },
+      })
+      setExams((prev) => prev.map((item) => item.id === updated.id ? updated : item))
+      setEditModal({ isOpen: false, exam: null })
+    } catch (error) { toast.error('Could not update exam', error.message) }
   }
 
-  const handlePublish = (examId) => {
-    setExams((prev) =>
-      prev.map((item) =>
-        item.id === examId ? { ...item, status: 'published' } : item
-      )
-    )
+  const handlePublish = async (examId) => {
+    try {
+      const updated = await api(`/exams/${examId}/publish`, { method: 'POST' })
+      setExams((prev) => prev.map((item) => item.id === updated.id ? updated : item))
+    } catch (error) { toast.error('Could not publish exam', error.message) }
   }
 
-  const handleDeleteConfirm = () => {
+  const handleDeleteConfirm = async () => {
     if (!deleteDialog.exam) return
 
-    setExams((prev) => prev.filter((item) => item.id !== deleteDialog.exam.id))
-    setDeleteDialog({ isOpen: false, exam: null })
+    try {
+      await api(`/exams/${deleteDialog.exam.id}`, { method: 'DELETE' })
+      setExams((prev) => prev.filter((item) => item.id !== deleteDialog.exam.id))
+      setDeleteDialog({ isOpen: false, exam: null })
+    } catch (error) { toast.error('Could not delete exam', error.message) }
   }
 
   const STATUS_TABS = [

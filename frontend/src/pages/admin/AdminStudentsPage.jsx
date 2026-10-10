@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import {
   Users,
   Eye,
@@ -21,12 +21,12 @@ import {
   EmptyState,
   ProgressBar,
 } from '../../components/common'
-import { mockStudents } from '../../data/mockData'
+import { api } from '../../lib/api'
 
 const PAGE_SIZE = 8
 
 export default function AdminStudentsPage() {
-  const [students, setStudents] = useState(mockStudents)
+  const [students, setStudents] = useState([])
   const [searchQuery, setSearchQuery] = useState('')
   const [statusFilter, setStatusFilter] = useState('all') // 'all' | 'active' | 'inactive'
   const [sectionFilter, setSectionFilter] = useState('all') // 'all' | 'A' | 'B' | 'C'
@@ -40,6 +40,7 @@ export default function AdminStudentsPage() {
     student: null,
     action: null, // 'disable' | 'enable'
   })
+  useEffect(() => { api('/students').then((result) => setStudents(result)).catch(() => {}) }, [])
 
   // Filtered students
   const filteredStudents = useMemo(() => {
@@ -88,15 +89,14 @@ export default function AdminStudentsPage() {
     })
   }
 
-  const handleConfirmAction = () => {
+  const handleConfirmAction = async () => {
     const { student, action } = confirmDialog
     if (!student || !action) return
 
     const newStatus = action === 'disable' ? 'inactive' : 'active'
 
-    setStudents((prev) =>
-      prev.map((s) => (s.id === student.id ? { ...s, status: newStatus } : s))
-    )
+    await api(`/students/${student.id}/status`, { method: 'PATCH', body: { status: newStatus } })
+    setStudents((prev) => prev.map((s) => (s.id === student.id ? { ...s, status: newStatus } : s)))
 
     // Update selectedStudent if details modal is open
     if (selectedStudent && selectedStudent.id === student.id) {

@@ -1,3 +1,4 @@
+import 'dotenv/config'
 import bcrypt from 'bcryptjs'
 import { PrismaClient } from '@prisma/client'
 
@@ -18,8 +19,16 @@ async function main() {
   const exam = await prisma.exam.upsert({ where: { id: 'demo-exam' }, update: {}, create: { id: 'demo-exam', title: 'Demo Examination', subject: 'Computer Science', code: 'DEMO001', duration: 30, startTime: new Date(Date.now() - 60 * 60 * 1000), endTime: new Date(Date.now() + 24 * 60 * 60 * 1000), totalMarks: 4, passingMarks: 2, status: 'PUBLISHED', creatorId: admin.id } })
   for (let index = 0; index < questionData.length; index += 1) {
     const [text, option1, option2, option3, option4, correctAnswer] = questionData[index]
-    const question = await prisma.question.create({ data: { text, option1, option2, option3, option4, correctAnswer, marks: 2, category: 'General' } })
-    await prisma.examQuestion.create({ data: { examId: exam.id, questionId: question.id, position: index } })
+    const question = await prisma.question.upsert({
+      where: { id: `demo-question-${index + 1}` },
+      update: { text, option1, option2, option3, option4, correctAnswer, marks: 2, category: 'General' },
+      create: { id: `demo-question-${index + 1}`, text, option1, option2, option3, option4, correctAnswer, marks: 2, category: 'General' },
+    })
+    await prisma.examQuestion.upsert({
+      where: { examId_questionId: { examId: exam.id, questionId: question.id } },
+      update: { position: index + 1 },
+      create: { examId: exam.id, questionId: question.id, position: index + 1 },
+    })
   }
 }
 

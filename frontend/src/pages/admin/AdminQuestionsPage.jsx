@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import {
   Plus,
   Edit2,
@@ -25,7 +25,7 @@ import QuestionForm, {
   SUBJECT_TO_CATEGORY,
   NORMALIZE_DIFFICULTY,
 } from '../../components/admin/QuestionForm'
-import { mockQuestions } from '../../data/mockData'
+import { api } from '../../lib/api'
 import { useToast } from '../../hooks/useToast'
 
 const CATEGORIES = ['All', 'DSA', 'DBMS', 'OS', 'Networks', 'Cloud']
@@ -42,17 +42,7 @@ const PAGE_SIZE = 10
 export default function AdminQuestionsPage() {
   const { toast } = useToast()
 
-  const [questions, setQuestions] = useState(() =>
-    mockQuestions.map((q) => {
-      const rawCat = q.category || q.subject || ''
-      const rawDiff = q.difficulty || ''
-      return {
-        ...q,
-        category: SUBJECT_TO_CATEGORY[rawCat] ?? rawCat,
-        difficulty: NORMALIZE_DIFFICULTY[rawDiff] ?? rawDiff,
-      }
-    })
-  )
+  const [questions, setQuestions] = useState([])
   const [search, setSearch] = useState('')
   const [categoryFilter, setCategoryFilter] = useState('All')
   const [diffFilter, setDiffFilter] = useState('All')
@@ -65,6 +55,10 @@ export default function AdminQuestionsPage() {
 
   // Expanded row state
   const [expandedId, setExpandedId] = useState(null)
+
+  useEffect(() => {
+    api('/questions').then(setQuestions).catch((error) => toast.error('Could not load questions', error.message))
+  }, [toast])
 
   const filtered = useMemo(() => {
     let list = questions
@@ -90,38 +84,33 @@ export default function AdminQuestionsPage() {
   const safePage = Math.min(page, totalPages)
   const paged = filtered.slice((safePage - 1) * PAGE_SIZE, safePage * PAGE_SIZE)
 
-  function handleAdd(data) {
-    const newQuestion = {
-      id: genId(),
-      ...data,
-      category: SUBJECT_TO_CATEGORY[data.category] ?? data.category,
-      difficulty: NORMALIZE_DIFFICULTY[data.difficulty] ?? data.difficulty,
-    }
-    setQuestions((prev) => [newQuestion, ...prev])
-    setAddOpen(false)
-    toast.success('Question Added', `Question ${newQuestion.id} has been added successfully.`)
+  async function handleAdd(data) {
+    try {
+      const newQuestion = await api('/questions', { method: 'POST', body: data })
+      setQuestions((prev) => [newQuestion, ...prev])
+      setAddOpen(false)
+      toast.success('Question Added', 'Question added successfully.')
+    } catch (error) { toast.error('Question failed', error.message) }
   }
 
-  function handleEdit(data) {
-    const updatedQuestion = {
-      ...editTarget,
-      ...data,
-      category: SUBJECT_TO_CATEGORY[data.category] ?? data.category,
-      difficulty: NORMALIZE_DIFFICULTY[data.difficulty] ?? data.difficulty,
-    }
-    setQuestions((prev) =>
-      prev.map((q) => (q.id === editTarget.id ? updatedQuestion : q))
-    )
-    setEditTarget(null)
-    toast.success('Question Updated', `Question ${editTarget.id} has been updated successfully.`)
+  async function handleEdit(data) {
+    try {
+      const updatedQuestion = await api(`/questions/${editTarget.id}`, { method: 'PATCH', body: data })
+      setQuestions((prev) => prev.map((q) => (q.id === editTarget.id ? updatedQuestion : q)))
+      setEditTarget(null)
+      toast.success('Question Updated', 'Question updated successfully.')
+    } catch (error) { toast.error('Question failed', error.message) }
   }
 
-  function handleDelete() {
+  async function handleDelete() {
     if (!deleteTarget) return
     const idToDelete = deleteTarget.id
-    setQuestions((prev) => prev.filter((q) => q.id !== idToDelete))
-    setDeleteTarget(null)
-    toast.success('Question Deleted', `Question ${idToDelete} has been removed.`)
+    try {
+      await api(`/questions/${idToDelete}`, { method: 'DELETE' })
+      setQuestions((prev) => prev.filter((q) => q.id !== idToDelete))
+      setDeleteTarget(null)
+      toast.success('Question Deleted', 'Question removed successfully.')
+    } catch (error) { toast.error('Question failed', error.message) }
   }
 
   const stats = useMemo(

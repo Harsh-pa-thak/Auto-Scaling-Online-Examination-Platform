@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import {
   Bell,
@@ -11,7 +11,7 @@ import {
   Info,
 } from 'lucide-react'
 import { Button, EmptyState } from '../../components/common'
-import { mockNotifications } from '../../data/mockData'
+import { api } from '../../lib/api'
 
 // Format date helper
 function formatNotificationDate(dateStr) {
@@ -39,7 +39,8 @@ const TYPE_CONFIG = {
 }
 
 export default function StudentNotificationsPage() {
-  const [notifications, setNotifications] = useState(mockNotifications)
+  const [notifications, setNotifications] = useState([])
+  useEffect(() => { api('/student/notifications').then(setNotifications).catch(() => {}) }, [])
   const [activeFilter, setActiveFilter] = useState('all') // 'all' | 'unread' | 'exam_scheduled' | 'exam_starting_soon' | 'result_published' | 'system'
 
   // Counts
@@ -65,13 +66,15 @@ export default function StudentNotificationsPage() {
 
   // Handlers
   const handleToggleRead = (id) => {
-    setNotifications((prev) =>
-      prev.map((n) => (n.id === id ? { ...n, read: !n.read } : n))
-    )
+    const item = notifications.find((notification) => notification.id === id)
+    if (!item) return
+    api(`/student/notifications/${id}/read`, { method: 'PATCH' }).then(() => {
+      setNotifications((prev) => prev.map((n) => (n.id === id ? { ...n, read: true } : n)))
+    })
   }
 
   const handleMarkAllAsRead = () => {
-    setNotifications((prev) => prev.map((n) => ({ ...n, read: true })))
+    api('/student/notifications/read-all', { method: 'POST' }).then(() => setNotifications((prev) => prev.map((n) => ({ ...n, read: true }))))
   }
 
   const FILTER_TABS = [

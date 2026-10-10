@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import { ArrowLeft, Eye } from 'lucide-react'
 import {
@@ -8,7 +8,7 @@ import {
   Modal,
   Select,
 } from '../../components/common'
-import { mockResults, mockQuestions } from '../../data/mockData'
+import { api } from '../../lib/api'
 import { useAuth } from '../../hooks/useAuth'
 
 // Date format helper
@@ -31,12 +31,26 @@ export default function StudentResultsPage() {
   const { user } = useAuth()
   const [searchParams, setSearchParams] = useSearchParams()
 
-  const studentId = user?.id || '24BCE1234'
+  const [attempts, setAttempts] = useState([])
+  useEffect(() => { api('/student/results').then(setAttempts).catch(() => {}) }, [])
 
   // Retrieve student's results
   const studentResults = useMemo(() => {
-    return mockResults.filter((r) => r.studentId === studentId)
-  }, [studentId])
+    return attempts.map((attempt) => ({
+      ...attempt,
+      examTitle: attempt.exam?.title,
+      subject: attempt.exam?.subject,
+      studentId: user?.id,
+      totalMarks: attempt.exam?.totalMarks || 0,
+      percentage: attempt.exam?.totalMarks ? Math.round((attempt.score / attempt.exam.totalMarks) * 100) : 0,
+      grade: '',
+      status: attempt.score >= (attempt.exam?.passingMarks || 0) ? 'passed' : 'failed',
+      attempted: attempt.answers?.length || 0,
+      correct: attempt.answers?.filter((answer) => answer.awardedMarks > 0).length || 0,
+      wrong: attempt.answers?.filter((answer) => answer.awardedMarks === 0).length || 0,
+      submittedAt: attempt.submittedAt,
+    }))
+  }, [attempts, user])
 
   // Select active result from query param or first available
   const resultIdParam = searchParams.get('id')
@@ -45,7 +59,7 @@ export default function StudentResultsPage() {
       const match = studentResults.find((r) => r.id === resultIdParam)
       if (match) return match
     }
-    return studentResults[0] || mockResults[0]
+    return studentResults[0]
   }, [studentResults, resultIdParam])
 
   // Answers review modal state
@@ -54,10 +68,7 @@ export default function StudentResultsPage() {
   // Questions for review
   const reviewQuestions = useMemo(() => {
     if (!activeResult) return []
-    const matching = mockQuestions.filter(
-      (q) => q.subject.toLowerCase() === activeResult.subject.toLowerCase()
-    )
-    return matching.length > 0 ? matching : mockQuestions.slice(0, 5)
+    return activeResult.answers?.map((answer) => answer.question).filter(Boolean) || []
   }, [activeResult])
 
   if (!activeResult) {
@@ -247,7 +258,7 @@ export default function StudentResultsPage() {
 
           <ol className="max-h-[60vh] space-y-4 overflow-y-auto pr-1">
             {reviewQuestions.map((q, idx) => {
-              const isCorrect = idx % 3 !== 1 // simulated correctness for mock data
+              const isCorrect = activeResult.answers?.[idx]?.awardedMarks > 0
               const selectedIdx = isCorrect ? q.correctAnswer : (q.correctAnswer + 1) % 4
 
               return (

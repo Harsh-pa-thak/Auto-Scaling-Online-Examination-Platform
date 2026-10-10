@@ -16,6 +16,7 @@ import StudentNotificationsPage from '../pages/student/StudentNotificationsPage'
 import StudentProfilePage from '../pages/student/StudentProfilePage'
 import AdminDashboard from '../pages/admin/AdminDashboard'
 import AdminStudentsPage from '../pages/admin/AdminStudentsPage'
+import AdminExamCreatePage from '../pages/admin/AdminExamCreatePage'
 import RoutePlaceholder from './RoutePlaceholder'
 import { Card, Button, LoadingSpinner } from '../components/common'
 import { AlertCircle, ArrowLeft } from 'lucide-react'
@@ -104,11 +105,7 @@ export default function AppRoutes() {
           </Suspense>
         } />
         <Route path="exams/create" element={
-          <RoutePlaceholder
-            title="Create New Examination"
-            description="Multi-step wizard to configure paper code, timings, question bank linkage, and rules."
-            role="admin"
-          />
+          <AdminExamCreatePage />
         } />
         <Route path="exams/:id" element={
           <RoutePlaceholder

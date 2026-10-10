@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { History, Eye, RotateCcw } from 'lucide-react'
 import {
@@ -8,7 +8,7 @@ import {
   SearchBar,
   EmptyState,
 } from '../../components/common'
-import { mockResults } from '../../data/mockData'
+import { api } from '../../lib/api'
 import { useAuth } from '../../hooks/useAuth'
 
 // Date format helper
@@ -34,15 +34,27 @@ const TABS = [
 
 export default function StudentHistoryPage() {
   const { user } = useAuth()
-  const studentId = user?.id || '24BCE1234'
+  const studentId = user?.id
+  const [attempts, setAttempts] = useState([])
+  useEffect(() => { api('/student/history').then(setAttempts).catch(() => {}) }, [])
 
   const [activeFilter, setActiveFilter] = useState('all') // 'all' | 'passed' | 'failed'
   const [searchQuery, setSearchQuery] = useState('')
 
   // Student results
   const allStudentResults = useMemo(() => {
-    return mockResults.filter((r) => r.studentId === studentId)
-  }, [studentId])
+    return attempts.map((attempt) => ({
+      ...attempt,
+      id: attempt.id,
+      examTitle: attempt.exam?.title,
+      subject: attempt.exam?.subject,
+      score: attempt.score || 0,
+      totalMarks: attempt.exam?.totalMarks || 0,
+      percentage: attempt.exam?.totalMarks ? Math.round((attempt.score / attempt.exam.totalMarks) * 100) : 0,
+      status: attempt.score >= (attempt.exam?.passingMarks || 0) ? 'passed' : 'failed',
+      submittedAt: attempt.submittedAt,
+    }))
+  }, [attempts, studentId])
 
   // Tab counts
   const counts = useMemo(() => {

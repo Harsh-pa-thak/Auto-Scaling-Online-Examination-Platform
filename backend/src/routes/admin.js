@@ -42,4 +42,9 @@ router.get('/analytics', async (_req, res, next) => {
   } catch (error) { next(error) }
 })
 
+router.get('/profile', (req, res) => {
+  const { passwordHash, ...profile } = req.user
+  res.json({ data: profile })
+})
+
 export default router
