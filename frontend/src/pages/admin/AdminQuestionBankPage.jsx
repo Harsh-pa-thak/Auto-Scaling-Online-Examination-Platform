@@ -127,16 +127,15 @@ export default function AdminQuestionBankPage() {
   }
 
   // Add to Exam handler
-  function handleConfirmAddToExam() {
+  async function handleConfirmAddToExam() {
     if (!addToExamTarget || !selectedExamId) return
-    const targetExam = mockExams.find((e) => e.id === selectedExamId)
+    const targetExam = exams.find((e) => e.id === selectedExamId)
     const examTitle = targetExam ? targetExam.title : selectedExamId
-
-    setExamAllocations((prev) => {
-      const current = prev[addToExamTarget.id] ? new Set(prev[addToExamTarget.id]) : new Set()
-      current.add(selectedExamId)
-      return { ...prev, [addToExamTarget.id]: current }
-    })
+    const current = await api(`/exams/${selectedExamId}/questions`)
+    const assignments = current.filter((item) => item.questionId !== addToExamTarget.id)
+      .map((item) => ({ questionId: item.questionId, position: item.position }))
+    assignments.push({ questionId: addToExamTarget.id, position: assignments.length + 1 })
+    await api(`/exams/${selectedExamId}/questions`, { method: 'PUT', body: { assignments } })
 
     toast.success(
       'Added to Exam',
@@ -148,11 +147,11 @@ export default function AdminQuestionBankPage() {
 
   // Prepare exam options for select
   const examOptions = useMemo(() => {
-    return mockExams.map((e) => ({
+    return exams.map((e) => ({
       value: e.id,
       label: `${e.code} — ${e.title} (${e.status})`,
     }))
-  }, [])
+  }, [exams])
 
   return (
     <div className="space-y-8">

@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useMemo, useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import {
   Users,
@@ -17,11 +17,7 @@ import {
   ProgressBar,
   StatsCard,
 } from '../../components/common'
-import {
-  mockAnalytics,
-  mockExams,
-  mockAdminActivities,
-} from '../../data/mockData'
+import { api } from '../../lib/api'
 
 // Date format helper
 function formatExamDate(dateStr) {
@@ -39,17 +35,24 @@ function formatExamDate(dateStr) {
 }
 
 export default function AdminDashboard() {
-  const { overview } = mockAnalytics
+  const [dashboard, setDashboard] = useState({ students: 0, exams: 0, activeAttempts: 0, recentActivity: [] })
+  const [exams, setExams] = useState([])
+  useEffect(() => {
+    Promise.all([api('/admin/dashboard'), api('/admin/exams')])
+      .then(([data, loadedExams]) => { setDashboard(data); setExams(loadedExams) })
+      .catch(() => {})
+  }, [])
+  const overview = { totalStudents: dashboard.students, totalExams: dashboard.exams, activeExams: dashboard.activeAttempts, totalAttempts: dashboard.recentActivity.length, completedExams: 0, examPassRate: 0 }
 
   // Active exams list
   const activeExams = useMemo(() => {
-    return mockExams.filter((e) => e.status === 'active')
-  }, [])
+    return exams.filter((e) => e.status === 'active')
+  }, [exams])
 
   // Recent exams list (latest 5)
   const recentExams = useMemo(() => {
-    return mockExams.slice(0, 5)
-  }, [])
+    return exams.slice(0, 5)
+  }, [exams])
 
   const scheduledCount = overview.totalExams - overview.completedExams - overview.activeExams
 
@@ -226,7 +229,7 @@ export default function AdminDashboard() {
           </div>
 
           <ul className="divide-y divide-zinc-800">
-            {mockAdminActivities.map((act) => (
+            {dashboard.recentActivity.map((act) => (
               <li key={act.id} className="space-y-1 px-6 py-4 text-sm">
                 <div className="flex items-baseline justify-between gap-2">
                   <p className="truncate font-medium text-zinc-100">{act.title}</p>

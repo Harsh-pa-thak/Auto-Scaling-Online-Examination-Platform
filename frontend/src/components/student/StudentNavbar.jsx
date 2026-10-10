@@ -11,7 +11,6 @@ import {
 import { useAuth } from '../../hooks/useAuth'
 import Avatar from '../common/Avatar'
 import Dropdown, { DropdownItem, DropdownDivider } from '../common/Dropdown'
-import { mockNotifications } from '../../data/mockData'
 
 /**
  * StudentNavbar — Top application bar for student portal
@@ -30,7 +29,7 @@ export default function StudentNavbar({ onToggleMobileMenu }) {
     role: 'student',
   }
 
-  const unreadCount = mockNotifications.filter((n) => !n.read).length
+  const unreadCount = 0
 
   const handleLogout = () => {
     logout()

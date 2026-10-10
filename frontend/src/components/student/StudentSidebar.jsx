@@ -12,7 +12,6 @@ import {
 } from 'lucide-react'
 import { useAuth } from '../../hooks/useAuth'
 import Avatar from '../common/Avatar'
-import { mockNotifications } from '../../data/mockData'
 
 const navigationItems = [
   { to: '/student/dashboard',     label: 'Dashboard',     icon: LayoutDashboard },
@@ -39,7 +38,7 @@ export default function StudentSidebar({ mobileOpen, onCloseMobile }) {
     role: 'student',
   }
 
-  const unreadCount = mockNotifications.filter((n) => !n.read).length
+  const unreadCount = 0
 
   return (
     <>
