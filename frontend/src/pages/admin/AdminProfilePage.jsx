@@ -20,11 +20,9 @@ import {
   IdCard,
 } from 'lucide-react'
 import { Card, Button, Input, Badge, Avatar, ConfirmDialog } from '../../components/common'
-import { mockUsers } from '../../data/mockData'
 import { useAuth } from '../../hooks/useAuth'
 import { useToast } from '../../hooks/useToast'
 
-const admin = mockUsers.admin
 
 // ── Reusable Section wrapper ───────────────────────────────────
 function Section({ title, subtitle, icon, children }) {
@@ -115,9 +113,10 @@ function Toggle({ checked, onChange }) {
 }
 
 export default function AdminProfilePage() {
-  const { logout } = useAuth()
+  const { user, logout } = useAuth()
   const { toast } = useToast()
   const navigate = useNavigate()
+  const admin = user || {}
 
   // Change password form state
   const [pwForm, setPwForm] = useState({ current: '', next: '', confirm: '' })

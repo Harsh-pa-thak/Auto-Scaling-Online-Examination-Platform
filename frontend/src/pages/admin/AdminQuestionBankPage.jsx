@@ -462,7 +462,7 @@ export default function AdminQuestionBankPage() {
                     <button
                       type="button"
                       onClick={() => {
-                        setSelectedExamId(mockExams[0]?.id || '')
+                        setSelectedExamId(exams[0]?.id || '')
                         setAddToExamTarget(q)
                       }}
                       title="Add to Exam"
@@ -606,7 +606,7 @@ export default function AdminQuestionBankPage() {
                         size="xs"
                         leftIcon={<FolderPlus size={13} />}
                         onClick={() => {
-                          setSelectedExamId(mockExams[0]?.id || '')
+                          setSelectedExamId(exams[0]?.id || '')
                           setAddToExamTarget(q)
                         }}
                       >

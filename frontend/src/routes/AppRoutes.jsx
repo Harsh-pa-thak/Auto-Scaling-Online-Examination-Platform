@@ -20,6 +20,7 @@ import AdminExamCreatePage from '../pages/admin/AdminExamCreatePage'
 import RoutePlaceholder from './RoutePlaceholder'
 import { Card, Button, LoadingSpinner } from '../components/common'
 import { AlertCircle, ArrowLeft } from 'lucide-react'
+import { useAuth } from '../hooks/useAuth'
 
 // ── Admin pages — lazy loaded for code splitting ───────────────
 const AdminExamsPage        = lazy(() => import('../pages/admin/AdminExamsPage'))
@@ -36,6 +37,14 @@ function AdminFallback() {
       <LoadingSpinner size="lg" />
     </div>
   )
+}
+
+function RequireAuth({ children, role }) {
+  const { user, isLoading } = useAuth()
+  if (isLoading) return <AdminFallback />
+  if (!user) return <Navigate to="/login" replace />
+  if (role && user.role !== role) return <Navigate to={user.role === 'admin' ? '/admin/dashboard' : '/student/dashboard'} replace />
+  return children
 }
 
 // ── 404 Not Found Page ─────────────────────────────────────────
@@ -79,10 +88,10 @@ export default function AppRoutes() {
       </Route>
 
       {/* ── Standalone Live Examination Screen (Distraction-Free) ── */}
-      <Route path="/student/exam/:id" element={<LiveExamPage />} />
+      <Route path="/student/exam/:id" element={<RequireAuth role="student"><LiveExamPage /></RequireAuth>} />
 
       {/* ── Student Portal Routes ── */}
-      <Route path="/student" element={<StudentLayout />}>
+      <Route path="/student" element={<RequireAuth role="student"><StudentLayout /></RequireAuth>}>
         <Route index element={<Navigate to="/student/dashboard" replace />} />
         <Route path="dashboard" element={<StudentDashboard />} />
         <Route path="exams" element={<StudentExamsPage />} />
@@ -94,7 +103,7 @@ export default function AppRoutes() {
       </Route>
 
       {/* ── Admin Routes ── */}
-      <Route path="/admin" element={<AdminLayout />}>
+      <Route path="/admin" element={<RequireAuth role="admin"><AdminLayout /></RequireAuth>}>
         <Route index element={<Navigate to="/admin/dashboard" replace />} />
         <Route path="dashboard" element={<AdminDashboard />} />
         <Route path="students" element={<AdminStudentsPage />} />
