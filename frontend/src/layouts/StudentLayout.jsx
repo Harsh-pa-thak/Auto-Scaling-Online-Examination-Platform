@@ -14,7 +14,7 @@ export default function StudentLayout() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
   return (
-    <div className="flex min-h-screen flex-col bg-zinc-950 font-sans text-zinc-100">
+    <div className="flex min-h-screen flex-col bg-canvas font-sans text-ink">
       <StudentNavbar onToggleMobileMenu={() => setMobileMenuOpen(true)} />
 
       <div className="flex min-h-[calc(100vh-4rem)] flex-1">
@@ -28,7 +28,7 @@ export default function StudentLayout() {
             <Outlet />
           </div>
 
-          <footer className="mx-auto mt-16 w-full max-w-7xl border-t border-zinc-800 pt-6 text-xs text-zinc-500">
+          <footer className="mx-auto mt-16 w-full max-w-7xl border-t border-line pt-6 text-xs text-ink-3">
             Auto-Scaling Online Examination Platform
           </footer>
         </main>

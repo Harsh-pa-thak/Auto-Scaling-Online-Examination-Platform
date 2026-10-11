@@ -14,8 +14,10 @@ export default function LoginPage() {
   const { toast } = useToast()
 
   const [role, setRole] = useState('student') // 'student' | 'admin'
-  const [email, setEmail] = useState('harsh.pathak@vit.ac.in')
-  const [password, setPassword] = useState('password123')
+  // Seeded accounts created by backend/prisma/seed.js (passwords come from the
+  // environment — never hard-code them in the client).
+  const [email, setEmail] = useState('student@example.com')
+  const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
   const [rememberMe, setRememberMe] = useState(false)
 
@@ -65,13 +67,8 @@ export default function LoginPage() {
     setRole(newRole)
     setErrors({})
     setTouched({})
-    if (newRole === 'admin') {
-      setEmail('ramesh.kumar@vit.ac.in')
-      setPassword('adminPass123')
-    } else {
-      setEmail('harsh.pathak@vit.ac.in')
-      setPassword('password123')
-    }
+    setPassword('')
+    setEmail(newRole === 'admin' ? 'admin@example.com' : 'student@example.com')
   }
 
   const handleSubmit = async (e) => {
@@ -103,15 +100,15 @@ export default function LoginPage() {
 
   const roleTab = (value) =>
     `flex items-center justify-center gap-2 rounded-md px-3 py-2 text-sm font-medium transition-colors ${
-      role === value ? 'bg-zinc-800 text-zinc-50' : 'text-zinc-400 hover:text-zinc-100'
+      role === value ? 'bg-sunken text-ink' : 'text-ink-3 hover:text-ink'
     }`
 
   return (
     <div className="space-y-6">
       {/* Header */}
       <div className="text-center">
-        <h1 className="text-xl font-semibold text-zinc-50">Sign in</h1>
-        <p className="mt-2 text-sm text-zinc-400">
+        <h1 className="text-xl font-semibold text-ink">Sign in</h1>
+        <p className="mt-2 text-sm text-ink-3">
           Access your exams, evaluations, and academic records.
         </p>
       </div>
@@ -120,7 +117,7 @@ export default function LoginPage() {
       <div
         role="tablist"
         aria-label="Portal"
-        className="grid grid-cols-2 gap-1 rounded-lg border border-zinc-800 bg-zinc-950 p-1"
+        className="grid grid-cols-2 gap-1 rounded-lg border border-line bg-canvas p-1"
       >
         <button
           type="button"
@@ -177,7 +174,7 @@ export default function LoginPage() {
               type="button"
               onClick={() => setShowPassword((prev) => !prev)}
               aria-label={showPassword ? 'Hide password' : 'Show password'}
-              className="rounded p-1 text-zinc-500 transition-colors hover:text-zinc-300 focus:outline-none focus:ring-1 focus:ring-amber-500"
+              className="rounded p-1 text-ink-3 transition-colors hover:text-ink-2 focus:outline-none focus:ring-1 focus:ring-accent"
             >
               {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
             </button>
@@ -190,9 +187,9 @@ export default function LoginPage() {
               type="checkbox"
               checked={rememberMe}
               onChange={(e) => setRememberMe(e.target.checked)}
-              className="h-4 w-4 cursor-pointer rounded border-zinc-700 bg-zinc-950 accent-amber-500"
+              className="h-4 w-4 cursor-pointer rounded border-line-strong bg-canvas accent-accent"
             />
-            <span className="text-sm text-zinc-300">Remember me</span>
+            <span className="text-sm text-ink-2">Remember me</span>
           </label>
 
           <Link to="/forgot-password" className="text-link">
@@ -212,11 +209,12 @@ export default function LoginPage() {
         </Button>
       </form>
 
-      <p className="text-center text-xs text-zinc-500">
-        Demo mode: credentials are prefilled. Any email with a 6+ character password works.
+      <p className="text-center text-xs text-ink-4">
+        Development accounts are created by the backend seed script
+        (student@example.com · admin@example.com).
       </p>
 
-      <p className="border-t border-zinc-800 pt-6 text-center text-sm text-zinc-400">
+      <p className="border-t border-line pt-6 text-center text-sm text-ink-3">
         Don&apos;t have an account?{' '}
         <Link to="/register" className="text-link">
           Register

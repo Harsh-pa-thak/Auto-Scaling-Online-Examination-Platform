@@ -12,6 +12,15 @@ export const examSchema = z.object({
   code: z.string().trim().min(1),
 })
 
+export const examUpdateSchema = examSchema.partial().superRefine((data, context) => {
+  if (data.startTime && data.endTime && data.endTime <= data.startTime) {
+    context.addIssue({ code: z.ZodIssueCode.custom, path: ['endTime'], message: 'End time must be after start time' })
+  }
+  if (data.passingMarks !== undefined && data.totalMarks !== undefined && data.passingMarks > data.totalMarks) {
+    context.addIssue({ code: z.ZodIssueCode.custom, path: ['passingMarks'], message: 'Passing marks cannot exceed total marks' })
+  }
+})
+
 export const questionSchema = z.object({
   text: z.string().trim().min(1),
   options: z.array(z.string().trim().min(1)).length(4),

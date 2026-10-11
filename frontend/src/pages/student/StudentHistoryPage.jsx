@@ -93,27 +93,27 @@ export default function StudentHistoryPage() {
       label: 'Exam',
       render: (val, row) => (
         <div>
-          <p className="font-medium text-zinc-100">{row.examTitle}</p>
-          <p className="text-xs tabular-nums text-zinc-500">Attempt {row.id}</p>
+          <p className="font-medium text-ink">{row.examTitle}</p>
+          <p className="text-xs tabular-nums text-ink-3">Attempt {row.id}</p>
         </div>
       ),
     },
     {
       key: 'subject',
       label: 'Subject',
-      render: (val) => <span className="text-zinc-300">{val}</span>,
+      render: (val) => <span className="text-ink-2">{val}</span>,
     },
     {
       key: 'submittedAt',
       label: 'Date',
-      render: (val) => <span className="text-zinc-300">{formatDate(val)}</span>,
+      render: (val) => <span className="text-ink-2">{formatDate(val)}</span>,
     },
     {
       key: 'score',
       label: 'Score',
       render: (val, row) => (
-        <span className="tabular-nums text-zinc-100">
-          {row.score} <span className="text-zinc-500">/ {row.totalMarks}</span>
+        <span className="tabular-nums text-ink">
+          {row.score} <span className="text-ink-3">/ {row.totalMarks}</span>
         </span>
       ),
     },
@@ -122,7 +122,7 @@ export default function StudentHistoryPage() {
       label: 'Percentage',
       render: (val, row) => (
         <div className="flex items-center gap-2">
-          <span className="tabular-nums text-zinc-100">{val}%</span>
+          <span className="tabular-nums text-ink">{val}%</span>
           {row.grade && <Badge size="sm">Grade {row.grade}</Badge>}
         </div>
       ),
@@ -167,7 +167,7 @@ export default function StudentHistoryPage() {
       <div className="space-y-4">
         {/* ── Tabs + Search ── */}
         <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-          <nav aria-label="Result status" className="flex gap-6 border-b border-zinc-800 sm:flex-1">
+          <nav aria-label="Result status" className="flex gap-6 border-b border-line sm:flex-1">
             {TABS.map((tab) => {
               const count = counts[tab.id] ?? 0
               const isActive = activeFilter === tab.id
@@ -179,12 +179,12 @@ export default function StudentHistoryPage() {
                   aria-current={isActive ? 'page' : undefined}
                   className={`-mb-px flex items-center gap-2 border-b-2 py-3 text-sm font-medium transition-colors ${
                     isActive
-                      ? 'border-amber-500 text-zinc-50'
-                      : 'border-transparent text-zinc-400 hover:text-zinc-100'
+                      ? 'border-accent text-ink'
+                      : 'border-transparent text-ink-3 hover:text-ink'
                   }`}
                 >
                   {tab.label}
-                  <span className="tabular-nums text-zinc-500">{count}</span>
+                  <span className="tabular-nums text-ink-3">{count}</span>
                 </button>
               )
             })}

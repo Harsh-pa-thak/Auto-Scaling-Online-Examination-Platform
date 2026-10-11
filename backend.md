@@ -54,8 +54,13 @@ Migrations are stored in `backend/prisma/migrations/`. Use
 Seed users:
 
 ```text
-Admin:   admin@example.com / SEED_ADMIN_PASSWORD
-Student: student@example.com / SEED_STUDENT_PASSWORD
+Admin accounts: admin@example.com, admin2@example.com / SEED_ADMIN_PASSWORD
+Student accounts: student@example.com, student2@example.com, student3@example.com,
+                  student4@example.com, student5@example.com / SEED_STUDENT_PASSWORD
+
+The seed creates ten questions in the question bank and assigns them to the published
+`Demo Examination` (`DEMO001`). Running the seed again is safe because records use
+stable IDs/emails and are upserted.
 ```
 
 ## API
@@ -120,6 +125,10 @@ GET    /api/admin/monitoring
 GET    /api/admin/results
 GET    /api/admin/analytics
 ```
+
+The admin Edit Exam screen can update an exam's title, duration, marks, passing
+marks, start time, and end time. The API validates that the end time is after the
+start time before saving the schedule.
 
 ### Question assignment
 

@@ -115,7 +115,7 @@ export default function AdminStudentsPage() {
     {
       key: 'id',
       label: 'Student ID',
-      render: (val) => <span className="tabular-nums text-zinc-300">{val}</span>,
+      render: (val) => <span className="tabular-nums text-ink-2">{val}</span>,
     },
     {
       key: 'name',
@@ -124,8 +124,8 @@ export default function AdminStudentsPage() {
         <div className="flex items-center gap-3">
           <Avatar name={val} size="sm" />
           <div>
-            <p className="font-medium text-zinc-100">{val}</p>
-            <p className="text-xs text-zinc-500">
+            <p className="font-medium text-ink">{val}</p>
+            <p className="text-xs text-ink-3">
               Section {row.section} · Semester {row.semester}
             </p>
           </div>
@@ -135,19 +135,19 @@ export default function AdminStudentsPage() {
     {
       key: 'email',
       label: 'Email',
-      render: (val) => <span className="block max-w-[200px] truncate text-zinc-400">{val}</span>,
+      render: (val) => <span className="block max-w-[200px] truncate text-ink-3">{val}</span>,
     },
     {
       key: 'examsTaken',
       label: 'Exams',
       align: 'right',
-      render: (val) => <span className="tabular-nums text-zinc-300">{val ?? 0}</span>,
+      render: (val) => <span className="tabular-nums text-ink-2">{val ?? 0}</span>,
     },
     {
       key: 'avgScore',
       label: 'Avg. score',
       align: 'right',
-      render: (val) => <span className="tabular-nums text-zinc-100">{val ?? 0}%</span>,
+      render: (val) => <span className="tabular-nums text-ink">{val ?? 0}%</span>,
     },
     {
       key: 'status',
@@ -212,7 +212,7 @@ export default function AdminStudentsPage() {
           <h1 className="page-title">Students</h1>
           <p className="page-subtitle">
             Enrolled candidates, section allocation, exam participation, and access.{' '}
-            <span className="text-zinc-200">{students.length} enrolled.</span>
+            <span className="text-ink-2">{students.length} enrolled.</span>
           </p>
         </div>
       </header>
@@ -220,7 +220,7 @@ export default function AdminStudentsPage() {
       <div className="space-y-4">
         {/* ── Tabs + filters ── */}
         <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
-          <nav aria-label="Student status" className="flex gap-6 border-b border-zinc-800 lg:flex-1">
+          <nav aria-label="Student status" className="flex gap-6 border-b border-line lg:flex-1">
             {STATUS_TABS.map((tab) => {
               const isActive = statusFilter === tab.id
               return (
@@ -234,12 +234,12 @@ export default function AdminStudentsPage() {
                   aria-current={isActive ? 'page' : undefined}
                   className={`-mb-px flex items-center gap-2 border-b-2 py-3 text-sm font-medium transition-colors ${
                     isActive
-                      ? 'border-amber-500 text-zinc-50'
-                      : 'border-transparent text-zinc-400 hover:text-zinc-100'
+                      ? 'border-accent text-ink'
+                      : 'border-transparent text-ink-3 hover:text-ink'
                   }`}
                 >
                   {tab.label}
-                  <span className="tabular-nums text-zinc-500">{tab.count}</span>
+                  <span className="tabular-nums text-ink-3">{tab.count}</span>
                 </button>
               )
             })}
@@ -300,14 +300,14 @@ export default function AdminStudentsPage() {
             <Table columns={columns} data={paginatedStudents} onRowClick={(row) => handleOpenDetails(row)} />
 
             {/* ── Pagination ── */}
-            <div className="flex flex-col items-center justify-between gap-4 text-sm text-zinc-400 sm:flex-row">
+            <div className="flex flex-col items-center justify-between gap-4 text-sm text-ink-3 sm:flex-row">
               <p>
                 Showing{' '}
-                <span className="tabular-nums text-zinc-200">
+                <span className="tabular-nums text-ink-2">
                   {(currentPage - 1) * PAGE_SIZE + 1}–
                   {Math.min(currentPage * PAGE_SIZE, filteredStudents.length)}
                 </span>{' '}
-                of <span className="tabular-nums text-zinc-200">{filteredStudents.length}</span> students
+                of <span className="tabular-nums text-ink-2">{filteredStudents.length}</span> students
               </p>
 
               <div className="flex items-center gap-2">
@@ -330,8 +330,8 @@ export default function AdminStudentsPage() {
                       aria-current={currentPage === pageNum ? 'page' : undefined}
                       className={`h-8 w-8 rounded-lg text-sm tabular-nums transition-colors ${
                         currentPage === pageNum
-                          ? 'bg-zinc-800 font-semibold text-zinc-50'
-                          : 'text-zinc-400 hover:bg-zinc-900 hover:text-zinc-200'
+                          ? 'bg-sunken font-semibold text-ink'
+                          : 'text-ink-3 hover:bg-surface hover:text-ink-2'
                       }`}
                     >
                       {pageNum}
@@ -392,12 +392,12 @@ export default function AdminStudentsPage() {
               <Avatar name={selectedStudent.name} size="lg" />
               <div>
                 <div className="flex items-center gap-2">
-                  <h3 className="text-base font-semibold text-zinc-100">{selectedStudent.name}</h3>
+                  <h3 className="text-base font-semibold text-ink">{selectedStudent.name}</h3>
                   <Badge dot={selectedStudent.status === 'active'} size="sm">
                     {selectedStudent.status === 'active' ? 'Active' : 'Disabled'}
                   </Badge>
                 </div>
-                <p className="text-sm text-zinc-400">
+                <p className="text-sm text-ink-3">
                   <span className="tabular-nums">{selectedStudent.id}</span> ·{' '}
                   {selectedStudent.branch || 'CSE'} · Section {selectedStudent.section}
                 </p>
@@ -412,24 +412,24 @@ export default function AdminStudentsPage() {
                 { label: 'Enrolled', value: selectedStudent.joinedAt || '2024-08-01', className: 'tabular-nums' },
               ].map(({ label, value, className }) => (
                 <div key={label}>
-                  <dt className="text-zinc-400">{label}</dt>
-                  <dd className={`mt-1 font-medium text-zinc-100 ${className}`}>{value}</dd>
+                  <dt className="text-ink-3">{label}</dt>
+                  <dd className={`mt-1 font-medium text-ink ${className}`}>{value}</dd>
                 </div>
               ))}
             </dl>
 
-            <div className="space-y-4 border-t border-zinc-800 pt-6">
-              <h4 className="text-sm font-semibold text-zinc-100">Exam performance</h4>
+            <div className="space-y-4 border-t border-line pt-6">
+              <h4 className="text-sm font-semibold text-ink">Exam performance</h4>
               <dl className="grid grid-cols-2 gap-6 text-sm">
                 <div>
-                  <dt className="text-zinc-400">Exams completed</dt>
-                  <dd className="mt-1 font-medium tabular-nums text-zinc-100">
+                  <dt className="text-ink-3">Exams completed</dt>
+                  <dd className="mt-1 font-medium tabular-nums text-ink">
                     {selectedStudent.examsTaken ?? 0}
                   </dd>
                 </div>
                 <div>
-                  <dt className="text-zinc-400">Average score</dt>
-                  <dd className="mt-1 font-medium tabular-nums text-zinc-100">
+                  <dt className="text-ink-3">Average score</dt>
+                  <dd className="mt-1 font-medium tabular-nums text-ink">
                     {selectedStudent.avgScore ?? 0}%
                   </dd>
                 </div>
@@ -467,17 +467,17 @@ export default function AdminStudentsPage() {
       >
         <div className="flex items-start gap-3 text-sm">
           {confirmDialog.action === 'disable' ? (
-            <AlertTriangle size={20} className="mt-0.5 flex-shrink-0 text-red-400" />
+            <AlertTriangle size={20} className="mt-0.5 flex-shrink-0 text-danger" />
           ) : (
-            <CheckCircle2 size={20} className="mt-0.5 flex-shrink-0 text-zinc-400" />
+            <CheckCircle2 size={20} className="mt-0.5 flex-shrink-0 text-ink-3" />
           )}
           <div>
-            <p className="font-semibold text-zinc-100">
+            <p className="font-semibold text-ink">
               {confirmDialog.action === 'disable'
                 ? `Disable ${confirmDialog.student?.name}?`
                 : `Re-enable ${confirmDialog.student?.name}?`}
             </p>
-            <p className="mt-2 text-zinc-400">
+            <p className="mt-2 text-ink-3">
               {confirmDialog.action === 'disable'
                 ? `${confirmDialog.student?.id} will no longer be able to sign in or start scheduled examinations.`
                 : `${confirmDialog.student?.id} will regain portal access and can take assigned exams.`}

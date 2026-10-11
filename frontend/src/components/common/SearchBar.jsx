@@ -18,7 +18,7 @@ export default function SearchBar({
     <div className={`relative ${className}`}>
       <Search
         size={15}
-        className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-zinc-500"
+        className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-ink-4"
       />
       <input
         type="search"
@@ -26,14 +26,14 @@ export default function SearchBar({
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
         aria-label={placeholder}
-        className="input-base pl-9 pr-8 w-full"
+        className="input-base w-full pl-9 pr-8"
       />
       {value && (
         <button
           type="button"
           onClick={() => onChange('')}
           aria-label="Clear search"
-          className="absolute right-2.5 top-1/2 -translate-y-1/2 text-zinc-500 hover:text-zinc-300 transition-colors"
+          className="absolute right-2.5 top-1/2 -translate-y-1/2 text-ink-4 transition-colors duration-fast hover:text-ink-2"
         >
           <X size={14} />
         </button>

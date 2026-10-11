@@ -3,11 +3,11 @@ import LoadingSpinner from './LoadingSpinner'
 // Amber is the only accent. `success` and `warning` are kept as aliases so
 // existing call sites keep working, but they render as the standard buttons.
 const variants = {
-  primary:   'bg-amber-500 text-zinc-950 font-semibold hover:bg-amber-400 active:bg-amber-600 focus:ring-amber-500',
-  secondary: 'bg-zinc-800 text-zinc-200 border border-zinc-700 hover:bg-zinc-700 hover:text-zinc-100 focus:ring-amber-500',
-  danger:    'bg-red-600 text-white hover:bg-red-500 active:bg-red-700 focus:ring-red-500',
-  ghost:     'bg-transparent text-zinc-400 hover:bg-zinc-800 hover:text-zinc-100 active:bg-zinc-700 focus:ring-zinc-600',
-  link:      'bg-transparent text-amber-400 hover:text-amber-300 underline-offset-4 hover:underline focus:ring-amber-500 p-0',
+  primary:   'bg-accent text-accent-ink font-semibold shadow-xs hover:bg-accent/90 active:bg-accent/80',
+  secondary: 'bg-surface text-ink-2 border border-line shadow-xs hover:border-line-strong hover:bg-sunken hover:text-ink active:bg-sunken/80',
+  danger:    'bg-danger text-white font-medium shadow-xs hover:bg-danger/90 active:bg-danger/80',
+  ghost:     'bg-transparent text-ink-3 hover:bg-sunken hover:text-ink active:bg-sunken/80',
+  link:      'bg-transparent text-accent-strong hover:text-accent-strong/75 underline-offset-4 hover:underline p-0',
 }
 variants.success = variants.primary
 variants.warning = variants.primary
@@ -54,10 +54,9 @@ export default function Button({
       onClick={onClick}
       disabled={isDisabled}
       className={[
-        'inline-flex items-center justify-center font-medium rounded-lg',
-        'transition-colors duration-150',
-        'focus:outline-none focus:ring-2 focus:ring-offset-2 ring-offset-zinc-950',
-        'disabled:opacity-50 disabled:cursor-not-allowed',
+        'inline-flex items-center justify-center font-medium rounded-md',
+        'transition duration-fast ease-standard active:scale-[0.98]',
+        'disabled:opacity-50 disabled:cursor-not-allowed disabled:active:scale-100',
         variants[variant] ?? variants.primary,
         variant === 'link' ? '' : sizes[size] ?? sizes.md,
         fullWidth ? 'w-full' : '',

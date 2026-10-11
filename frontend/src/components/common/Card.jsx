@@ -21,14 +21,14 @@ export default function Card({
     <div
       className={[
         'card overflow-hidden',
-        hoverable ? 'transition-colors duration-150 hover:border-zinc-700 cursor-pointer' : '',
+        hoverable ? 'card-interactive cursor-pointer' : '',
         className,
       ].join(' ')}
     >
       {hasHeader && (
-        <div className="flex items-center justify-between gap-4 border-b border-zinc-800 px-6 py-4">
+        <div className="flex items-center justify-between gap-4 border-b border-line px-6 py-4">
           {title && (
-            <h3 className="text-sm font-semibold text-zinc-100">{title}</h3>
+            <h3 className="text-sm font-semibold tracking-tight text-ink">{title}</h3>
           )}
           {headerAction && (
             <div className="flex items-center gap-2">{headerAction}</div>

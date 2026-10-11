@@ -46,13 +46,7 @@ export default function AdminSidebar({
 }) {
   const { user } = useAuth()
 
-  const admin = user || {
-    name: 'Dr. Ramesh Kumar',
-    id: 'ADMIN001',
-    designation: 'Associate Professor',
-    department: 'CSE',
-    role: 'admin',
-  }
+  const admin = user || { name: '', department: '' }
 
   const expanded = !collapsed || mobileOpen
 
@@ -61,7 +55,7 @@ export default function AdminSidebar({
       {/* ── Mobile Drawer Backdrop ── */}
       {mobileOpen && (
         <div
-          className="fixed inset-0 z-40 bg-black/60 md:hidden"
+          className="fixed inset-0 z-40 bg-ink/20 md:hidden"
           onClick={onCloseMobile}
           aria-hidden="true"
         />
@@ -70,25 +64,25 @@ export default function AdminSidebar({
       {/* ── Sidebar Container ── */}
       <aside
         className={[
-          'fixed inset-y-0 left-0 z-50 flex flex-col border-r border-zinc-800 bg-zinc-950',
-          'transition-all duration-200 ease-in-out md:static md:z-auto',
+          'fixed inset-y-0 left-0 z-50 flex flex-col border-r border-line bg-surface',
+          'transition-all duration-slow ease-standard md:static md:z-auto',
           collapsed ? 'md:w-20' : 'md:w-64',
           mobileOpen ? 'w-64 translate-x-0' : '-translate-x-full md:translate-x-0',
         ].join(' ')}
       >
         {/* ── Brand ── */}
-        <div className="flex h-16 items-center justify-between border-b border-zinc-800 px-4">
+        <div className="flex h-16 items-center justify-between border-b border-line px-4">
           <Link
             to="/admin/dashboard"
             onClick={onCloseMobile}
             className={`flex items-center gap-2 overflow-hidden ${expanded ? '' : 'md:mx-auto'}`}
           >
-            <span className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg bg-amber-500 text-zinc-950">
+            <span className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg bg-accent text-accent-ink">
               <ShieldCheck size={18} />
             </span>
             {expanded && (
-              <span className="truncate text-base font-semibold text-zinc-100">
-                ExamPortal <span className="font-normal text-zinc-500">/ Admin</span>
+              <span className="truncate text-base font-semibold text-ink">
+                ExamPortal <span className="font-normal text-ink-3">/ Admin</span>
               </span>
             )}
           </Link>
@@ -97,7 +91,7 @@ export default function AdminSidebar({
             type="button"
             onClick={onCloseMobile}
             aria-label="Close sidebar drawer"
-            className="rounded-lg p-2 text-zinc-400 transition-colors hover:bg-zinc-800 hover:text-zinc-100 md:hidden"
+            className="rounded-lg p-2 text-ink-3 transition-colors hover:bg-sunken hover:text-ink md:hidden"
           >
             <X size={18} />
           </button>
@@ -105,13 +99,13 @@ export default function AdminSidebar({
 
         {/* ── Identity (expanded only) ── */}
         {expanded && (
-          <div className="flex items-center gap-3 border-b border-zinc-800 p-4">
+          <div className="flex items-center gap-3 border-b border-line p-4">
             <Avatar name={admin.name} size="md" />
             <div className="min-w-0 flex-1">
-              <p className="truncate text-sm font-semibold text-zinc-100">{admin.name}</p>
-              <p className="truncate text-xs text-zinc-400">
-                {admin.department || 'Computer Science'} · {admin.id}
-              </p>
+              <p className="truncate text-sm font-semibold text-ink">{admin.name}</p>
+              {admin.department && (
+                <p className="truncate text-xs text-ink-3">{admin.department}</p>
+              )}
             </div>
           </div>
         )}
@@ -127,8 +121,8 @@ export default function AdminSidebar({
               className={({ isActive }) =>
                 `flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
                   isActive
-                    ? 'bg-zinc-800 text-amber-400'
-                    : 'text-zinc-400 hover:bg-zinc-900 hover:text-zinc-100'
+                    ? 'bg-accent-soft text-accent-strong'
+                    : 'text-ink-3 hover:bg-sunken hover:text-ink'
                 } ${!expanded ? 'justify-center px-0' : ''}`
               }
             >
@@ -139,12 +133,12 @@ export default function AdminSidebar({
         </nav>
 
         {/* ── Footer: Student view link & collapse toggle ── */}
-        <div className="space-y-1 border-t border-zinc-800 p-4">
+        <div className="space-y-1 border-t border-line p-4">
           <Link
             to="/student/dashboard"
             onClick={onCloseMobile}
             title={!expanded ? 'Student Portal' : undefined}
-            className={`flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-zinc-400 transition-colors hover:bg-zinc-900 hover:text-zinc-100 ${
+            className={`flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-ink-3 transition-colors hover:bg-sunken hover:text-ink ${
               !expanded ? 'justify-center px-0' : ''
             }`}
           >
@@ -156,7 +150,7 @@ export default function AdminSidebar({
             type="button"
             onClick={onToggleCollapse}
             aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
-            className={`hidden w-full items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-zinc-400 transition-colors hover:bg-zinc-900 hover:text-zinc-100 md:flex ${
+            className={`hidden w-full items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-ink-3 transition-colors hover:bg-sunken hover:text-ink md:flex ${
               collapsed ? 'justify-center px-0' : ''
             }`}
           >

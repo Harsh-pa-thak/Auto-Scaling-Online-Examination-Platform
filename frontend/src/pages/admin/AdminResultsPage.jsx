@@ -11,7 +11,7 @@ export default function AdminResultsPage() {
     return !query || result.student?.name?.toLowerCase().includes(query) || result.exam?.title?.toLowerCase().includes(query)
   })
   const columns = [
-    { key: 'student', label: 'Student', render: (_, row) => <div><p className="font-medium text-zinc-100">{row.student?.name}</p><p className="text-xs text-zinc-500">{row.student?.email}</p></div> },
+    { key: 'student', label: 'Student', render: (_, row) => <div><p className="font-medium text-ink">{row.student?.name}</p><p className="text-xs text-ink-3">{row.student?.email}</p></div> },
     { key: 'exam', label: 'Exam', render: (_, row) => row.exam?.title },
     { key: 'score', label: 'Score', render: (_, row) => `${row.score ?? 0} / ${row.exam?.totalMarks ?? 0}` },
     { key: 'status', label: 'Status', render: (_, row) => <Badge variant={row.score >= (row.exam?.passingMarks || 0) ? 'success' : 'danger'}>{row.score >= (row.exam?.passingMarks || 0) ? 'Passed' : 'Failed'}</Badge> },

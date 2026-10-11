@@ -55,11 +55,11 @@ export default function RegisterPage() {
   ].filter(Boolean).length
 
   const strengthConfig = [
-    { label: 'Very Weak', color: 'bg-zinc-800', text: 'text-zinc-500' },
-    { label: 'Weak',      color: 'bg-red-500',   text: 'text-red-400' },
-    { label: 'Fair',      color: 'bg-amber-500', text: 'text-amber-400' },
-    { label: 'Good',      color: 'bg-amber-500', text: 'text-amber-400' },
-    { label: 'Strong',    color: 'bg-emerald-500', text: 'text-emerald-400' },
+    { label: 'Very Weak', color: 'bg-sunken', text: 'text-ink-3' },
+    { label: 'Weak',      color: 'bg-danger',   text: 'text-danger' },
+    { label: 'Fair',      color: 'bg-accent', text: 'text-accent-strong' },
+    { label: 'Good',      color: 'bg-accent', text: 'text-accent-strong' },
+    { label: 'Strong',    color: 'bg-success', text: 'text-success' },
   ]
 
   const currentStrength = formData.password.length === 0 ? 0 : passedCount
@@ -160,8 +160,8 @@ export default function RegisterPage() {
     <div className="space-y-6">
       {/* Header */}
       <div className="text-center">
-        <h1 className="text-xl font-semibold text-zinc-50">Create student account</h1>
-        <p className="mt-2 text-sm text-zinc-400">
+        <h1 className="text-xl font-semibold text-ink">Create student account</h1>
+        <p className="mt-2 text-sm text-ink-3">
           Enroll for official university online examinations.
         </p>
       </div>
@@ -230,7 +230,7 @@ export default function RegisterPage() {
                 type="button"
                 onClick={() => setShowPassword((prev) => !prev)}
                 aria-label={showPassword ? 'Hide password' : 'Show password'}
-                className="rounded p-1 text-zinc-500 transition-colors hover:text-zinc-300 focus:outline-none focus:ring-1 focus:ring-amber-500"
+                className="rounded p-1 text-ink-3 transition-colors hover:text-ink-2 focus:outline-none focus:ring-1 focus:ring-accent"
               >
                 {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
               </button>
@@ -239,9 +239,9 @@ export default function RegisterPage() {
 
           {/* Password Strength Indicator */}
           {formData.password.length > 0 && (
-            <div className="mt-2 space-y-2 rounded-lg border border-zinc-800 bg-zinc-950 p-4">
+            <div className="mt-2 space-y-2 rounded-lg border border-line bg-canvas p-4">
               <div className="flex items-center justify-between text-xs">
-                <span className="font-medium text-zinc-400">Strength</span>
+                <span className="font-medium text-ink-3">Strength</span>
                 <span className={`font-semibold ${strengthInfo.text}`}>
                   {strengthInfo.label}
                 </span>
@@ -253,28 +253,28 @@ export default function RegisterPage() {
                   <div
                     key={seg}
                     className={`rounded-full transition-colors ${
-                      currentStrength >= seg ? strengthInfo.color : 'bg-zinc-800'
+                      currentStrength >= seg ? strengthInfo.color : 'bg-sunken'
                     }`}
                   />
                 ))}
               </div>
 
               {/* Requirement Checklist */}
-              <div className="grid grid-cols-2 gap-2 pt-2 text-xs text-zinc-400">
-                <span className={`flex items-center gap-1 ${passwordCriteria.length ? 'text-emerald-400' : ''}`}>
-                  {passwordCriteria.length ? <CheckCircle2 size={12} /> : <span className="w-3 h-3 rounded-full border border-zinc-700 inline-block" />}
+              <div className="grid grid-cols-2 gap-2 pt-2 text-xs text-ink-3">
+                <span className={`flex items-center gap-1 ${passwordCriteria.length ? 'text-success' : ''}`}>
+                  {passwordCriteria.length ? <CheckCircle2 size={12} /> : <span className="w-3 h-3 rounded-full border border-line-strong inline-block" />}
                   8+ characters
                 </span>
-                <span className={`flex items-center gap-1 ${passwordCriteria.hasUpper && passwordCriteria.hasLower ? 'text-emerald-400' : ''}`}>
-                  {passwordCriteria.hasUpper && passwordCriteria.hasLower ? <CheckCircle2 size={12} /> : <span className="w-3 h-3 rounded-full border border-zinc-700 inline-block" />}
+                <span className={`flex items-center gap-1 ${passwordCriteria.hasUpper && passwordCriteria.hasLower ? 'text-success' : ''}`}>
+                  {passwordCriteria.hasUpper && passwordCriteria.hasLower ? <CheckCircle2 size={12} /> : <span className="w-3 h-3 rounded-full border border-line-strong inline-block" />}
                   Upper & lower
                 </span>
-                <span className={`flex items-center gap-1 ${passwordCriteria.hasNumber ? 'text-emerald-400' : ''}`}>
-                  {passwordCriteria.hasNumber ? <CheckCircle2 size={12} /> : <span className="w-3 h-3 rounded-full border border-zinc-700 inline-block" />}
+                <span className={`flex items-center gap-1 ${passwordCriteria.hasNumber ? 'text-success' : ''}`}>
+                  {passwordCriteria.hasNumber ? <CheckCircle2 size={12} /> : <span className="w-3 h-3 rounded-full border border-line-strong inline-block" />}
                   At least 1 number
                 </span>
-                <span className={`flex items-center gap-1 ${passwordCriteria.hasSpecial ? 'text-emerald-400' : ''}`}>
-                  {passwordCriteria.hasSpecial ? <CheckCircle2 size={12} /> : <span className="w-3 h-3 rounded-full border border-zinc-700 inline-block" />}
+                <span className={`flex items-center gap-1 ${passwordCriteria.hasSpecial ? 'text-success' : ''}`}>
+                  {passwordCriteria.hasSpecial ? <CheckCircle2 size={12} /> : <span className="w-3 h-3 rounded-full border border-line-strong inline-block" />}
                   Special symbol
                 </span>
               </div>
@@ -300,7 +300,7 @@ export default function RegisterPage() {
               type="button"
               onClick={() => setShowConfirmPassword((prev) => !prev)}
               aria-label={showConfirmPassword ? 'Hide confirm password' : 'Show confirm password'}
-              className="rounded p-1 text-zinc-500 transition-colors hover:text-zinc-300 focus:outline-none focus:ring-1 focus:ring-amber-500"
+              className="rounded p-1 text-ink-3 transition-colors hover:text-ink-2 focus:outline-none focus:ring-1 focus:ring-accent"
             >
               {showConfirmPassword ? <EyeOff size={16} /> : <Eye size={16} />}
             </button>
@@ -320,7 +320,7 @@ export default function RegisterPage() {
       </form>
 
       {/* Back to Login Link */}
-      <p className="border-t border-zinc-800 pt-6 text-center text-sm text-zinc-400">
+      <p className="border-t border-line pt-6 text-center text-sm text-ink-3">
         Already have an account?{' '}
         <Link to="/login" className="text-link">
           Sign in

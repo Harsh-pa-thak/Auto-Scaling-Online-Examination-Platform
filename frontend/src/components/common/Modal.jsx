@@ -54,11 +54,12 @@ export default function Modal({
       role="dialog"
       aria-modal="true"
       aria-labelledby={title ? 'modal-title' : undefined}
+      aria-label={title ? undefined : 'Dialog'}
       className="fixed inset-0 z-50 flex items-center justify-center p-4"
     >
       {/* Backdrop */}
       <div
-        className="absolute inset-0 bg-black/70"
+        className="absolute inset-0 bg-ink/25 backdrop-blur-[2px] animate-fade-in"
         onClick={closeOnOverlay ? onClose : undefined}
         aria-hidden="true"
       />
@@ -66,34 +67,34 @@ export default function Modal({
       {/* Panel */}
       <div
         className={[
-          'relative z-10 w-full bg-zinc-900 border border-zinc-800 rounded-xl',
-          'flex flex-col max-h-[90vh]',
+          'relative z-10 w-full bg-surface border border-line rounded-xl shadow-xl',
+          'flex flex-col max-h-[90vh] animate-panel-in',
           sizes[size] ?? sizes.md,
           className,
         ].join(' ')}
       >
         {/* Header */}
-        <div className="flex items-start justify-between gap-4 px-6 py-4 border-b border-zinc-800">
+        <div className="flex items-start justify-between gap-4 border-b border-line px-6 py-4">
           {title && (
-            <h2 id="modal-title" className="text-base font-semibold text-zinc-100">
+            <h2 id="modal-title" className="text-base font-semibold tracking-tight text-ink">
               {title}
             </h2>
           )}
           <button
             onClick={onClose}
             aria-label="Close modal"
-            className="ml-auto -mr-1 p-1.5 rounded-lg text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800 transition-colors"
+            className="ml-auto -mr-1 rounded-md p-1.5 text-ink-4 transition-colors duration-fast hover:bg-sunken hover:text-ink"
           >
             <X size={18} />
           </button>
         </div>
 
         {/* Body */}
-        <div className="flex-1 overflow-y-auto px-6 py-6 text-zinc-200">{children}</div>
+        <div className="flex-1 overflow-y-auto px-6 py-6 text-ink-2">{children}</div>
 
         {/* Footer */}
         {footer && (
-          <div className="px-6 py-4 border-t border-zinc-800 flex items-center justify-end gap-3">
+          <div className="flex items-center justify-end gap-3 border-t border-line px-6 py-4">
             {footer}
           </div>
         )}

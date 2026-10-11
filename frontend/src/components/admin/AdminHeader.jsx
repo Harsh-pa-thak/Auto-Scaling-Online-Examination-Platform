@@ -3,7 +3,6 @@ import {
   Menu,
   ChevronDown,
   User,
-  GraduationCap,
   LogOut,
   PanelLeftClose,
   PanelLeft,
@@ -41,13 +40,7 @@ export default function AdminHeader({
   const navigate = useNavigate()
   const location = useLocation()
 
-  const admin = user || {
-    name: 'Dr. Ramesh Kumar',
-    id: 'ADMIN001',
-    designation: 'Associate Professor',
-    department: 'Computer Science & Engineering',
-    role: 'admin',
-  }
+  const admin = user || { name: '', department: '' }
 
   // Breadcrumb-style location label
   const pageTitle = routeTitles[location.pathname] || 'Administration'
@@ -58,14 +51,14 @@ export default function AdminHeader({
   }
 
   return (
-    <header className="sticky top-0 z-30 flex h-16 items-center justify-between border-b border-zinc-800 bg-zinc-950 px-4 sm:px-6 lg:px-8">
+    <header className="sticky top-0 z-30 flex h-16 items-center justify-between border-b border-line bg-canvas/80 backdrop-blur-sm px-4 sm:px-6 lg:px-8">
       {/* ── Left: Hamburger (mobile) + Collapse Toggle + Location ── */}
       <div className="flex items-center gap-2">
         <button
           type="button"
           onClick={onToggleMobile}
           aria-label="Open mobile navigation"
-          className="-ml-2 rounded-lg p-2 text-zinc-400 transition-colors hover:bg-zinc-800 hover:text-zinc-100 md:hidden"
+          className="-ml-2 rounded-lg p-2 text-ink-3 transition-colors hover:bg-sunken hover:text-ink md:hidden"
         >
           <Menu size={20} />
         </button>
@@ -74,43 +67,40 @@ export default function AdminHeader({
           type="button"
           onClick={onToggleCollapse}
           aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
-          className="-ml-2 hidden rounded-lg p-2 text-zinc-400 transition-colors hover:bg-zinc-800 hover:text-zinc-100 md:flex"
+          className="-ml-2 hidden rounded-lg p-2 text-ink-3 transition-colors hover:bg-sunken hover:text-ink md:flex"
         >
           {collapsed ? <PanelLeft size={18} /> : <PanelLeftClose size={18} />}
         </button>
 
-        <p className="text-sm text-zinc-500">
-          Admin <span className="text-zinc-600">/</span>{' '}
-          <span className="font-medium text-zinc-200">{pageTitle}</span>
+        <p className="text-sm text-ink-3">
+          Admin <span className="text-ink-2">/</span>{' '}
+          <span className="font-medium text-ink-2">{pageTitle}</span>
         </p>
       </div>
 
       {/* ── Right: Term & Profile Menu ── */}
       <div className="flex items-center gap-4">
-        <span className="hidden text-sm text-zinc-500 lg:inline">Spring Semester 2025</span>
-
         <Dropdown
           align="right"
           width="w-64"
           trigger={
             <button
               type="button"
-              className="flex items-center gap-2 rounded-lg p-1 text-left transition-colors hover:bg-zinc-800"
+              className="flex items-center gap-2 rounded-lg p-1 text-left transition-colors hover:bg-sunken"
             >
               <Avatar name={admin.name} size="sm" />
-              <span className="hidden text-sm font-medium text-zinc-200 md:block">
+              <span className="hidden text-sm font-medium text-ink-2 md:block">
                 {admin.name}
               </span>
-              <ChevronDown size={14} className="hidden text-zinc-500 sm:block" />
+              <ChevronDown size={14} className="hidden text-ink-3 sm:block" />
             </button>
           }
         >
-          <div className="border-b border-zinc-800 px-3 py-2">
-            <p className="text-sm font-semibold text-zinc-100">{admin.name}</p>
-            <p className="text-xs text-zinc-400">{admin.designation || 'Administrator'}</p>
-            <p className="truncate text-xs text-zinc-400">
-              {admin.department || 'Computer Science & Engineering'}
-            </p>
+          <div className="border-b border-line px-3 py-2">
+            <p className="text-sm font-semibold text-ink">{admin.name}</p>
+            {admin.department && (
+              <p className="truncate text-xs text-ink-3">{admin.department}</p>
+            )}
           </div>
 
           <div className="py-1">
@@ -121,12 +111,6 @@ export default function AdminHeader({
               Admin Profile
             </DropdownItem>
 
-            <DropdownItem
-              icon={<GraduationCap size={15} />}
-              onClick={() => navigate('/student/dashboard')}
-            >
-              Switch to Student View
-            </DropdownItem>
           </div>
 
           <DropdownDivider />

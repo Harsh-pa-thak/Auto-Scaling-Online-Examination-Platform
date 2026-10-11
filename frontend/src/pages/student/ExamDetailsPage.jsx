@@ -62,7 +62,7 @@ export default function ExamDetailsPage() {
     api(`/exams/${id}`).then(setExam).catch(() => setExam(null)).finally(() => setLoading(false))
   }, [id])
 
-  if (loading) return <div className="py-12 text-center text-zinc-400">Loading examination...</div>
+  if (loading) return <div className="py-12 text-center text-ink-3">Loading examination...</div>
   if (!exam) {
     return (
       <div className="py-12">
@@ -76,8 +76,12 @@ export default function ExamDetailsPage() {
     )
   }
 
-  const isLive = exam.status === 'active'
-  const isUpcoming = exam.status === 'upcoming'
+  const now = Date.now()
+  const startsAt = exam.startTime ? new Date(exam.startTime).getTime() : NaN
+  const endsAt = exam.endTime ? new Date(exam.endTime).getTime() : NaN
+  const isWithinWindow = Number.isFinite(startsAt) && Number.isFinite(endsAt) && now >= startsAt && now <= endsAt
+  const isLive = ['active', 'published'].includes(exam.status) && isWithinWindow
+  const isUpcoming = ['upcoming', 'published'].includes(exam.status) && Number.isFinite(startsAt) && now < startsAt
   const isCompleted = exam.status === 'completed'
   const isUnavailable = exam.status === 'unavailable' || exam.status === 'draft'
 
@@ -112,15 +116,15 @@ export default function ExamDetailsPage() {
       <header>
         <Link
           to="/student/exams"
-          className="inline-flex items-center gap-2 text-sm font-medium text-zinc-400 transition-colors hover:text-zinc-100"
+          className="inline-flex items-center gap-2 text-sm font-medium text-ink-3 transition-colors hover:text-ink"
         >
           <ArrowLeft size={14} />
           Back to examinations
         </Link>
 
-        <div className="mt-6 flex flex-wrap items-center gap-2 text-sm text-zinc-400">
+        <div className="mt-6 flex flex-wrap items-center gap-2 text-sm text-ink-3">
           <span>{exam.subject}</span>
-          <span className="text-zinc-600">·</span>
+          <span className="text-ink-2">·</span>
           <span className="tabular-nums">{exam.code}</span>
           <span className="ml-2">
             {isLive ? (
@@ -149,10 +153,10 @@ export default function ExamDetailsPage() {
             <h2 className="section-title">Overview</h2>
             <dl className="mt-4 grid grid-cols-2 gap-4 sm:grid-cols-4">
               {overview.map(({ label, value, hint }) => (
-                <div key={label} className="rounded-lg border border-zinc-800 bg-zinc-950 p-4">
+                <div key={label} className="rounded-lg border border-line bg-canvas p-4">
                   <dt className="eyebrow">{label}</dt>
-                  <dd className="mt-1 text-xl font-semibold tabular-nums text-zinc-50">{value}</dd>
-                  <dd className="text-xs text-zinc-400">{hint}</dd>
+                  <dd className="mt-1 text-xl font-semibold tabular-nums text-ink">{value}</dd>
+                  <dd className="text-xs text-ink-3">{hint}</dd>
                 </div>
               ))}
             </dl>
@@ -160,11 +164,11 @@ export default function ExamDetailsPage() {
 
           <Card>
             <h2 className="section-title">Schedule</h2>
-            <dl className="mt-4 divide-y divide-zinc-800 text-sm">
+            <dl className="mt-4 divide-y divide-line text-sm">
               {schedule.map(({ label, value }) => (
                 <div key={label} className="flex items-center justify-between gap-4 py-2">
-                  <dt className="text-zinc-400">{label}</dt>
-                  <dd className="text-right font-medium text-zinc-100">{value}</dd>
+                  <dt className="text-ink-3">{label}</dt>
+                  <dd className="text-right font-medium text-ink">{value}</dd>
                 </div>
               ))}
             </dl>
@@ -180,11 +184,11 @@ export default function ExamDetailsPage() {
 
         {/* Right: start action */}
         <div className="space-y-6">
-          <Card className={`lg:sticky lg:top-24 ${isLive ? 'border-amber-500/50' : ''}`}>
+          <Card className={`lg:sticky lg:top-24 ${isLive ? 'border-accent/50' : ''}`}>
             <h2 className="section-title">
               {isLive ? 'Ready when you are' : isCompleted ? 'Exam completed' : 'Start exam'}
             </h2>
-            <p className="mt-2 text-sm text-zinc-400">
+            <p className="mt-2 text-sm text-ink-3">
               {isLive
                 ? 'The session is live. The timer starts as soon as you begin.'
                 : isUpcoming
@@ -239,11 +243,11 @@ export default function ExamDetailsPage() {
 
           <Card>
             <h2 className="section-title">Technical support</h2>
-            <p className="mt-2 text-sm text-zinc-400">
+            <p className="mt-2 text-sm text-ink-3">
               If your browser crashes or you lose power during the test, sign back in from any
               browser. Your answers are preserved.
             </p>
-            <p className="mt-4 border-t border-zinc-800 pt-4 text-sm text-zinc-400">
+            <p className="mt-4 border-t border-line pt-4 text-sm text-ink-3">
               Helpline:{' '}
               <a href="mailto:helpdesk@vit.ac.in" className="text-link">
                 helpdesk@vit.ac.in
@@ -275,37 +279,37 @@ export default function ExamDetailsPage() {
         }
       >
         <div className="space-y-4">
-          <dl className="space-y-1 rounded-lg border border-zinc-800 bg-zinc-950 p-4 text-sm">
+          <dl className="space-y-1 rounded-lg border border-line bg-canvas p-4 text-sm">
             <div className="flex justify-between gap-4">
-              <dt className="text-zinc-400">Exam</dt>
-              <dd className="text-right font-medium text-zinc-100">{exam.title}</dd>
+              <dt className="text-ink-3">Exam</dt>
+              <dd className="text-right font-medium text-ink">{exam.title}</dd>
             </div>
             <div className="flex justify-between gap-4">
-              <dt className="text-zinc-400">Duration</dt>
-              <dd className="tabular-nums text-zinc-200">{exam.duration} minutes</dd>
+              <dt className="text-ink-3">Duration</dt>
+              <dd className="tabular-nums text-ink-2">{exam.duration} minutes</dd>
             </div>
             <div className="flex justify-between gap-4">
-              <dt className="text-zinc-400">Questions</dt>
-              <dd className="tabular-nums text-zinc-200">
+              <dt className="text-ink-3">Questions</dt>
+              <dd className="tabular-nums text-ink-2">
                 {exam.totalQuestions} ({exam.totalMarks} marks)
               </dd>
             </div>
           </dl>
 
-          <p className="flex items-start gap-2 text-sm text-zinc-300">
-            <AlertTriangle size={16} className="mt-0.5 flex-shrink-0 text-amber-400" />
+          <p className="flex items-start gap-2 text-sm text-ink-2">
+            <AlertTriangle size={16} className="mt-0.5 flex-shrink-0 text-accent-strong" />
             Once you start, the timer cannot be paused. Tab switches and window minimizing are
             recorded for academic integrity.
           </p>
 
-          <label className="flex cursor-pointer select-none items-start gap-2 border-t border-zinc-800 pt-4">
+          <label className="flex cursor-pointer select-none items-start gap-2 border-t border-line pt-4">
             <input
               type="checkbox"
               checked={agreementChecked}
               onChange={(e) => setAgreementChecked(e.target.checked)}
-              className="mt-1 h-4 w-4 rounded border-zinc-700 bg-zinc-950 accent-amber-500"
+              className="mt-1 h-4 w-4 rounded border-line-strong bg-canvas accent-amber-500"
             />
-            <span className="text-sm text-zinc-200">
+            <span className="text-sm text-ink-2">
               I have read the instructions and agree to follow the university honor code.
             </span>
           </label>

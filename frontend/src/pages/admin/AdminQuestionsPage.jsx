@@ -204,7 +204,7 @@ export default function AdminQuestionsPage() {
               }
             />
           ) : (
-            <ul className="divide-y divide-zinc-800">
+            <ul className="divide-y divide-line">
               {paged.map((q) => {
                 const isExpanded = expandedId === q.id
                 return (
@@ -212,7 +212,7 @@ export default function AdminQuestionsPage() {
                     <div className="flex items-start gap-4">
                       <button
                         onClick={() => setExpandedId(isExpanded ? null : q.id)}
-                        className="mt-0.5 flex-shrink-0 rounded p-1 text-zinc-500 transition-colors hover:bg-zinc-800 hover:text-zinc-300"
+                        className="mt-0.5 flex-shrink-0 rounded p-1 text-ink-3 transition-colors hover:bg-sunken hover:text-ink-2"
                         aria-label={isExpanded ? 'Collapse' : 'Expand'}
                         aria-expanded={isExpanded}
                       >
@@ -221,14 +221,14 @@ export default function AdminQuestionsPage() {
 
                       <div className="min-w-0 flex-1">
                         <div className="flex flex-wrap items-start justify-between gap-4">
-                          <p className="min-w-0 flex-1 text-sm text-zinc-100">
-                            <span className="mr-2 tabular-nums text-zinc-500">{q.id}</span>
+                          <p className="min-w-0 flex-1 text-sm text-ink">
+                            <span className="mr-2 tabular-nums text-ink-3">{q.id}</span>
                             {q.text}
                           </p>
                           <div className="flex flex-shrink-0 items-center gap-2">
                             <Badge size="sm">{q.difficulty}</Badge>
                             <Badge size="sm">{q.category}</Badge>
-                            <span className="text-xs tabular-nums text-zinc-400">
+                            <span className="text-xs tabular-nums text-ink-3">
                               {q.marks} {q.marks === 1 ? 'mark' : 'marks'}
                             </span>
                           </div>
@@ -245,14 +245,14 @@ export default function AdminQuestionsPage() {
                                   className={[
                                     'flex items-center gap-2 rounded-lg border px-3 py-2 text-sm',
                                     isCorrect
-                                      ? 'border-emerald-500/40 text-emerald-300'
-                                      : 'border-zinc-800 text-zinc-300',
+                                      ? 'border-success/40 text-success'
+                                      : 'border-line text-ink-2',
                                   ].join(' ')}
                                 >
-                                  <span className="text-zinc-500">{letter}.</span>
+                                  <span className="text-ink-3">{letter}.</span>
                                   <span>{opt}</span>
                                   {isCorrect && (
-                                    <span className="ml-auto flex items-center gap-1 text-xs font-medium text-emerald-400">
+                                    <span className="ml-auto flex items-center gap-1 text-xs font-medium text-success">
                                       <CheckCircle2 size={14} />
                                       Correct
                                     </span>
@@ -273,7 +273,7 @@ export default function AdminQuestionsPage() {
                           size="xs"
                           onClick={() => setDeleteTarget(q)}
                           aria-label="Delete question"
-                          className="hover:text-red-400"
+                          className="hover:text-danger"
                         >
                           <Trash2 size={14} />
                         </Button>
@@ -286,7 +286,7 @@ export default function AdminQuestionsPage() {
           )}
 
           {filtered.length > PAGE_SIZE && (
-            <div className="border-t border-zinc-800 px-6">
+            <div className="border-t border-line px-6">
               <Pagination
                 currentPage={safePage}
                 totalPages={totalPages}

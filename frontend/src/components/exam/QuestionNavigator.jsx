@@ -40,10 +40,10 @@ export default function QuestionNavigator({
   }
 
   const legend = [
-    { label: 'Answered',          count: answeredCount,          swatch: 'border-zinc-200 bg-zinc-200' },
-    { label: 'Not answered',      count: unansweredCount,        swatch: 'border-zinc-600' },
-    { label: 'Marked',            count: markedCount,            swatch: 'border-amber-500' },
-    { label: 'Answered & marked', count: answeredAndMarkedCount, swatch: 'border-amber-500 bg-amber-500' },
+    { label: 'Answered',          count: answeredCount,          swatch: 'border-line bg-sunken' },
+    { label: 'Not answered',      count: unansweredCount,        swatch: 'border-line-strong' },
+    { label: 'Marked',            count: markedCount,            swatch: 'border-accent' },
+    { label: 'Answered & marked', count: answeredAndMarkedCount, swatch: 'border-accent bg-accent' },
   ]
 
   return (
@@ -51,8 +51,8 @@ export default function QuestionNavigator({
       {/* Header */}
       <div className="flex items-center justify-between gap-4">
         <div>
-          <h3 className="text-sm font-semibold text-zinc-100">Questions</h3>
-          <p className="text-xs tabular-nums text-zinc-400">
+          <h3 className="text-sm font-semibold text-ink">Questions</h3>
+          <p className="text-xs tabular-nums text-ink-3">
             {answeredCount + answeredAndMarkedCount} of {totalQuestions} answered
           </p>
         </div>
@@ -62,7 +62,7 @@ export default function QuestionNavigator({
             type="button"
             onClick={onCloseMobile}
             aria-label="Close question palette"
-            className="rounded-lg p-2 text-zinc-500 hover:bg-zinc-800 hover:text-zinc-200 lg:hidden"
+            className="rounded-lg p-2 text-ink-3 hover:bg-sunken hover:text-ink-2 lg:hidden"
           >
             <X size={18} />
           </button>
@@ -76,17 +76,17 @@ export default function QuestionNavigator({
           const isAnswered = answers[i] != null
           const isMarked = !!marked[i]
 
-          let stateStyle = 'border-zinc-700 text-zinc-300 hover:border-zinc-500'
+          let stateStyle = 'border-line-strong text-ink-2 hover:border-line-strong'
           let stateLabel = 'Not answered'
 
           if (isAnswered && isMarked) {
-            stateStyle = 'border-amber-500 bg-amber-500 text-zinc-950'
+            stateStyle = 'border-accent bg-accent text-accent-ink'
             stateLabel = 'Answered and marked for review'
           } else if (isMarked) {
-            stateStyle = 'border-amber-500 text-amber-400'
+            stateStyle = 'border-accent text-accent-strong'
             stateLabel = 'Marked for review'
           } else if (isAnswered) {
-            stateStyle = 'border-zinc-200 bg-zinc-200 text-zinc-950'
+            stateStyle = 'border-line bg-sunken text-ink'
             stateLabel = 'Answered'
           }
 
@@ -103,7 +103,7 @@ export default function QuestionNavigator({
               className={[
                 'flex h-10 items-center justify-center rounded-lg border text-sm font-semibold tabular-nums transition-colors',
                 stateStyle,
-                isCurrent ? 'ring-2 ring-zinc-50 ring-offset-2 ring-offset-zinc-900' : '',
+                isCurrent ? 'ring-2 ring-line ring-offset-2 ring-offset-surface' : '',
               ].join(' ')}
             >
               {i + 1}
@@ -113,12 +113,12 @@ export default function QuestionNavigator({
       </div>
 
       {/* Legend */}
-      <ul className="grid grid-cols-2 gap-2 border-t border-zinc-800 pt-4 text-xs text-zinc-400">
+      <ul className="grid grid-cols-2 gap-2 border-t border-line pt-4 text-xs text-ink-3">
         {legend.map(({ label, count, swatch }) => (
           <li key={label} className="flex items-center gap-2">
             <span className={`h-3 w-3 flex-shrink-0 rounded border ${swatch}`} />
             <span>
-              {label} <span className="tabular-nums text-zinc-500">({count})</span>
+              {label} <span className="tabular-nums text-ink-3">({count})</span>
             </span>
           </li>
         ))}

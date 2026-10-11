@@ -49,10 +49,10 @@ export default function ExamInstructions({ customInstructions = [] }) {
       <ul className="grid grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-2">
         {defaultInstructions.map(({ icon: Icon, title, description }) => (
           <li key={title} className="flex items-start gap-3">
-            <Icon size={18} className="mt-0.5 flex-shrink-0 text-zinc-500" />
+            <Icon size={18} className="mt-0.5 flex-shrink-0 text-ink-3" />
             <div>
-              <h4 className="text-sm font-semibold text-zinc-100">{title}</h4>
-              <p className="mt-1 text-sm text-zinc-400">{description}</p>
+              <h4 className="text-sm font-semibold text-ink">{title}</h4>
+              <p className="mt-1 text-sm text-ink-3">{description}</p>
             </div>
           </li>
         ))}
@@ -60,9 +60,9 @@ export default function ExamInstructions({ customInstructions = [] }) {
 
       {/* Course-specific rules */}
       {customInstructions.length > 0 && (
-        <div className="border-t border-zinc-800 pt-6">
-          <h4 className="text-sm font-semibold text-zinc-100">Course-specific guidelines</h4>
-          <ul className="mt-2 list-disc space-y-1 pl-5 text-sm text-zinc-300 marker:text-zinc-600">
+        <div className="border-t border-line pt-6">
+          <h4 className="text-sm font-semibold text-ink">Course-specific guidelines</h4>
+          <ul className="mt-2 list-disc space-y-1 pl-5 text-sm text-ink-2 marker:text-ink-2">
             {customInstructions.map((inst, i) => (
               <li key={i}>{inst}</li>
             ))}
@@ -71,12 +71,12 @@ export default function ExamInstructions({ customInstructions = [] }) {
       )}
 
       {/* System requirements */}
-      <div className="border-t border-zinc-800 pt-6">
-        <h4 className="text-sm font-semibold text-zinc-100">System requirements</h4>
-        <ul className="mt-2 grid grid-cols-1 gap-2 text-sm text-zinc-300 sm:grid-cols-3">
+      <div className="border-t border-line pt-6">
+        <h4 className="text-sm font-semibold text-ink">System requirements</h4>
+        <ul className="mt-2 grid grid-cols-1 gap-2 text-sm text-ink-2 sm:grid-cols-3">
           {requirements.map(({ icon: Icon, label }) => (
             <li key={label} className="flex items-center gap-2">
-              <Icon size={16} className="flex-shrink-0 text-zinc-500" />
+              <Icon size={16} className="flex-shrink-0 text-ink-3" />
               {label}
             </li>
           ))}

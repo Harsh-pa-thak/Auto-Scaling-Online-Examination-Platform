@@ -114,8 +114,8 @@ export default function ForgotPasswordPage() {
       {step === 'email' && (
         <div className="space-y-6">
           <div className="text-center">
-            <h1 className="text-xl font-semibold text-zinc-50">Reset your password</h1>
-            <p className="mt-2 text-sm text-zinc-400">
+            <h1 className="text-xl font-semibold text-ink">Reset your password</h1>
+            <p className="mt-2 text-sm text-ink-3">
               Enter your registered institutional email to receive a verification reset code.
             </p>
           </div>
@@ -147,10 +147,10 @@ export default function ForgotPasswordPage() {
             </Button>
           </form>
 
-          <div className="border-t border-zinc-800 pt-6 text-center">
+          <div className="border-t border-line pt-6 text-center">
             <Link
               to="/login"
-              className="inline-flex items-center gap-2 text-sm font-medium text-zinc-400 transition-colors hover:text-zinc-100"
+              className="inline-flex items-center gap-2 text-sm font-medium text-ink-3 transition-colors hover:text-ink"
             >
               <ArrowLeft size={14} />
               <span>Back to sign in</span>
@@ -163,18 +163,18 @@ export default function ForgotPasswordPage() {
       {step === 'otp' && (
         <div className="space-y-6">
           <div className="text-center">
-            <h1 className="text-xl font-semibold text-zinc-50">Check your inbox</h1>
-            <p className="mt-2 text-sm text-zinc-400">
-              Enter the 6-digit code sent to <strong className="text-zinc-200">{email}</strong>
+            <h1 className="text-xl font-semibold text-ink">Check your inbox</h1>
+            <p className="mt-2 text-sm text-ink-3">
+              Enter the 6-digit code sent to <strong className="text-ink-2">{email}</strong>
             </p>
           </div>
 
-          <p className="text-center text-xs text-zinc-500">
+          <p className="text-center text-xs text-ink-3">
             Demo mode: the code is{' '}
             <button
               type="button"
               onClick={() => setOtp('123456')}
-              className="font-medium tabular-nums text-amber-400 hover:text-amber-300"
+              className="font-medium tabular-nums text-accent-strong hover:text-accent-strong"
             >
               123456
             </button>{' '}
@@ -206,11 +206,11 @@ export default function ForgotPasswordPage() {
             </Button>
           </form>
 
-          <div className="flex items-center justify-between border-t border-zinc-800 pt-6 text-sm">
+          <div className="flex items-center justify-between border-t border-line pt-6 text-sm">
             <button
               type="button"
               onClick={() => setStep('email')}
-              className="inline-flex items-center gap-2 font-medium text-zinc-400 transition-colors hover:text-zinc-100"
+              className="inline-flex items-center gap-2 font-medium text-ink-3 transition-colors hover:text-ink"
             >
               <ArrowLeft size={14} />
               Change email
@@ -218,7 +218,7 @@ export default function ForgotPasswordPage() {
             <button
               type="button"
               onClick={() => toast.info('Code Resent', 'A new verification code was dispatched.')}
-              className="font-medium text-amber-400 hover:text-amber-300"
+              className="font-medium text-accent-strong hover:text-accent-strong"
             >
               Resend code
             </button>
@@ -230,8 +230,8 @@ export default function ForgotPasswordPage() {
       {step === 'new_password' && (
         <div className="space-y-6">
           <div className="text-center">
-            <h1 className="text-xl font-semibold text-zinc-50">Create a new password</h1>
-            <p className="mt-2 text-sm text-zinc-400">
+            <h1 className="text-xl font-semibold text-ink">Create a new password</h1>
+            <p className="mt-2 text-sm text-ink-3">
               Choose a strong password for your university credentials.
             </p>
           </div>
@@ -256,7 +256,7 @@ export default function ForgotPasswordPage() {
                   type="button"
                   onClick={() => setShowPassword((prev) => !prev)}
                   aria-label={showPassword ? 'Hide password' : 'Show password'}
-                  className="rounded p-1 text-zinc-500 transition-colors hover:text-zinc-300 focus:outline-none focus:ring-1 focus:ring-amber-500"
+                  className="rounded p-1 text-ink-3 transition-colors hover:text-ink-2 focus:outline-none focus:ring-1 focus:ring-accent"
                 >
                   {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
                 </button>
@@ -282,7 +282,7 @@ export default function ForgotPasswordPage() {
                   type="button"
                   onClick={() => setShowConfirmPassword((prev) => !prev)}
                   aria-label={showConfirmPassword ? 'Hide confirm password' : 'Show confirm password'}
-                  className="rounded p-1 text-zinc-500 transition-colors hover:text-zinc-300 focus:outline-none focus:ring-1 focus:ring-amber-500"
+                  className="rounded p-1 text-ink-3 transition-colors hover:text-ink-2 focus:outline-none focus:ring-1 focus:ring-accent"
                 >
                   {showConfirmPassword ? <EyeOff size={16} /> : <Eye size={16} />}
                 </button>
@@ -299,10 +299,10 @@ export default function ForgotPasswordPage() {
             </Button>
           </form>
 
-          <div className="border-t border-zinc-800 pt-6 text-center">
+          <div className="border-t border-line pt-6 text-center">
             <Link
               to="/login"
-              className="inline-flex items-center gap-2 text-sm font-medium text-zinc-400 transition-colors hover:text-zinc-100"
+              className="inline-flex items-center gap-2 text-sm font-medium text-ink-3 transition-colors hover:text-ink"
             >
               <ArrowLeft size={14} />
               <span>Cancel and return to sign in</span>
@@ -314,11 +314,11 @@ export default function ForgotPasswordPage() {
       {/* ── STEP 4: Success Confirmation ── */}
       {step === 'success' && (
         <div className="space-y-6 text-center">
-          <CheckCircle2 size={32} className="mx-auto text-emerald-400" />
+          <CheckCircle2 size={32} className="mx-auto text-success" />
 
           <div>
-            <h1 className="text-xl font-semibold text-zinc-50">Password updated</h1>
-            <p className="mx-auto mt-2 max-w-sm text-sm text-zinc-400">
+            <h1 className="text-xl font-semibold text-ink">Password updated</h1>
+            <p className="mx-auto mt-2 max-w-sm text-sm text-ink-3">
               Your institutional password has been securely updated. You can now use your new credentials to access the examination platform.
             </p>
           </div>

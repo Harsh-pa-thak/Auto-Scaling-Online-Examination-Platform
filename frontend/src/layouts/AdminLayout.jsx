@@ -19,7 +19,7 @@ export default function AdminLayout() {
   }
 
   return (
-    <div className="flex min-h-screen bg-zinc-950 font-sans text-zinc-100">
+    <div className="flex min-h-screen bg-canvas font-sans text-ink">
       <AdminSidebar
         collapsed={desktopCollapsed}
         onToggleCollapse={toggleDesktopCollapse}
@@ -39,7 +39,7 @@ export default function AdminLayout() {
             <Outlet />
           </div>
 
-          <footer className="mt-16 w-full border-t border-zinc-800 pt-6 text-xs text-zinc-500">
+          <footer className="mt-16 w-full border-t border-line pt-6 text-xs text-ink-3">
             Auto-Scaling Online Examination Platform
           </footer>
         </main>

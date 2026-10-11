@@ -109,8 +109,8 @@ export default function StudentExamsPage() {
       label: 'Exam',
       render: (val, row) => (
         <div>
-          <p className="font-medium text-zinc-100">{row.title}</p>
-          <p className="text-xs text-zinc-400">
+          <p className="font-medium text-ink">{row.title}</p>
+          <p className="text-xs text-ink-3">
             {row.subject} · <span className="tabular-nums">{row.code}</span>
           </p>
         </div>
@@ -121,8 +121,8 @@ export default function StudentExamsPage() {
       label: 'Date & time',
       render: (val, row) => (
         <div>
-          <p className="text-zinc-100">{formatDate(val)}</p>
-          <p className="text-xs tabular-nums text-zinc-400">
+          <p className="text-ink">{formatDate(val)}</p>
+          <p className="text-xs tabular-nums text-ink-3">
             {formatTime(val)} {row.endTime && `– ${formatTime(row.endTime)}`}
           </p>
         </div>
@@ -131,14 +131,14 @@ export default function StudentExamsPage() {
     {
       key: 'duration',
       label: 'Duration',
-      render: (val) => <span className="tabular-nums text-zinc-200">{val} min</span>,
+      render: (val) => <span className="tabular-nums text-ink-2">{val} min</span>,
     },
     {
       key: 'totalQuestions',
       label: 'Questions',
       render: (val, row) => (
-        <span className="tabular-nums text-zinc-200">
-          {val} <span className="text-zinc-500">({row.totalMarks} marks)</span>
+        <span className="tabular-nums text-ink-2">
+          {val} <span className="text-ink-3">({row.totalMarks} marks)</span>
         </span>
       ),
     },
@@ -197,7 +197,7 @@ export default function StudentExamsPage() {
 
   const viewButton = (mode) =>
     `rounded-md p-2 transition-colors ${
-      viewMode === mode ? 'bg-zinc-800 text-zinc-100' : 'text-zinc-500 hover:text-zinc-200'
+      viewMode === mode ? 'bg-sunken text-ink' : 'text-ink-3 hover:text-ink-2'
     }`
 
   return (
@@ -214,7 +214,7 @@ export default function StudentExamsPage() {
 
       <div className="space-y-4">
         {/* ── Status Tabs ── */}
-        <nav aria-label="Exam status" className="flex gap-6 overflow-x-auto border-b border-zinc-800">
+        <nav aria-label="Exam status" className="flex gap-6 overflow-x-auto border-b border-line">
           {TABS.map((tab) => {
             const count = tabCounts[tab.id] ?? 0
             const isActive = activeTab === tab.id
@@ -226,12 +226,12 @@ export default function StudentExamsPage() {
                 aria-current={isActive ? 'page' : undefined}
                 className={`-mb-px flex items-center gap-2 whitespace-nowrap border-b-2 py-3 text-sm font-medium transition-colors ${
                   isActive
-                    ? 'border-amber-500 text-zinc-50'
-                    : 'border-transparent text-zinc-400 hover:text-zinc-100'
+                    ? 'border-accent text-ink'
+                    : 'border-transparent text-ink-3 hover:text-ink'
                 }`}
               >
                 {tab.label}
-                <span className="tabular-nums text-zinc-500">{count}</span>
+                <span className="tabular-nums text-ink-3">{count}</span>
               </button>
             )
           })}
@@ -267,7 +267,7 @@ export default function StudentExamsPage() {
               </Button>
             )}
 
-            <div className="ml-auto flex items-center gap-1 rounded-lg border border-zinc-800 p-1 md:ml-0">
+            <div className="ml-auto flex items-center gap-1 rounded-lg border border-line p-1 md:ml-0">
               <button
                 type="button"
                 onClick={() => setViewMode('grid')}
@@ -291,7 +291,7 @@ export default function StudentExamsPage() {
         </div>
 
         {filtersActive && (
-          <p className="text-sm text-zinc-400">
+          <p className="text-sm text-ink-3">
             {filteredExams.length} {filteredExams.length === 1 ? 'match' : 'matches'}
           </p>
         )}

@@ -17,7 +17,6 @@ import StudentProfilePage from '../pages/student/StudentProfilePage'
 import AdminDashboard from '../pages/admin/AdminDashboard'
 import AdminStudentsPage from '../pages/admin/AdminStudentsPage'
 import AdminExamCreatePage from '../pages/admin/AdminExamCreatePage'
-import RoutePlaceholder from './RoutePlaceholder'
 import { Card, Button, LoadingSpinner } from '../components/common'
 import { AlertCircle, ArrowLeft } from 'lucide-react'
 import { useAuth } from '../hooks/useAuth'
@@ -30,6 +29,7 @@ const AdminMonitoringPage   = lazy(() => import('../pages/admin/AdminMonitoringP
 const AdminResultsPage      = lazy(() => import('../pages/admin/AdminResultsPage'))
 const AdminAnalyticsPage    = lazy(() => import('../pages/admin/AdminAnalyticsPage'))
 const AdminProfilePage      = lazy(() => import('../pages/admin/AdminProfilePage'))
+const AdminExamEditPage     = lazy(() => import('../pages/admin/AdminExamEditPage'))
 
 function AdminFallback() {
   return (
@@ -50,13 +50,13 @@ function RequireAuth({ children, role }) {
 // ── 404 Not Found Page ─────────────────────────────────────────
 function NotFoundPage() {
   return (
-    <div className="min-h-screen bg-zinc-950 text-zinc-100 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-canvas text-ink flex items-center justify-center p-4">
       <Card padding="p-8" className="max-w-md w-full text-center">
-        <div className="h-14 w-14 rounded-2xl bg-red-950/50 text-red-400 flex items-center justify-center mx-auto mb-4 border border-red-800/60">
+        <div className="h-14 w-14 rounded-2xl bg-danger-soft text-danger flex items-center justify-center mx-auto mb-4 border border-danger/40">
           <AlertCircle size={28} />
         </div>
-        <h1 className="text-xl font-bold text-zinc-100">404 — Page Not Found</h1>
-        <p className="mt-2 text-sm text-zinc-400">
+        <h1 className="text-xl font-bold text-ink">404 — Page Not Found</h1>
+        <p className="mt-2 text-sm text-ink-3">
           The requested page route does not exist in this examination portal.
         </p>
         <div className="mt-6 flex justify-center gap-3">
@@ -117,11 +117,9 @@ export default function AppRoutes() {
           <AdminExamCreatePage />
         } />
         <Route path="exams/:id" element={
-          <RoutePlaceholder
-            title="Exam Configuration & Details"
-            description="Specific exam settings, participant lists, question allocations, and status toggles."
-            role="admin"
-          />
+          <Suspense fallback={<AdminFallback />}>
+            <AdminExamEditPage />
+          </Suspense>
         } />
 
         <Route path="questions" element={

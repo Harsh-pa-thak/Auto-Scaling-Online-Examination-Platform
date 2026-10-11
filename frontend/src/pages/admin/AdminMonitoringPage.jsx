@@ -61,10 +61,10 @@ const INITIAL_STUDENTS = [
 
 // Status visual configurations
 const STATUS_CONFIG = {
-  'In Progress':  { label: 'In Progress',  variant: 'primary', dotColor: 'bg-amber-400',   icon: Activity },
-  'Submitted':    { label: 'Submitted',    variant: 'success', dotColor: 'bg-emerald-400', icon: CheckCircle2 },
-  'Not Started':  { label: 'Not Started',  variant: 'default', dotColor: 'bg-zinc-400',    icon: Clock },
-  'Disconnected': { label: 'Disconnected', variant: 'danger',  dotColor: 'bg-red-500',      icon: WifiOff },
+  'In Progress':  { label: 'In Progress',  variant: 'primary', dotColor: 'bg-accent',   icon: Activity },
+  'Submitted':    { label: 'Submitted',    variant: 'success', dotColor: 'bg-success', icon: CheckCircle2 },
+  'Not Started':  { label: 'Not Started',  variant: 'default', dotColor: 'bg-sunken',    icon: Clock },
+  'Disconnected': { label: 'Disconnected', variant: 'danger',  dotColor: 'bg-danger',      icon: WifiOff },
 }
 
 const STATUS_FILTERS = ['All', 'In Progress', 'Submitted', 'Disconnected', 'Not Started']
@@ -156,32 +156,32 @@ export default function AdminMonitoringPage() {
   return (
     <div className="space-y-8">
       {/* ── Page Header with Live Indicator ── */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-2 border-b border-zinc-800">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-2 border-b border-line">
         <div>
           <div className="flex items-center gap-3">
-            <h1 className="text-xl sm:text-2xl font-bold text-zinc-100 tracking-tight">
+            <h1 className="text-xl sm:text-2xl font-bold text-ink tracking-tight">
               Live Exam Monitoring
             </h1>
 
             {/* "Live" Indicator */}
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-950/70 border border-emerald-800/80">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-success-soft border border-success/40">
               <span className="relative flex h-2.5 w-2.5">
-                <span className="absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-80" />
-                <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500" />
+                <span className="absolute inline-flex h-full w-full rounded-full bg-success opacity-80" />
+                <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-success" />
               </span>
-              <span className="text-xs font-bold tracking-wide text-emerald-400 uppercase">
+              <span className="text-xs font-bold tracking-wide text-success uppercase">
                 Live
               </span>
             </div>
           </div>
-          <p className="mt-1 text-sm text-zinc-400">
+          <p className="mt-1 text-sm text-ink-3">
             Real-time candidate telemetry, heartbeat tracking, and proctoring surveillance.
           </p>
         </div>
 
         {/* Sync telemetry info */}
         <div className="flex items-center gap-3 self-start sm:self-auto">
-          <span className="text-xs text-zinc-500 hidden md:inline">
+          <span className="text-xs text-ink-3 hidden md:inline">
             Updated: {lastRefreshedTime}
           </span>
           <Button
@@ -197,40 +197,40 @@ export default function AdminMonitoringPage() {
       </div>
 
       {/* ── Active Exam Information Card ── */}
-      <Card className="border-amber-600/30">
+      <Card className="border-accent/30">
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
           {/* Exam Details */}
           <div className="flex items-start gap-4">
-            <div className="h-11 w-11 rounded-xl bg-amber-500/15 border border-amber-500/30 text-amber-400 flex items-center justify-center flex-shrink-0">
+            <div className="h-11 w-11 rounded-xl bg-accent-soft border border-accent/30 text-accent-strong flex items-center justify-center flex-shrink-0">
               <Radio size={22} className="" />
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <span className="text-xs font-bold uppercase tracking-wider text-amber-400">
+                <span className="text-xs font-bold uppercase tracking-wider text-accent-strong">
                   Active Exam
                 </span>
-                <span className="text-xs text-zinc-500 tabular-nums">
+                <span className="text-xs text-ink-3 tabular-nums">
                   {ACTIVE_EXAM.code} • {ACTIVE_EXAM.id}
                 </span>
               </div>
-              <h2 className="text-base sm:text-lg font-bold text-zinc-100 tracking-tight mt-0.5">
+              <h2 className="text-base sm:text-lg font-bold text-ink tracking-tight mt-0.5">
                 {ACTIVE_EXAM.title}
               </h2>
-              <p className="text-xs text-zinc-400 mt-1">
-                Subject: <strong className="text-zinc-300 font-medium">{ACTIVE_EXAM.subject}</strong> &nbsp;•&nbsp;
-                Session: <span className="tabular-nums text-zinc-300">{ACTIVE_EXAM.startTime} – {ACTIVE_EXAM.endTime}</span> ({ACTIVE_EXAM.durationMinutes} min allotted)
+              <p className="text-xs text-ink-3 mt-1">
+                Subject: <strong className="text-ink-2 font-medium">{ACTIVE_EXAM.subject}</strong> &nbsp;•&nbsp;
+                Session: <span className="tabular-nums text-ink-2">{ACTIVE_EXAM.startTime} – {ACTIVE_EXAM.endTime}</span> ({ACTIVE_EXAM.durationMinutes} min allotted)
               </p>
             </div>
           </div>
 
           {/* Time Countdown Timer */}
-          <div className="flex items-center gap-3 self-start lg:self-auto bg-zinc-950/70 border border-zinc-800 rounded-xl px-4 py-2.5">
-            <Clock size={18} className="text-amber-400 flex-shrink-0" />
+          <div className="flex items-center gap-3 self-start lg:self-auto bg-canvas/70 border border-line rounded-xl px-4 py-2.5">
+            <Clock size={18} className="text-accent-strong flex-shrink-0" />
             <div>
-              <p className="text-xs uppercase font-semibold text-zinc-500 tracking-wider">
+              <p className="text-xs uppercase font-semibold text-ink-3 tracking-wider">
                 Time Remaining
               </p>
-              <p className="text-base sm:text-lg tabular-nums font-bold text-zinc-100">
+              <p className="text-base sm:text-lg tabular-nums font-bold text-ink">
                 {remainingMinutes}:{remainingSecsFormatted}
               </p>
             </div>
@@ -238,15 +238,15 @@ export default function AdminMonitoringPage() {
         </div>
 
         {/* Visual Exam Elapsed Progress Indicator */}
-        <div className="mt-4 pt-3.5 border-t border-zinc-800/80">
-          <div className="flex justify-between items-center text-xs text-zinc-400 mb-1.5 font-medium">
+        <div className="mt-4 pt-3.5 border-t border-line/80">
+          <div className="flex justify-between items-center text-xs text-ink-3 mb-1.5 font-medium">
             <span>Elapsed: {elapsedMinutes} min</span>
-            <span className="text-amber-400">{timeProgressPct}% Session Completed</span>
+            <span className="text-accent-strong">{timeProgressPct}% Session Completed</span>
             <span>Allotted: {ACTIVE_EXAM.durationMinutes} min</span>
           </div>
-          <div className="h-2 rounded-full bg-zinc-800 overflow-hidden">
+          <div className="h-2 rounded-full bg-sunken overflow-hidden">
             <div
-              className="h-full rounded-full bg-amber-500 transition-all duration-500"
+              className="h-full rounded-full bg-accent transition-all duration-500"
               style={{ width: `${timeProgressPct}%` }}
             />
           </div>
@@ -256,80 +256,80 @@ export default function AdminMonitoringPage() {
       {/* ── Live Status Cards ── */}
       <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {/* Card 1: Registered Students */}
-        <Card className="bg-zinc-900 border-zinc-800">
+        <Card className="bg-surface border-line">
           <div className="flex items-start justify-between">
             <div>
-              <p className="text-xs uppercase font-semibold tracking-wider text-zinc-400">
+              <p className="text-xs uppercase font-semibold tracking-wider text-ink-3">
                 Registered Students
               </p>
-              <p className="text-2xl sm:text-3xl font-bold text-zinc-100 mt-1">
+              <p className="text-2xl sm:text-3xl font-bold text-ink mt-1">
                 {summary.registered}
               </p>
-              <p className="text-xs text-zinc-500 mt-0.5">
+              <p className="text-xs text-ink-3 mt-0.5">
                 Total eligible candidates
               </p>
             </div>
-            <div className="p-2.5 rounded-xl bg-zinc-800/80 text-zinc-300">
+            <div className="p-2.5 rounded-xl bg-sunken/80 text-ink-2">
               <Users size={18} />
             </div>
           </div>
         </Card>
 
         {/* Card 2: Students Started */}
-        <Card className="bg-zinc-900 border-zinc-800">
+        <Card className="bg-surface border-line">
           <div className="flex items-start justify-between">
             <div>
-              <p className="text-xs uppercase font-semibold tracking-wider text-zinc-400">
+              <p className="text-xs uppercase font-semibold tracking-wider text-ink-3">
                 Students Started
               </p>
-              <p className="text-2xl sm:text-3xl font-bold text-zinc-100 mt-1">
+              <p className="text-2xl sm:text-3xl font-bold text-ink mt-1">
                 {summary.started}
               </p>
-              <p className="text-xs text-zinc-500 mt-0.5">
+              <p className="text-xs text-ink-3 mt-0.5">
                 {Math.round((summary.started / summary.registered) * 100)}% attendance rate
               </p>
             </div>
-            <div className="p-2.5 rounded-xl bg-zinc-800 text-zinc-300">
+            <div className="p-2.5 rounded-xl bg-sunken text-ink-2">
               <PlayCircle size={18} />
             </div>
           </div>
         </Card>
 
         {/* Card 3: Currently Taking */}
-        <Card className="bg-zinc-900 border-amber-600/40">
+        <Card className="bg-surface border-accent/40">
           <div className="flex items-start justify-between">
             <div>
-              <p className="text-xs uppercase font-semibold tracking-wider text-amber-400">
+              <p className="text-xs uppercase font-semibold tracking-wider text-accent-strong">
                 Currently Taking
               </p>
-              <p className="text-2xl sm:text-3xl font-bold text-amber-400 mt-1">
+              <p className="text-2xl sm:text-3xl font-bold text-accent-strong mt-1">
                 {summary.inProgress}
               </p>
-              <p className="text-xs text-zinc-400 mt-0.5">
+              <p className="text-xs text-ink-3 mt-0.5">
                 Actively answering paper
               </p>
             </div>
-            <div className="p-2.5 rounded-xl bg-amber-500/10 text-amber-400">
+            <div className="p-2.5 rounded-xl bg-accent-soft text-accent-strong">
               <Activity size={18} className="" />
             </div>
           </div>
         </Card>
 
         {/* Card 4: Submitted */}
-        <Card className="bg-zinc-900 border-zinc-800">
+        <Card className="bg-surface border-line">
           <div className="flex items-start justify-between">
             <div>
-              <p className="text-xs uppercase font-semibold tracking-wider text-zinc-400">
+              <p className="text-xs uppercase font-semibold tracking-wider text-ink-3">
                 Submitted
               </p>
-              <p className="text-2xl sm:text-3xl font-bold text-emerald-400 mt-1">
+              <p className="text-2xl sm:text-3xl font-bold text-success mt-1">
                 {summary.submitted}
               </p>
-              <p className="text-xs text-zinc-500 mt-0.5">
+              <p className="text-xs text-ink-3 mt-0.5">
                 {submittedPct}% turn-in completed
               </p>
             </div>
-            <div className="p-2.5 rounded-xl bg-emerald-950/60 border border-emerald-800/40 text-emerald-400">
+            <div className="p-2.5 rounded-xl bg-success-soft border border-success/40 text-success">
               <CheckCircle2 size={18} />
             </div>
           </div>
@@ -340,62 +340,62 @@ export default function AdminMonitoringPage() {
       <Card>
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-2.5">
           <div>
-            <p className="text-xs font-semibold uppercase tracking-wider text-zinc-300">
+            <p className="text-xs font-semibold uppercase tracking-wider text-ink-2">
               Cohort Session Progress Distribution
             </p>
-            <p className="text-xs text-zinc-500">
+            <p className="text-xs text-ink-3">
               Breakdown of {summary.registered} examinees across submission lifecycle stages
             </p>
           </div>
-          <span className="text-xs tabular-nums font-semibold text-zinc-300">
+          <span className="text-xs tabular-nums font-semibold text-ink-2">
             {summary.submitted} of {summary.registered} Finished ({submittedPct}%)
           </span>
         </div>
 
         {/* Multi-segment Progress Bar */}
-        <div className="h-3.5 rounded-full bg-zinc-800/80 overflow-hidden flex p-0.5 gap-0.5">
+        <div className="h-3.5 rounded-full bg-sunken/80 overflow-hidden flex p-0.5 gap-0.5">
           {/* Submitted */}
           <div
-            className="h-full rounded-full bg-emerald-500 transition-all duration-500"
+            className="h-full rounded-full bg-success transition-all duration-500"
             style={{ width: `${submittedPct}%` }}
             title={`Submitted: ${summary.submitted} (${submittedPct}%)`}
           />
           {/* Currently Taking */}
           <div
-            className="h-full rounded-full bg-amber-500 transition-all duration-500"
+            className="h-full rounded-full bg-accent transition-all duration-500"
             style={{ width: `${takingPct}%` }}
             title={`Currently Taking: ${summary.inProgress} (${takingPct}%)`}
           />
           {/* Disconnected */}
           <div
-            className="h-full rounded-full bg-red-500 transition-all duration-500"
+            className="h-full rounded-full bg-danger transition-all duration-500"
             style={{ width: `${disconnectedPct}%` }}
             title={`Disconnected: ${summary.disconnected} (${disconnectedPct}%)`}
           />
           {/* Not Started */}
           <div
-            className="h-full rounded-full bg-zinc-700 transition-all duration-500"
+            className="h-full rounded-full bg-sunken transition-all duration-500"
             style={{ width: `${notStartedPct}%` }}
             title={`Not Started: ${summary.registered - summary.started} (${notStartedPct}%)`}
           />
         </div>
 
         {/* Progress Legend */}
-        <div className="flex flex-wrap items-center gap-4 mt-3 text-xs text-zinc-400">
+        <div className="flex flex-wrap items-center gap-4 mt-3 text-xs text-ink-3">
           <div className="flex items-center gap-1.5">
-            <span className="h-2.5 w-2.5 rounded-full bg-emerald-500" />
+            <span className="h-2.5 w-2.5 rounded-full bg-success" />
             <span>Submitted ({summary.submitted})</span>
           </div>
           <div className="flex items-center gap-1.5">
-            <span className="h-2.5 w-2.5 rounded-full bg-amber-500" />
+            <span className="h-2.5 w-2.5 rounded-full bg-accent" />
             <span>Currently Taking ({summary.inProgress})</span>
           </div>
           <div className="flex items-center gap-1.5">
-            <span className="h-2.5 w-2.5 rounded-full bg-red-500" />
+            <span className="h-2.5 w-2.5 rounded-full bg-danger" />
             <span>Disconnected ({summary.disconnected})</span>
           </div>
           <div className="flex items-center gap-1.5">
-            <span className="h-2.5 w-2.5 rounded-full bg-zinc-700" />
+            <span className="h-2.5 w-2.5 rounded-full bg-sunken" />
             <span>Not Started ({summary.registered - summary.started})</span>
           </div>
         </div>
@@ -404,7 +404,7 @@ export default function AdminMonitoringPage() {
       {/* ── Student Session Table ── */}
       <Card padding="p-0">
         {/* Table Top Controls & Filter Tabs */}
-        <div className="px-6 py-4 border-b border-zinc-800 flex flex-col md:flex-row md:items-center justify-between gap-3">
+        <div className="px-6 py-4 border-b border-line flex flex-col md:flex-row md:items-center justify-between gap-3">
           {/* Status Tabs */}
           <div className="flex items-center gap-1.5 overflow-x-auto pb-1 md:pb-0 scrollbar-none">
             {STATUS_FILTERS.map((st) => {
@@ -418,15 +418,15 @@ export default function AdminMonitoringPage() {
                   className={[
                     'inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium border transition-colors whitespace-nowrap',
                     isActive
-                      ? 'bg-amber-500/15 border-amber-500/50 text-amber-300 font-semibold'
-                      : 'bg-zinc-900 border-zinc-800 text-zinc-400 hover:text-zinc-200 hover:border-zinc-700',
+                      ? 'bg-accent-soft border-accent/50 text-accent-strong font-semibold'
+                      : 'bg-surface border-line text-ink-3 hover:text-ink-2 hover:border-line-strong',
                   ].join(' ')}
                 >
                   <span>{st}</span>
                   <span
                     className={[
                       'px-1.5 py-0.2 rounded-full text-xs tabular-nums',
-                      isActive ? 'bg-amber-500/30 text-amber-200' : 'bg-zinc-800 text-zinc-400',
+                      isActive ? 'bg-accent/30 text-accent-strong' : 'bg-sunken text-ink-3',
                     ].join(' ')}
                   >
                     {count}
@@ -447,7 +447,7 @@ export default function AdminMonitoringPage() {
         </div>
 
         {/* Table Header */}
-        <div className="hidden lg:grid grid-cols-12 px-6 py-4 border-b border-zinc-800 text-xs font-semibold uppercase tracking-wider text-zinc-400 bg-zinc-900/50">
+        <div className="hidden lg:grid grid-cols-12 px-6 py-4 border-b border-line text-xs font-semibold uppercase tracking-wider text-ink-3 bg-surface/50">
           <div className="col-span-3">Student ID</div>
           <div className="col-span-3">Name</div>
           <div className="col-span-2">Status</div>
@@ -457,11 +457,11 @@ export default function AdminMonitoringPage() {
 
         {/* Table Content */}
         {filteredStudents.length === 0 ? (
-          <div className="p-10 text-center text-sm text-zinc-400">
+          <div className="p-10 text-center text-sm text-ink-3">
             No candidates found matching the selected filter criteria.
           </div>
         ) : (
-          <div className="divide-y divide-zinc-800">
+          <div className="divide-y divide-line">
             {filteredStudents.map((s) => {
               const cfg = STATUS_CONFIG[s.status] ?? STATUS_CONFIG['Not Started']
               const isDisconnected = s.status === 'Disconnected'
@@ -473,23 +473,23 @@ export default function AdminMonitoringPage() {
                   className={[
                     'px-6 py-4 lg:grid lg:grid-cols-12 lg:items-center gap-3 transition-colors',
                     isDisconnected
-                      ? 'bg-red-950/20 hover:bg-red-950/30 border-l-2 border-red-500'
-                      : 'hover:bg-zinc-900/40',
+                      ? 'bg-danger-soft/60 hover:bg-danger-soft border-l-2 border-danger'
+                      : 'hover:bg-surface/40',
                   ].join(' ')}
                 >
                   {/* 1. Student ID */}
-                  <div className="lg:col-span-3 tabular-nums text-xs font-semibold text-zinc-300 flex items-center gap-2">
-                    <span className="p-1 rounded bg-zinc-800 text-zinc-400">
+                  <div className="lg:col-span-3 tabular-nums text-xs font-semibold text-ink-2 flex items-center gap-2">
+                    <span className="p-1 rounded bg-sunken text-ink-3">
                       ID
                     </span>
                     <span>{s.id}</span>
                   </div>
 
                   {/* 2. Name */}
-                  <div className="lg:col-span-3 mt-1 lg:mt-0 font-medium text-sm text-zinc-100 flex items-center gap-2">
+                  <div className="lg:col-span-3 mt-1 lg:mt-0 font-medium text-sm text-ink flex items-center gap-2">
                     <span>{s.name}</span>
                     {isDisconnected && (
-                      <span className="text-xs font-semibold text-red-400 bg-red-950/80 px-1.5 py-0.5 rounded border border-red-800/60">
+                      <span className="text-xs font-semibold text-danger bg-danger-soft px-1.5 py-0.5 rounded border border-danger/40">
                         Signal Lost
                       </span>
                     )}
@@ -501,12 +501,12 @@ export default function AdminMonitoringPage() {
                       className={[
                         'inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold border',
                         s.status === 'In Progress'
-                          ? 'bg-amber-950/40 border-amber-800/50 text-amber-300'
+                          ? 'bg-accent-soft border-accent/50 text-accent-strong'
                           : s.status === 'Submitted'
-                          ? 'bg-emerald-950/40 border-emerald-800/50 text-emerald-300'
+                          ? 'bg-success-soft border-success/50 text-success'
                           : s.status === 'Disconnected'
-                          ? 'bg-red-950/50 border-red-800/60 text-red-300'
-                          : 'bg-zinc-800/60 border-zinc-700/50 text-zinc-400',
+                          ? 'bg-danger-soft border-danger/40 text-danger'
+                          : 'bg-sunken/60 border-line-strong/50 text-ink-3',
                       ].join(' ')}
                     >
                       <span className={`h-1.5 w-1.5 rounded-full ${cfg.dotColor} ${s.status === 'In Progress' ? '' : ''}`} />
@@ -515,23 +515,23 @@ export default function AdminMonitoringPage() {
                   </div>
 
                   {/* 4. Started At */}
-                  <div className="lg:col-span-2 mt-1 lg:mt-0 text-xs tabular-nums text-zinc-400">
-                    <span className="lg:hidden text-zinc-500 font-sans mr-1">Started:</span>
+                  <div className="lg:col-span-2 mt-1 lg:mt-0 text-xs tabular-nums text-ink-3">
+                    <span className="lg:hidden text-ink-3 font-sans mr-1">Started:</span>
                     {s.startedAt}
                   </div>
 
                   {/* 5. Time Remaining / Action */}
                   <div className="lg:col-span-2 mt-2 lg:mt-0 lg:text-right flex items-center lg:justify-end gap-2 text-xs tabular-nums font-bold">
-                    <span className="lg:hidden text-zinc-500 font-sans mr-1 font-normal">Remaining:</span>
+                    <span className="lg:hidden text-ink-3 font-sans mr-1 font-normal">Remaining:</span>
                     {s.status === 'Submitted' ? (
-                      <span className="text-emerald-400 inline-flex items-center gap-1">
+                      <span className="text-success inline-flex items-center gap-1">
                         <CheckCircle2 size={13} /> Completed
                       </span>
                     ) : s.status === 'Not Started' ? (
-                      <span className="text-zinc-500 font-normal">Pending Launch</span>
+                      <span className="text-ink-3 font-normal">Pending Launch</span>
                     ) : isDisconnected ? (
                       <div className="flex items-center gap-2">
-                        <span className="text-red-400">{s.remainingMinutes}m {s.remainingSeconds}s</span>
+                        <span className="text-danger">{s.remainingMinutes}m {s.remainingSeconds}s</span>
                         <Button
                           variant="danger"
                           size="xs"
@@ -542,7 +542,7 @@ export default function AdminMonitoringPage() {
                         </Button>
                       </div>
                     ) : (
-                      <span className="text-amber-400 inline-flex items-center gap-1">
+                      <span className="text-accent-strong inline-flex items-center gap-1">
                         <Clock size={12} /> {s.remainingMinutes}m {s.remainingSeconds}s
                       </span>
                     )}
@@ -554,12 +554,12 @@ export default function AdminMonitoringPage() {
         )}
 
         {/* Footer info */}
-        <div className="px-6 py-4 border-t border-zinc-800 text-xs text-zinc-500 flex flex-col sm:flex-row items-center justify-between gap-2">
+        <div className="px-6 py-4 border-t border-line text-xs text-ink-3 flex flex-col sm:flex-row items-center justify-between gap-2">
           <span>
             Displaying {filteredStudents.length} of {students.length} candidate sessions.
           </span>
-          <span className="flex items-center gap-1.5 text-zinc-400">
-            <span className="inline-block h-1.5 w-1.5 rounded-full bg-emerald-500" />
+          <span className="flex items-center gap-1.5 text-ink-3">
+            <span className="inline-block h-1.5 w-1.5 rounded-full bg-success" />
             Mock Telemetry Feed Active (No WebSockets)
           </span>
         </div>

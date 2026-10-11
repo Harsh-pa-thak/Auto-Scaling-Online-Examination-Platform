@@ -38,6 +38,13 @@ function formatDateTime(dateStr) {
   }
 }
 
+function toDateTimeLocal(dateStr) {
+  if (!dateStr) return ''
+  const date = new Date(dateStr)
+  const offset = date.getTimezoneOffset()
+  return new Date(date.getTime() - offset * 60 * 1000).toISOString().slice(0, 16)
+}
+
 // Live exams get the accent; every other state stays neutral.
 const STATUS_CONFIG = {
   draft:     { label: 'Draft',     badgeVariant: 'default', dot: false },
@@ -64,6 +71,8 @@ export default function AdminExamsPage() {
     duration: 60,
     totalMarks: 100,
     passMark: 40,
+    startTime: '',
+    endTime: '',
   })
 
   useEffect(() => {
@@ -114,6 +123,8 @@ export default function AdminExamsPage() {
       duration: exam.duration,
       totalMarks: exam.totalMarks,
       passMark: exam.passMark,
+      startTime: toDateTimeLocal(exam.startTime),
+      endTime: toDateTimeLocal(exam.endTime),
     })
     setEditModal({ isOpen: true, exam })
   }
@@ -125,7 +136,14 @@ export default function AdminExamsPage() {
     try {
       const updated = await api(`/exams/${editModal.exam.id}`, {
         method: 'PATCH',
-        body: { title: editForm.title, duration: Number(editForm.duration), totalMarks: Number(editForm.totalMarks), passingMarks: Number(editForm.passMark) },
+        body: {
+          title: editForm.title,
+          duration: Number(editForm.duration),
+          totalMarks: Number(editForm.totalMarks),
+          passingMarks: Number(editForm.passMark),
+          startTime: editForm.startTime,
+          endTime: editForm.endTime,
+        },
       })
       setExams((prev) => prev.map((item) => item.id === updated.id ? updated : item))
       setEditModal({ isOpen: false, exam: null })
@@ -165,8 +183,8 @@ export default function AdminExamsPage() {
       label: 'Exam',
       render: (val, row) => (
         <div>
-          <p className="font-medium text-zinc-100">{val}</p>
-          <p className="text-xs tabular-nums text-zinc-500">
+          <p className="font-medium text-ink">{val}</p>
+          <p className="text-xs tabular-nums text-ink-3">
             {row.code} · {row.id}
           </p>
         </div>
@@ -175,24 +193,24 @@ export default function AdminExamsPage() {
     {
       key: 'subject',
       label: 'Subject',
-      render: (val) => <span className="text-zinc-300">{val}</span>,
+      render: (val) => <span className="text-ink-2">{val}</span>,
     },
     {
       key: 'startTime',
       label: 'Date',
-      render: (val) => <span className="tabular-nums text-zinc-300">{formatDateTime(val)}</span>,
+      render: (val) => <span className="tabular-nums text-ink-2">{formatDateTime(val)}</span>,
     },
     {
       key: 'duration',
       label: 'Duration',
       align: 'right',
-      render: (val) => <span className="tabular-nums text-zinc-300">{val} min</span>,
+      render: (val) => <span className="tabular-nums text-ink-2">{val} min</span>,
     },
     {
       key: 'totalQuestions',
       label: 'Questions',
       align: 'right',
-      render: (val) => <span className="tabular-nums text-zinc-300">{val}</span>,
+      render: (val) => <span className="tabular-nums text-ink-2">{val}</span>,
     },
     {
       key: 'status',
@@ -229,7 +247,7 @@ export default function AdminExamsPage() {
             <Button
               variant="ghost"
               size="xs"
-              className="hover:text-red-400"
+              className="hover:text-danger"
               onClick={() => setDeleteDialog({ isOpen: true, exam: row })}
               leftIcon={<Trash2 size={12} />}
             >
@@ -264,7 +282,7 @@ export default function AdminExamsPage() {
       <div className="space-y-4">
         {/* ── Tabs + search ── */}
         <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
-          <nav aria-label="Exam status" className="flex gap-6 overflow-x-auto border-b border-zinc-800 lg:flex-1">
+          <nav aria-label="Exam status" className="flex gap-6 overflow-x-auto border-b border-line lg:flex-1">
             {STATUS_TABS.map((tab) => {
               const count = counts[tab.id] ?? 0
               const isActive = statusFilter === tab.id
@@ -276,12 +294,12 @@ export default function AdminExamsPage() {
                   aria-current={isActive ? 'page' : undefined}
                   className={`-mb-px flex items-center gap-2 whitespace-nowrap border-b-2 py-3 text-sm font-medium transition-colors ${
                     isActive
-                      ? 'border-amber-500 text-zinc-50'
-                      : 'border-transparent text-zinc-400 hover:text-zinc-100'
+                      ? 'border-accent text-ink'
+                      : 'border-transparent text-ink-3 hover:text-ink'
                   }`}
                 >
                   {tab.label}
-                  <span className="tabular-nums text-zinc-500">{count}</span>
+                  <span className="tabular-nums text-ink-3">{count}</span>
                 </button>
               )
             })}
@@ -336,18 +354,25 @@ export default function AdminExamsPage() {
           title="Exam overview"
           size="lg"
           footer={
-            <div className="flex w-full items-center justify-between">
-              <Button
-                variant="secondary"
-                size="sm"
-                onClick={() => {
-                  setViewModal({ isOpen: false, exam: null })
-                  handleOpenEdit(viewExam)
-                }}
-                leftIcon={<Edit2 size={14} />}
-              >
-                Edit exam
-              </Button>
+            <div className="flex w-full flex-wrap items-center justify-between gap-2">
+              <div className="flex items-center gap-2">
+                <Button
+                  variant="secondary"
+                  size="sm"
+                  onClick={() => {
+                    setViewModal({ isOpen: false, exam: null })
+                    handleOpenEdit(viewExam)
+                  }}
+                  leftIcon={<Edit2 size={14} />}
+                >
+                  Quick edit
+                </Button>
+                <Link to={`/admin/exams/${viewExam.id}`}>
+                  <Button variant="ghost" size="sm">
+                    Full configuration
+                  </Button>
+                </Link>
+              </div>
               <Button variant="secondary" size="sm" onClick={() => setViewModal({ isOpen: false, exam: null })}>
                 Close
               </Button>
@@ -356,15 +381,15 @@ export default function AdminExamsPage() {
         >
           <div className="space-y-6">
             <div>
-              <p className="flex flex-wrap items-center gap-2 text-sm text-zinc-400">
+              <p className="flex flex-wrap items-center gap-2 text-sm text-ink-3">
                 <span className="tabular-nums">{viewExam.code}</span>
-                <span className="text-zinc-600">·</span>
+                <span className="text-ink-2">·</span>
                 {viewExam.subject}
                 <Badge variant={viewStatus.badgeVariant} dot={viewStatus.dot} size="sm">
                   {viewStatus.label}
                 </Badge>
               </p>
-              <h3 className="mt-2 text-lg font-semibold text-zinc-50">{viewExam.title}</h3>
+              <h3 className="mt-2 text-lg font-semibold text-ink">{viewExam.title}</h3>
             </div>
 
             <dl className="grid grid-cols-2 gap-4 sm:grid-cols-4">
@@ -374,16 +399,16 @@ export default function AdminExamsPage() {
                 { label: 'Pass mark', value: viewExam.passMark },
                 { label: 'Questions', value: viewExam.totalQuestions },
               ].map(({ label, value }) => (
-                <div key={label} className="rounded-lg border border-zinc-800 bg-zinc-950 p-4">
+                <div key={label} className="rounded-lg border border-line bg-canvas p-4">
                   <dt className="eyebrow">{label}</dt>
-                  <dd className="mt-1 text-lg font-semibold tabular-nums text-zinc-50">{value}</dd>
+                  <dd className="mt-1 text-lg font-semibold tabular-nums text-ink">{value}</dd>
                 </div>
               ))}
             </dl>
 
             <div>
-              <h4 className="text-sm font-semibold text-zinc-100">Schedule</h4>
-              <dl className="mt-2 divide-y divide-zinc-800 text-sm">
+              <h4 className="text-sm font-semibold text-ink">Schedule</h4>
+              <dl className="mt-2 divide-y divide-line text-sm">
                 {[
                   { label: 'Start', value: formatDateTime(viewExam.startTime) },
                   { label: 'End', value: formatDateTime(viewExam.endTime) },
@@ -391,8 +416,8 @@ export default function AdminExamsPage() {
                   { label: 'Sections', value: viewExam.section ? viewExam.section.join(', ') : 'All' },
                 ].map(({ label, value }) => (
                   <div key={label} className="flex justify-between gap-4 py-2">
-                    <dt className="text-zinc-400">{label}</dt>
-                    <dd className="tabular-nums text-zinc-100">{value}</dd>
+                    <dt className="text-ink-3">{label}</dt>
+                    <dd className="tabular-nums text-ink">{value}</dd>
                   </div>
                 ))}
               </dl>
@@ -400,8 +425,8 @@ export default function AdminExamsPage() {
 
             {viewExam.instructions && viewExam.instructions.length > 0 && (
               <div>
-                <h4 className="text-sm font-semibold text-zinc-100">Rules & guidelines</h4>
-                <ul className="mt-2 list-disc space-y-1 pl-5 text-sm text-zinc-300 marker:text-zinc-600">
+                <h4 className="text-sm font-semibold text-ink">Rules & guidelines</h4>
+                <ul className="mt-2 list-disc space-y-1 pl-5 text-sm text-ink-2 marker:text-ink-2">
                   {viewExam.instructions.map((inst, i) => (
                     <li key={i}>{inst}</li>
                   ))}
@@ -459,7 +484,26 @@ export default function AdminExamsPage() {
               ))}
             </div>
 
-            <div className="flex items-center justify-end gap-2 border-t border-zinc-800 pt-4">
+            <div className="grid grid-cols-2 gap-4">
+              {[
+                { id: 'edit-start-time', label: 'Starts', key: 'startTime' },
+                { id: 'edit-end-time', label: 'Ends', key: 'endTime' },
+              ].map(({ id, label, key }) => (
+                <div key={id} className="space-y-2">
+                  <label htmlFor={id} className="form-label">{label}</label>
+                  <input
+                    id={id}
+                    type="datetime-local"
+                    value={editForm[key]}
+                    onChange={(e) => setEditForm((f) => ({ ...f, [key]: e.target.value }))}
+                    className="input-base"
+                    required
+                  />
+                </div>
+              ))}
+            </div>
+
+            <div className="flex items-center justify-end gap-2 border-t border-line pt-4">
               <Button variant="secondary" size="sm" onClick={() => setEditModal({ isOpen: false, exam: null })}>
                 Cancel
               </Button>
@@ -489,10 +533,10 @@ export default function AdminExamsPage() {
         }
       >
         <div className="flex items-start gap-3 text-sm">
-          <AlertTriangle size={20} className="mt-0.5 flex-shrink-0 text-red-400" />
+          <AlertTriangle size={20} className="mt-0.5 flex-shrink-0 text-danger" />
           <div>
-            <p className="font-semibold text-zinc-100">Delete {deleteDialog.exam?.title}?</p>
-            <p className="mt-2 text-zinc-400">
+            <p className="font-semibold text-ink">Delete {deleteDialog.exam?.title}?</p>
+            <p className="mt-2 text-ink-3">
               This cannot be undone. The schedule ({deleteDialog.exam?.code}) and all participant
               sessions will be permanently removed.
             </p>

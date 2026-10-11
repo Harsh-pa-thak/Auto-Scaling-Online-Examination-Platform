@@ -51,10 +51,10 @@ export default function Table({
   }
 
   return (
-    <div className={`relative overflow-hidden rounded-xl border border-zinc-800 bg-zinc-900 ${className}`}>
+    <div className={`relative overflow-hidden rounded-lg border border-line bg-surface ${className}`}>
       {/* Loading overlay */}
       {loading && (
-        <div className="absolute inset-0 z-10 flex items-center justify-center bg-zinc-950/70">
+        <div className="absolute inset-0 z-10 flex items-center justify-center bg-surface/70 backdrop-blur-[1px]">
           <LoadingSpinner size="lg" />
         </div>
       )}
@@ -62,23 +62,23 @@ export default function Table({
       <div className="overflow-x-auto">
         <table className="w-full text-sm">
           <thead>
-            <tr className="border-b border-zinc-800">
+            <tr className="border-b border-line bg-sunken/50">
               {columns.map((col) => (
                 <th
                   key={col.key}
                   scope="col"
                   style={col.width ? { width: col.width } : undefined}
                   className={[
-                    'px-4 py-3 text-xs font-medium uppercase tracking-wide text-zinc-500',
+                    'px-4 py-3 text-2xs font-semibold uppercase tracking-wider text-ink-3',
                     alignClass(col.align),
-                    col.sortable ? 'cursor-pointer select-none hover:text-zinc-200' : '',
+                    col.sortable ? 'cursor-pointer select-none hover:text-ink' : '',
                   ].join(' ')}
                   onClick={col.sortable ? () => handleSort(col.key) : undefined}
                 >
                   <span className="inline-flex items-center gap-1">
                     {col.label}
                     {col.sortable && (
-                      <span className="text-zinc-500">
+                      <span className="text-ink-4">
                         {sortKey === col.key
                           ? sortDir === 'asc'
                             ? <ChevronUp size={13} />
@@ -92,7 +92,7 @@ export default function Table({
             </tr>
           </thead>
 
-          <tbody className="divide-y divide-zinc-800">
+          <tbody className="divide-y divide-line">
             {!loading && sorted.length === 0 ? (
               <tr>
                 <td colSpan={columns.length} className="py-12">
@@ -105,15 +105,15 @@ export default function Table({
                   key={row[rowKey]}
                   onClick={onRowClick ? () => onRowClick(row) : undefined}
                   className={[
-                    'transition-colors duration-100',
-                    onRowClick ? 'cursor-pointer hover:bg-zinc-800/50' : '',
+                    'transition-colors duration-fast',
+                    onRowClick ? 'cursor-pointer hover:bg-sunken/60' : '',
                   ].join(' ')}
                 >
                   {columns.map((col) => (
                     <td
                       key={col.key}
                       className={[
-                        'px-4 py-4 text-zinc-200',
+                        'px-4 py-4 text-ink-2',
                         alignClass(col.align),
                       ].join(' ')}
                     >

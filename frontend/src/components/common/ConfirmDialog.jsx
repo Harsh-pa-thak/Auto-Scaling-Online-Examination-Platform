@@ -50,12 +50,12 @@ export default function ConfirmDialog({
         </>
       }
     >
-      <div className="flex gap-4 items-start">
-        <AlertTriangle size={20} className="mt-0.5 flex-shrink-0 text-red-400" />
+      <div className="flex items-start gap-4">
+        <AlertTriangle size={20} className="mt-0.5 flex-shrink-0 text-danger" />
         <div>
-          <h3 className="text-sm font-semibold text-zinc-100">{title}</h3>
+          <h3 className="text-sm font-semibold text-ink">{title}</h3>
           {body && (
-            <p className="mt-2 text-sm text-zinc-400">{body}</p>
+            <p className="mt-2 text-sm text-ink-3">{body}</p>
           )}
         </div>
       </div>

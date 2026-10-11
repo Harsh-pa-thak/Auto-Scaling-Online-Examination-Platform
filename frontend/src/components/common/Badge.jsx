@@ -1,26 +1,26 @@
 // Neutral by default; amber for emphasis; green/red only for pass/fail style states.
 const variants = {
-  default: 'bg-zinc-800 text-zinc-300 border border-zinc-700',
-  primary: 'bg-amber-500/10 text-amber-300 border border-amber-500/30',
-  success: 'bg-emerald-500/10 text-emerald-300 border border-emerald-500/30',
-  warning: 'bg-amber-500/10 text-amber-300 border border-amber-500/30',
-  danger:  'bg-red-500/10 text-red-300 border border-red-500/30',
-  info:    'bg-zinc-800 text-zinc-300 border border-zinc-700',
+  default: 'bg-sunken text-ink-2 border border-line',
+  primary: 'bg-accent-soft text-accent-strong border border-accent/25',
+  success: 'bg-success-soft text-success border border-success/25',
+  warning: 'bg-warning-soft text-warning border border-warning/25',
+  danger:  'bg-danger-soft text-danger border border-danger/25',
+  info:    'bg-sunken text-ink-2 border border-line',
 }
 
 const sizes = {
-  sm: 'px-2 py-0.5 text-xs',
+  sm: 'px-2 py-0.5 text-2xs',
   md: 'px-2.5 py-0.5 text-xs',
   lg: 'px-3 py-1 text-sm',
 }
 
 const dotColors = {
-  default: 'bg-zinc-400',
-  primary: 'bg-amber-400',
-  success: 'bg-emerald-400',
-  warning: 'bg-amber-400',
-  danger:  'bg-red-400',
-  info:    'bg-zinc-400',
+  default: 'bg-ink-4',
+  primary: 'bg-accent',
+  success: 'bg-success',
+  warning: 'bg-warning',
+  danger:  'bg-danger',
+  info:    'bg-ink-4',
 }
 
 /**

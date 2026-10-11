@@ -156,31 +156,31 @@ export default function AdminQuestionBankPage() {
   return (
     <div className="space-y-8">
       {/* ── Page Header ── */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-1 border-b border-zinc-800">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-1 border-b border-line">
         <div>
           <div className="flex items-center gap-2">
-            <h1 className="text-xl sm:text-2xl font-bold text-zinc-100 tracking-tight">
+            <h1 className="text-xl sm:text-2xl font-bold text-ink tracking-tight">
               Question Bank Repository
             </h1>
             <Badge variant="primary" size="sm">
               {questions.length} Items
             </Badge>
           </div>
-          <p className="mt-1 text-sm text-zinc-400">
+          <p className="mt-1 text-sm text-ink-3">
             Search, filter, categorize, and allocate examination questions into test papers.
           </p>
         </div>
 
         {/* View mode toggle (Table / Cards) */}
-        <div className="flex items-center gap-1.5 self-start sm:self-auto bg-zinc-900 border border-zinc-800 rounded-lg p-1">
+        <div className="flex items-center gap-1.5 self-start sm:self-auto bg-surface border border-line rounded-lg p-1">
           <button
             type="button"
             onClick={() => setViewMode('table')}
             className={[
               'flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition-colors',
               viewMode === 'table'
-                ? 'bg-zinc-800 text-amber-400'
-                : 'text-zinc-400 hover:text-zinc-200',
+                ? 'bg-sunken text-accent-strong'
+                : 'text-ink-3 hover:text-ink-2',
             ].join(' ')}
             aria-label="Table View"
           >
@@ -193,8 +193,8 @@ export default function AdminQuestionBankPage() {
             className={[
               'flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition-colors',
               viewMode === 'cards'
-                ? 'bg-zinc-800 text-amber-400'
-                : 'text-zinc-400 hover:text-zinc-200',
+                ? 'bg-sunken text-accent-strong'
+                : 'text-ink-3 hover:text-ink-2',
             ].join(' ')}
             aria-label="Cards View"
           >
@@ -220,8 +220,8 @@ export default function AdminQuestionBankPage() {
               className={[
                 'inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-medium border transition-colors whitespace-nowrap',
                 isActive
-                  ? 'bg-amber-500/15 border-amber-500/50 text-amber-300'
-                  : 'bg-zinc-900 border-zinc-800 text-zinc-400 hover:text-zinc-200 hover:border-zinc-700',
+                  ? 'bg-accent-soft border-accent/50 text-accent-strong'
+                  : 'bg-surface border-line text-ink-3 hover:text-ink-2 hover:border-line-strong',
               ].join(' ')}
             >
               <span>{cat === 'All' ? 'All Categories' : cat}</span>
@@ -229,8 +229,8 @@ export default function AdminQuestionBankPage() {
                 className={[
                   'px-1.5 py-0.2 rounded-full text-xs font-semibold',
                   isActive
-                    ? 'bg-amber-500/30 text-amber-200'
-                    : 'bg-zinc-800 text-zinc-400',
+                    ? 'bg-accent/30 text-accent-strong'
+                    : 'bg-sunken text-ink-3',
                 ].join(' ')}
               >
                 {count}
@@ -275,10 +275,10 @@ export default function AdminQuestionBankPage() {
         </div>
 
         {/* Filter status summary */}
-        <div className="mt-4 pt-4 border-t border-zinc-800/80 flex items-center justify-between text-xs text-zinc-500">
+        <div className="mt-4 pt-4 border-t border-line/80 flex items-center justify-between text-xs text-ink-3">
           <span>
-            Showing <strong className="text-zinc-300">{filtered.length}</strong> of{' '}
-            <strong className="text-zinc-300">{questions.length}</strong> repository questions
+            Showing <strong className="text-ink-2">{filtered.length}</strong> of{' '}
+            <strong className="text-ink-2">{questions.length}</strong> repository questions
           </span>
           {(search || categoryFilter !== 'All' || diffFilter !== 'All') && (
             <button
@@ -289,7 +289,7 @@ export default function AdminQuestionBankPage() {
                 setDiffFilter('All')
                 setPage(1)
               }}
-              className="text-amber-400 hover:text-amber-300 underline font-medium"
+              className="text-accent-strong hover:text-accent-strong underline font-medium"
             >
               Reset Filters
             </button>
@@ -323,7 +323,7 @@ export default function AdminQuestionBankPage() {
         /* ── TABLE VIEW ── */
         <Card padding="p-0">
           {/* Table Header */}
-          <div className="hidden lg:grid grid-cols-12 px-6 py-4 border-b border-zinc-800 text-xs font-semibold uppercase tracking-wider text-zinc-400 bg-zinc-900/40">
+          <div className="hidden lg:grid grid-cols-12 px-6 py-4 border-b border-line text-xs font-semibold uppercase tracking-wider text-ink-3 bg-surface/40">
             <div className="col-span-5">Question</div>
             <div className="col-span-2">Category</div>
             <div className="col-span-1">Difficulty</div>
@@ -332,7 +332,7 @@ export default function AdminQuestionBankPage() {
             <div className="col-span-1 text-right">Actions</div>
           </div>
 
-          <div className="divide-y divide-zinc-800">
+          <div className="divide-y divide-line">
             {paged.map((q) => {
               const diff = DIFFICULTY_CONFIG[q.difficulty] ?? DIFFICULTY_CONFIG.Easy
               const letter = String.fromCharCode(65 + q.correctAnswer)
@@ -344,7 +344,7 @@ export default function AdminQuestionBankPage() {
               return (
                 <div
                   key={q.id}
-                  className="px-5 py-4 lg:grid lg:grid-cols-12 lg:items-center gap-3 hover:bg-zinc-900/30 transition-colors"
+                  className="px-5 py-4 lg:grid lg:grid-cols-12 lg:items-center gap-3 hover:bg-surface/30 transition-colors"
                 >
                   {/* 1. Question Column */}
                   <div className="lg:col-span-5 min-w-0">
@@ -352,14 +352,14 @@ export default function AdminQuestionBankPage() {
                       <button
                         type="button"
                         onClick={() => setExpandedId(isExpanded ? null : q.id)}
-                        className="mt-0.5 p-1 rounded text-zinc-500 hover:text-zinc-200 hover:bg-zinc-800 transition-colors"
+                        className="mt-0.5 p-1 rounded text-ink-3 hover:text-ink-2 hover:bg-sunken transition-colors"
                         aria-label={isExpanded ? 'Collapse options' : 'Expand options'}
                       >
                         {isExpanded ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
                       </button>
                       <div className="min-w-0 flex-1">
                         <div className="flex items-center gap-2 mb-1">
-                          <span className="text-xs tabular-nums px-1.5 py-0.5 rounded bg-zinc-800 text-zinc-400">
+                          <span className="text-xs tabular-nums px-1.5 py-0.5 rounded bg-sunken text-ink-3">
                             {q.id}
                           </span>
                           {isAllocated && (
@@ -368,7 +368,7 @@ export default function AdminQuestionBankPage() {
                             </Badge>
                           )}
                         </div>
-                        <p className="text-sm font-medium text-zinc-100 line-clamp-2">
+                        <p className="text-sm font-medium text-ink line-clamp-2">
                           {q.text}
                         </p>
                       </div>
@@ -385,7 +385,7 @@ export default function AdminQuestionBankPage() {
                       <Badge variant="primary" size="sm">
                         {q.marks}M
                       </Badge>
-                      <span className="text-xs text-emerald-400 font-semibold flex items-center gap-1">
+                      <span className="text-xs text-success font-semibold flex items-center gap-1">
                         <CheckCircle2 size={12} />
                         Ans: {letter}
                       </span>
@@ -403,16 +403,16 @@ export default function AdminQuestionBankPage() {
                               className={[
                                 'flex items-center gap-2 px-3 py-1.5 rounded-md text-xs border transition-colors',
                                 isCorrect
-                                  ? 'bg-emerald-950/40 border-emerald-800/60 text-emerald-300 font-medium'
-                                  : 'bg-zinc-900 border-zinc-800/70 text-zinc-400',
+                                  ? 'bg-success-soft border-success/60 text-success font-medium'
+                                  : 'bg-surface border-line/70 text-ink-3',
                               ].join(' ')}
                             >
-                              <span className="font-semibold text-zinc-500">
+                              <span className="font-semibold text-ink-3">
                                 {optLetter}.
                               </span>
                               <span className="flex-1">{opt}</span>
                               {isCorrect && (
-                                <span className="text-xs font-semibold text-emerald-400 flex items-center gap-1">
+                                <span className="text-xs font-semibold text-success flex items-center gap-1">
                                   <Check size={12} /> Correct
                                 </span>
                               )}
@@ -439,18 +439,18 @@ export default function AdminQuestionBankPage() {
 
                   {/* 4. Marks Column */}
                   <div className="hidden lg:flex lg:col-span-1 justify-center items-center">
-                    <span className="text-sm font-semibold text-zinc-200">
+                    <span className="text-sm font-semibold text-ink-2">
                       {q.marks}
                     </span>
                   </div>
 
                   {/* 5. Correct Answer Column */}
                   <div className="hidden lg:flex lg:col-span-2 items-center gap-1.5 min-w-0 pr-2">
-                    <div className="flex items-center gap-1.5 text-xs text-emerald-400 font-medium truncate">
-                      <span className="flex-shrink-0 flex items-center justify-center h-5 w-5 rounded bg-emerald-950/60 border border-emerald-800/60 text-emerald-400 font-bold text-xs">
+                    <div className="flex items-center gap-1.5 text-xs text-success font-medium truncate">
+                      <span className="flex-shrink-0 flex items-center justify-center h-5 w-5 rounded bg-success-soft border border-success/60 text-success font-bold text-xs">
                         {letter}
                       </span>
-                      <span className="truncate text-zinc-300" title={correctOptionText}>
+                      <span className="truncate text-ink-2" title={correctOptionText}>
                         {correctOptionText}
                       </span>
                     </div>
@@ -470,8 +470,8 @@ export default function AdminQuestionBankPage() {
                       className={[
                         'p-1.5 rounded-lg border transition-colors',
                         isAllocated
-                          ? 'border-emerald-800/60 bg-emerald-950/40 text-emerald-400 hover:bg-emerald-900/50'
-                          : 'border-zinc-700/60 bg-zinc-800 text-zinc-300 hover:text-amber-400 hover:border-amber-600/60',
+                          ? 'border-success/60 bg-success-soft text-success hover:bg-success/50'
+                          : 'border-line-strong/60 bg-sunken text-ink-2 hover:text-accent-strong hover:border-accent/60',
                       ].join(' ')}
                     >
                       <FolderPlus size={14} />
@@ -483,7 +483,7 @@ export default function AdminQuestionBankPage() {
                       onClick={() => setEditTarget(q)}
                       title="Edit Question"
                       aria-label="Edit question"
-                      className="p-1.5 rounded-lg border border-zinc-700/60 bg-zinc-800 text-zinc-300 hover:text-zinc-100 hover:border-zinc-600 transition-colors"
+                      className="p-1.5 rounded-lg border border-line-strong/60 bg-sunken text-ink-2 hover:text-ink hover:border-line-strong transition-colors"
                     >
                       <Edit2 size={14} />
                     </button>
@@ -494,7 +494,7 @@ export default function AdminQuestionBankPage() {
                       onClick={() => setDeleteTarget(q)}
                       title="Delete Question"
                       aria-label="Delete question"
-                      className="p-1.5 rounded-lg border border-red-900/40 bg-zinc-800 text-red-400 hover:text-red-300 hover:bg-red-950/40 hover:border-red-800/60 transition-colors"
+                      className="p-1.5 rounded-lg border border-danger/40 bg-sunken text-danger hover:text-danger hover:bg-danger-soft hover:border-danger/60 transition-colors"
                     >
                       <Trash2 size={14} />
                     </button>
@@ -506,7 +506,7 @@ export default function AdminQuestionBankPage() {
 
           {/* Table Pagination */}
           {filtered.length > PAGE_SIZE && (
-            <div className="px-5 py-4 border-t border-zinc-800">
+            <div className="px-5 py-4 border-t border-line">
               <Pagination
                 currentPage={safePage}
                 totalPages={totalPages}
@@ -530,13 +530,13 @@ export default function AdminQuestionBankPage() {
               return (
                 <div
                   key={q.id}
-                  className="bg-zinc-900 border border-zinc-800 rounded-xl p-6 flex flex-col justify-between hover:border-zinc-700/80 transition-colors space-y-4"
+                  className="bg-surface border border-line rounded-xl p-6 flex flex-col justify-between hover:border-line-strong/80 transition-colors space-y-4"
                 >
                   {/* Top Bar: ID, Category, Difficulty, Marks */}
                   <div>
                     <div className="flex items-center justify-between gap-2 mb-2.5">
                       <div className="flex items-center gap-2">
-                        <span className="text-xs tabular-nums px-2 py-0.5 rounded bg-zinc-800 text-zinc-400">
+                        <span className="text-xs tabular-nums px-2 py-0.5 rounded bg-sunken text-ink-3">
                           {q.id}
                         </span>
                         <Badge variant="default" size="sm">
@@ -554,7 +554,7 @@ export default function AdminQuestionBankPage() {
                     </div>
 
                     {/* Question text */}
-                    <h3 className="text-sm font-semibold text-zinc-100 mt-1">
+                    <h3 className="text-sm font-semibold text-ink mt-1">
                       {q.text}
                     </h3>
                   </div>
@@ -570,16 +570,16 @@ export default function AdminQuestionBankPage() {
                           className={[
                             'flex items-center gap-2 px-3 py-2 rounded-lg border transition-colors',
                             isCorrect
-                              ? 'bg-emerald-950/40 border-emerald-800/60 text-emerald-300 font-medium'
-                              : 'bg-zinc-950/40 border-zinc-800/80 text-zinc-400',
+                              ? 'bg-success-soft border-success/60 text-success font-medium'
+                              : 'bg-canvas/40 border-line/80 text-ink-3',
                           ].join(' ')}
                         >
-                          <span className="font-bold text-zinc-500">
+                          <span className="font-bold text-ink-3">
                             {optLetter}.
                           </span>
                           <span className="flex-1">{opt}</span>
                           {isCorrect && (
-                            <span className="text-xs font-semibold text-emerald-400 flex items-center gap-1">
+                            <span className="text-xs font-semibold text-success flex items-center gap-1">
                               <CheckCircle2 size={13} /> Correct Answer
                             </span>
                           )}
@@ -589,14 +589,14 @@ export default function AdminQuestionBankPage() {
                   </div>
 
                   {/* Card Footer: Status & Actions */}
-                  <div className="pt-3 border-t border-zinc-800/80 flex items-center justify-between gap-3">
+                  <div className="pt-3 border-t border-line/80 flex items-center justify-between gap-3">
                     <div>
                       {isAllocated ? (
-                        <span className="text-xs text-emerald-400 font-medium flex items-center gap-1">
+                        <span className="text-xs text-success font-medium flex items-center gap-1">
                           <Check size={12} /> Allocated to {allocatedExams.size} exam(s)
                         </span>
                       ) : (
-                        <span className="text-xs text-zinc-500">Available in Bank</span>
+                        <span className="text-xs text-ink-3">Available in Bank</span>
                       )}
                     </div>
 
@@ -626,7 +626,7 @@ export default function AdminQuestionBankPage() {
                         variant="ghost"
                         size="xs"
                         onClick={() => setDeleteTarget(q)}
-                        className="text-red-400 hover:text-red-300 hover:bg-red-950/40"
+                        className="text-danger hover:text-danger hover:bg-danger-soft"
                         aria-label="Delete"
                       >
                         <Trash2 size={13} />
@@ -702,20 +702,20 @@ export default function AdminQuestionBankPage() {
       >
         {addToExamTarget && (
           <div className="space-y-4 text-left">
-            <div className="p-3 rounded-lg bg-zinc-950 border border-zinc-800 space-y-1">
+            <div className="p-3 rounded-lg bg-canvas border border-line space-y-1">
               <div className="flex items-center gap-2">
-                <span className="text-xs tabular-nums text-zinc-500">{addToExamTarget.id}</span>
+                <span className="text-xs tabular-nums text-ink-3">{addToExamTarget.id}</span>
                 <Badge variant="default" size="sm">{addToExamTarget.category}</Badge>
                 <Badge variant="primary" size="sm">{addToExamTarget.marks} Marks</Badge>
               </div>
-              <p className="text-xs font-medium text-zinc-200 mt-1 line-clamp-2">
+              <p className="text-xs font-medium text-ink-2 mt-1 line-clamp-2">
                 {addToExamTarget.text}
               </p>
             </div>
 
             <div>
               <label htmlFor="target-exam" className="form-label">
-                Select Examination Paper <span className="text-red-500">*</span>
+                Select Examination Paper <span className="text-danger">*</span>
               </label>
               <Select
                 id="target-exam"
@@ -725,7 +725,7 @@ export default function AdminQuestionBankPage() {
                 onChange={(e) => setSelectedExamId(e.target.value)}
                 required
               />
-              <p className="text-xs text-zinc-500 mt-1.5">
+              <p className="text-xs text-ink-3 mt-1.5">
                 The question will be associated with the selected exam paper and assigned {addToExamTarget.marks} marks.
               </p>
             </div>

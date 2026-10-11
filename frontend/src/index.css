@@ -1,20 +1,61 @@
 /* ============================================================
    Global Stylesheet — ExamPortal
-   One flat background (zinc-950), one surface (zinc-900),
-   one accent (amber-500). Green/red are reserved for
-   pass/fail and success/error states only.
+   Light theme, authored as CSS variables so the whole palette
+   lives in one place (and a dark theme can be added later by
+   overriding :root in a single block — no component changes).
 
-   Type:    IBM Plex Sans, body line-height 1.6
-   Spacing: 8px rhythm
-     - page sections ........ space-y-8 (32px)
-     - card padding ......... p-6       (24px)
-     - inside a card/section  space-y-4 / gap-4 (16px)
-     - label → control ...... space-y-2 (8px)
+   Surfaces  canvas → sunken
+   Hairlines line / line-strong   (elevation, not shadows)
+   Text      ink → ink-4
+   Accent    ONE colour (amber/copper) + the ink that sits on it
+             success / warning / danger / info are state-only.
+
+   Type:    Inter, body line-height 1.625, display sizes track tight
+   Spacing: 8px rhythm — sections space-y-8, cards p-6, groups space-y-4,
+            label → control space-y-2
+   Motion:  fast 120ms · base 180ms · slow 240ms (+ reduced-motion guard)
    ============================================================ */
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* ── Tokens ───────────────────────────────────────────────── */
+:root {
+  color-scheme: light;
+
+  /* Surfaces — warm paper neutrals, never clinical white */
+  --canvas: 251 250 249;
+  --surface: 255 255 255;
+  --raised: 255 255 255;
+  --sunken: 245 243 241;
+
+  /* Hairlines */
+  --line: 231 227 222;
+  --line-strong: 213 207 200;
+
+  /* Text */
+  --ink: 28 25 23;
+  --ink-2: 82 77 72;
+  --ink-3: 122 115 109;
+  --ink-4: 158 151 145;
+
+  /* Single accent — amber / copper */
+  --accent: 234 138 15;         /* fill (with --accent-ink on top) */
+  --accent-strong: 161 74 8;    /* accent text/links on light surfaces */
+  --accent-soft: 254 244 228;   /* tinted background */
+  --accent-ink: 32 22 6;        /* text on the accent fill */
+
+  /* State */
+  --success: 4 120 87;
+  --success-soft: 236 253 245;
+  --warning: 180 83 9;
+  --warning-soft: 255 249 235;
+  --danger: 185 28 28;
+  --danger-soft: 254 242 242;
+  --info: 87 83 78;
+  --info-soft: 245 243 241;
+}
 
 /* ── Base layer ───────────────────────────────────────────── */
 @layer base {
@@ -22,36 +63,56 @@
     font-family: theme('fontFamily.sans');
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    color-scheme: dark;
   }
 
   body {
-    @apply bg-zinc-950 text-zinc-100 min-h-screen text-base;
-    line-height: 1.6;
+    @apply bg-canvas text-ink text-base;
+    min-height: 100vh;
+    line-height: 1.625;
+    font-feature-settings: 'cv05' 1, 'ss03' 1; /* Inter: single-storey a, alt g */
   }
 
   ::selection {
-    @apply bg-amber-500/25 text-zinc-50;
+    @apply bg-accent/25 text-ink;
   }
 
-  /* Accessible focus ring */
+  /* One visible focus treatment for the whole app. */
   :focus-visible {
-    @apply outline-none ring-2 ring-amber-500 ring-offset-2 ring-offset-zinc-950;
+    @apply outline-none ring-2 ring-accent ring-offset-2 ring-offset-canvas;
   }
 
-  /* Scrollbars */
+  hr {
+    @apply border-line;
+  }
+
+  /* Scrollbars — thin, neutral, present on hover only */
   ::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
+    width: 10px;
+    height: 10px;
   }
   ::-webkit-scrollbar-track {
-    @apply bg-zinc-950;
+    background: transparent;
   }
   ::-webkit-scrollbar-thumb {
-    @apply bg-zinc-800 rounded-full;
+    @apply rounded-full bg-line-strong/70;
+    border: 3px solid transparent;
+    background-clip: content-box;
   }
   ::-webkit-scrollbar-thumb:hover {
-    @apply bg-zinc-700;
+    @apply bg-ink-4/60;
+    background-clip: content-box;
+  }
+
+  /* Respect the OS setting everywhere. */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
   }
 }
 
@@ -59,7 +120,11 @@
 @layer components {
   /* Surface */
   .card {
-    @apply bg-zinc-900 border border-zinc-800 rounded-xl;
+    @apply bg-surface border border-line rounded-lg shadow-xs;
+  }
+
+  .card-interactive {
+    @apply card transition duration-base ease-standard hover:border-line-strong hover:shadow-sm;
   }
 
   /* Page scaffolding */
@@ -68,11 +133,11 @@
   }
 
   .page-title {
-    @apply text-2xl font-semibold tracking-tight text-zinc-50;
+    @apply text-2xl font-semibold tracking-tight text-ink sm:text-3xl;
   }
 
   .page-subtitle {
-    @apply mt-2 max-w-2xl text-sm text-zinc-400;
+    @apply mt-2 max-w-2xl text-sm text-ink-3;
   }
 
   .section-header {
@@ -80,34 +145,44 @@
   }
 
   .section-title {
-    @apply text-base font-semibold text-zinc-100;
+    @apply text-base font-semibold tracking-tight text-ink;
   }
 
   /* Small uppercase label above a value */
   .eyebrow {
-    @apply text-xs font-medium uppercase tracking-wide text-zinc-500;
+    @apply text-2xs font-semibold uppercase tracking-wider text-ink-3;
   }
 
   /* Inline text link */
   .text-link {
-    @apply inline-flex items-center gap-1 text-sm font-medium text-amber-400 hover:text-amber-300 transition-colors;
+    @apply inline-flex items-center gap-1 text-sm font-medium text-accent-strong underline-offset-4 transition-colors duration-fast hover:text-accent-strong/75 hover:underline;
   }
 
   /* Form elements */
   .input-base {
-    @apply w-full px-3 py-2 text-sm bg-zinc-950 border border-zinc-700 rounded-lg
-           text-zinc-100 placeholder:text-zinc-500
-           focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500
-           disabled:text-zinc-600 disabled:cursor-not-allowed
-           transition-colors duration-150;
+    @apply w-full rounded-md border border-line bg-surface px-3 py-2 text-sm text-ink shadow-xs
+           placeholder:text-ink-4
+           transition duration-fast ease-standard
+           hover:border-line-strong
+           focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20
+           disabled:cursor-not-allowed disabled:bg-sunken disabled:text-ink-4 disabled:shadow-none;
   }
 
   .input-error {
-    @apply border-red-500 focus:ring-red-500 focus:border-red-500;
+    @apply border-danger hover:border-danger focus:border-danger focus:ring-danger/20;
   }
 
   .form-label {
-    @apply block text-sm font-medium text-zinc-300;
+    @apply block text-sm font-medium text-ink-2;
+  }
+
+  /* Quiet inline chip (filters, legend keys) */
+  .chip {
+    @apply inline-flex items-center gap-1.5 rounded-full border border-line bg-surface px-2.5 py-1 text-xs font-medium text-ink-2 transition-colors duration-fast hover:border-line-strong hover:text-ink;
+  }
+
+  .divider {
+    @apply border-0 border-t border-line;
   }
 }
 
@@ -117,5 +192,28 @@
   .no-select {
     user-select: none;
     -webkit-user-select: none;
+  }
+
+  /* Skeleton shimmer (used by <Skeleton/>) */
+  .skeleton-shimmer::after {
+    content: '';
+    @apply absolute inset-0 -translate-x-full animate-shimmer bg-gradient-to-r from-transparent via-white/60 to-transparent;
+  }
+
+  /* Hide the native number spinners on score/mark inputs */
+  .no-spinner::-webkit-outer-spin-button,
+  .no-spinner::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+  .no-spinner {
+    -moz-appearance: textfield;
+  }
+
+  .scrollbar-none {
+    scrollbar-width: none;
+  }
+  .scrollbar-none::-webkit-scrollbar {
+    display: none;
   }
 }

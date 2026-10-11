@@ -38,20 +38,27 @@ function formatResultDate(dateStr) {
 export default function StudentDashboard() {
   const { user } = useAuth()
   const [dashboard, setDashboard] = useState({ upcomingExams: [], recentResults: [] })
+  const [exams, setExams] = useState([])
   useEffect(() => { api('/student/dashboard').then(setDashboard).catch(() => {}) }, [])
+  useEffect(() => {
+    api('/exams')
+      .then((data) => setExams(Array.isArray(data) ? data : []))
+      .catch(() => {})
+  }, [])
 
-  const student = user || {
-    name: 'Harsh Pathak',
-    id: '24BCE1234',
-    branch: 'B.Tech CSE',
-    cgpa: 8.7,
-  }
+  const student = user || { name: '', studentId: '', branch: '', cgpa: null }
 
   // Extract first name for greeting
-  const firstName = student.name ? student.name.split(' ')[0] : 'Harsh'
+  const firstName = student.name ? student.name.split(' ')[0] : 'there'
 
-  const activeExams = dashboard.upcomingExams.filter((exam) => new Date(exam.startTime) <= new Date())
-  const upcomingExams = dashboard.upcomingExams.filter((exam) => new Date(exam.startTime) > new Date())
+  // Live = flagged active by the server, or inside its schedule window right now.
+  const now = Date.now()
+  const activeExams = exams.filter(
+    (exam) => exam.status === 'active' || (new Date(exam.startTime) <= now && new Date(exam.endTime) >= now)
+  )
+  const upcomingExams = exams
+    .filter((exam) => new Date(exam.startTime) > now)
+    .sort((a, b) => new Date(a.startTime) - new Date(b.startTime))
 
   // Filter student's results
   const studentResults = dashboard.recentResults.map((attempt) => ({
@@ -87,8 +94,8 @@ export default function StudentDashboard() {
       label: 'Exam',
       render: (val, row) => (
         <div>
-          <p className="font-medium text-zinc-100">{row.examTitle}</p>
-          <p className="text-xs text-zinc-400">{row.subject}</p>
+          <p className="font-medium text-ink">{row.examTitle}</p>
+          <p className="text-xs text-ink-3">{row.subject}</p>
         </div>
       ),
     },
@@ -96,15 +103,15 @@ export default function StudentDashboard() {
       key: 'submittedAt',
       label: 'Date',
       render: (val) => (
-        <span className="text-zinc-300">{formatResultDate(val)}</span>
+        <span className="text-ink-2">{formatResultDate(val)}</span>
       ),
     },
     {
       key: 'score',
       label: 'Score',
       render: (val, row) => (
-        <span className="tabular-nums text-zinc-100">
-          {row.score} <span className="text-zinc-500">/ {row.totalMarks}</span>
+        <span className="tabular-nums text-ink">
+          {row.score} <span className="text-ink-3">/ {row.totalMarks}</span>
         </span>
       ),
     },
@@ -113,7 +120,7 @@ export default function StudentDashboard() {
       label: 'Percentage',
       render: (val, row) => (
         <div className="flex items-center gap-2">
-          <span className="tabular-nums text-zinc-100">{val}%</span>
+          <span className="tabular-nums text-ink">{val}%</span>
           {row.grade && <Badge size="sm">Grade {row.grade}</Badge>}
         </div>
       ),
@@ -142,10 +149,17 @@ export default function StudentDashboard() {
             Your live tests, upcoming schedule, and recent results.
           </p>
         </div>
-        <p className="text-sm text-zinc-400">
-          <span className="tabular-nums text-zinc-200">{student.id}</span>
-          {' · '}CGPA <span className="tabular-nums text-zinc-200">{student.cgpa || '8.7'}</span>
-        </p>
+        {(student.studentId || student.cgpa != null) && (
+          <p className="text-sm text-ink-3">
+            {student.studentId && <span className="tabular-nums text-ink-2">{student.studentId}</span>}
+            {student.studentId && student.cgpa != null && ' · '}
+            {student.cgpa != null && (
+              <>
+                CGPA <span className="tabular-nums text-ink-2">{student.cgpa}</span>
+              </>
+            )}
+          </p>
+        )}
       </header>
 
       {/* ── STATISTICS ── */}

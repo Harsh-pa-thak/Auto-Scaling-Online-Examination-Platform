@@ -9,10 +9,10 @@ const sizes = {
 }
 
 const statusColors = {
-  online: 'bg-emerald-500',
-  offline: 'bg-zinc-600',
-  busy: 'bg-red-500',
-  away: 'bg-amber-500',
+  online: 'bg-success',
+  offline: 'bg-ink-4',
+  busy: 'bg-danger',
+  away: 'bg-warning',
 }
 
 const statusSizes = {
@@ -25,7 +25,7 @@ const statusSizes = {
 
 // Initials fallback styling (single neutral treatment)
 function getInitialsColor() {
-  return 'bg-zinc-800 text-zinc-200'
+  return 'bg-sunken text-ink-2'
 }
 
 function getInitials(name = '') {
@@ -75,7 +75,7 @@ export default function Avatar({
 
       {status && (
         <span
-          className={`absolute bottom-0 right-0 rounded-full ring-2 ring-zinc-950 ${
+          className={`absolute bottom-0 right-0 rounded-full ring-2 ring-surface ${
             statusSizes[size]
           } ${statusColors[status] || statusColors.offline}`}
           aria-label={`Status: ${status}`}

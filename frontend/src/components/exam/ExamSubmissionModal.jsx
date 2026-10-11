@@ -37,19 +37,19 @@ export default function ExamSubmissionModal({
     >
       <div className="space-y-6">
         {hasUnanswered ? (
-          <p className="flex items-start gap-2 text-sm text-zinc-300">
-            <AlertTriangle size={18} className="mt-0.5 flex-shrink-0 text-amber-400" />
+          <p className="flex items-start gap-2 text-sm text-ink-2">
+            <AlertTriangle size={18} className="mt-0.5 flex-shrink-0 text-accent-strong" />
             You have {unansweredCount} unanswered question{unansweredCount > 1 ? 's' : ''}. Once
             submitted, you cannot resume this session.
           </p>
         ) : (
-          <p className="flex items-start gap-2 text-sm text-zinc-300">
-            <CheckCircle2 size={18} className="mt-0.5 flex-shrink-0 text-emerald-400" />
+          <p className="flex items-start gap-2 text-sm text-ink-2">
+            <CheckCircle2 size={18} className="mt-0.5 flex-shrink-0 text-success" />
             You have answered all {totalQuestions} questions.
           </p>
         )}
 
-        <dl className="grid grid-cols-3 divide-x divide-zinc-800 rounded-lg border border-zinc-800 text-center">
+        <dl className="grid grid-cols-3 divide-x divide-line rounded-lg border border-line text-center">
           {[
             { label: 'Answered', value: answeredCount },
             { label: 'Unanswered', value: unansweredCount },
@@ -57,12 +57,12 @@ export default function ExamSubmissionModal({
           ].map(({ label, value }) => (
             <div key={label} className="p-4">
               <dt className="eyebrow">{label}</dt>
-              <dd className="mt-1 text-xl font-semibold tabular-nums text-zinc-50">{value}</dd>
+              <dd className="mt-1 text-xl font-semibold tabular-nums text-ink">{value}</dd>
             </div>
           ))}
         </dl>
 
-        <p className="text-sm text-zinc-400">
+        <p className="text-sm text-ink-3">
           Submitting finalizes your score and ends the proctored session immediately.
         </p>
       </div>

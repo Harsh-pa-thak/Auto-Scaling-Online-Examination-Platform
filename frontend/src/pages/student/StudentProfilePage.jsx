@@ -100,19 +100,19 @@ export default function StudentProfilePage() {
           <Avatar name={student.name} size="xl" />
           <div>
             <h1 className="page-title">{student.name}</h1>
-            <p className="mt-1 flex flex-wrap items-center gap-x-2 text-sm text-zinc-400">
+            <p className="mt-1 flex flex-wrap items-center gap-x-2 text-sm text-ink-3">
               <span className="inline-flex items-center gap-1 tabular-nums">
                 {student.id}
                 <button
                   type="button"
                   onClick={handleCopyId}
                   aria-label="Copy student ID"
-                  className="rounded p-1 text-zinc-500 transition-colors hover:text-zinc-300"
+                  className="rounded p-1 text-ink-3 transition-colors hover:text-ink-2"
                 >
-                  {copiedId ? <Check size={12} className="text-emerald-400" /> : <Copy size={12} />}
+                  {copiedId ? <Check size={12} className="text-success" /> : <Copy size={12} />}
                 </button>
               </span>
-              <span className="text-zinc-600">·</span>
+              <span className="text-ink-2">·</span>
               <span>{student.branch || 'B.Tech Computer Science'}</span>
             </p>
           </div>
@@ -125,10 +125,10 @@ export default function StudentProfilePage() {
           <h2 className="section-title">Academic & account information</h2>
           <dl className="mt-4 grid grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-2">
             {details.map(({ label, value, numeric, breakAll }) => (
-              <div key={label} className="border-b border-zinc-800 pb-4">
-                <dt className="text-sm text-zinc-400">{label}</dt>
+              <div key={label} className="border-b border-line pb-4">
+                <dt className="text-sm text-ink-3">{label}</dt>
                 <dd
-                  className={`mt-1 text-sm font-medium text-zinc-100 ${numeric ? 'tabular-nums' : ''} ${
+                  className={`mt-1 text-sm font-medium text-ink ${numeric ? 'tabular-nums' : ''} ${
                     breakAll ? 'break-all' : ''
                   }`}
                 >
@@ -146,15 +146,15 @@ export default function StudentProfilePage() {
 
             <form onSubmit={handlePasswordSubmit} className="mt-4 space-y-4">
               {passwordStatus === 'success' && (
-                <p className="flex items-start gap-2 text-sm text-emerald-300">
-                  <CheckCircle2 size={16} className="mt-0.5 flex-shrink-0 text-emerald-400" />
+                <p className="flex items-start gap-2 text-sm text-success">
+                  <CheckCircle2 size={16} className="mt-0.5 flex-shrink-0 text-success" />
                   Your password has been changed.
                 </p>
               )}
 
               {passwordStatus === 'error' && (
-                <p role="alert" className="flex items-start gap-2 text-sm text-red-300">
-                  <AlertCircle size={16} className="mt-0.5 flex-shrink-0 text-red-400" />
+                <p role="alert" className="flex items-start gap-2 text-sm text-danger">
+                  <AlertCircle size={16} className="mt-0.5 flex-shrink-0 text-danger" />
                   {passwordErrorMsg}
                 </p>
               )}
@@ -176,7 +176,7 @@ export default function StudentProfilePage() {
                 </div>
               ))}
 
-              <p className="text-xs text-zinc-500">
+              <p className="text-xs text-ink-3">
                 At least 8 characters. Must not match your previous 3 passwords.
               </p>
 
@@ -189,7 +189,7 @@ export default function StudentProfilePage() {
           {/* ── Session ── */}
           <Card>
             <h2 className="section-title">Session</h2>
-            <p className="mt-2 text-sm text-zinc-400">
+            <p className="mt-2 text-sm text-ink-3">
               Sign out of the student portal on this browser.
             </p>
             <Button

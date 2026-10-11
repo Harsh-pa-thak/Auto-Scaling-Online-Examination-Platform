@@ -2,7 +2,7 @@ import { Router } from 'express'
 import { prisma } from '../config/prisma.js'
 import { requireAuth, requireRole } from '../middleware/auth.js'
 import { validate } from '../middleware/validate.js'
-import { examQuestionAssignmentsSchema, examSchema } from '../validators/exams.js'
+import { examQuestionAssignmentsSchema, examSchema, examUpdateSchema } from '../validators/exams.js'
 
 const router = Router()
 router.use(requireAuth)
@@ -38,14 +38,9 @@ router.post('/', requireRole('ADMIN'), validate(examSchema), async (req, res, ne
   } catch (error) { next(error) }
 })
 
-router.patch('/:id', requireRole('ADMIN'), async (req, res, next) => {
+router.patch('/:id', requireRole('ADMIN'), validate(examUpdateSchema), async (req, res, next) => {
   try {
     const data = { ...req.body }
-    if (data.startTime) data.startTime = new Date(data.startTime)
-    if (data.endTime) data.endTime = new Date(data.endTime)
-    if (data.totalMarks !== undefined) data.totalMarks = Number(data.totalMarks)
-    if (data.passingMarks !== undefined) data.passingMarks = Number(data.passingMarks)
-    if (data.duration !== undefined) data.duration = Number(data.duration)
     if (data.status) data.status = data.status.toUpperCase()
     const exam = await prisma.exam.update({ where: { id: req.params.id }, data })
     res.json({ data: publicExam(exam) })

@@ -30,7 +30,8 @@ export default function LiveExamPage() {
   const questions = attempt?.questions || []
 
   useEffect(() => {
-    api(`/exams/${id}/attempts`)
+    // POST starts a new attempt or resumes the student's in-progress one.
+    api(`/exams/${id}/attempts`, { method: 'POST' })
       .then(setAttempt)
       .catch((error) => { setLoadError(error.message) })
       .finally(() => setLoading(false))
@@ -48,6 +49,7 @@ export default function LiveExamPage() {
   const [submissionModalOpen, setSubmissionModalOpen] = useState(false)
   const [mobilePaletteOpen, setMobilePaletteOpen] = useState(false)
   const [startTime] = useState(Date.now())
+  const [saveState, setSaveState] = useState({}) // { [qIndex]: 'saving' | 'saved' | 'error' }
 
   // Prevent accidental tab closure or browser reload
   useEffect(() => {
@@ -68,15 +70,31 @@ export default function LiveExamPage() {
   const currentAnswer = answers[currentIndex] ?? null
   const isCurrentMarked = !!marked[currentIndex]
 
+  // Autosave: same endpoint/call as before, wrapped with a visible save status.
+  const saveAnswer = (questionId, optIndex, index = currentIndex) => {
+    if (!attempt) return
+    setSaveState((prev) => ({ ...prev, [index]: 'saving' }))
+    api(`/attempts/${attempt.id}/answers/${questionId}`, {
+      method: 'PUT', body: { selectedOption: optIndex },
+    })
+      .then(() => setSaveState((prev) => ({ ...prev, [index]: 'saved' })))
+      .catch((error) => {
+        setSaveState((prev) => ({ ...prev, [index]: 'error' }))
+        toast.error('Answer not saved', error.message)
+      })
+  }
+
   // Handlers for question actions
   const handleSelectOption = (optIndex) => {
     const question = questions[currentIndex]
     setAnswers((prev) => ({ ...prev, [currentIndex]: optIndex }))
-    if (attempt && question) {
-      api(`/attempts/${attempt.id}/answers/${question.id}`, {
-        method: 'PUT', body: { selectedOption: optIndex },
-      }).catch((error) => toast.error('Answer not saved', error.message))
-    }
+    if (question) saveAnswer(question.id, optIndex)
+  }
+
+  const handleRetrySave = () => {
+    const question = questions[currentIndex]
+    const value = answers[currentIndex]
+    if (question && value != null) saveAnswer(question.id, value)
   }
 
   const handleClearAnswer = () => {
@@ -105,6 +123,35 @@ export default function LiveExamPage() {
       setCurrentIndex((prev) => prev - 1)
     }
   }
+
+  // Keyboard shortcuts: 1–4 select an option, ←/→ move between questions.
+  useEffect(() => {
+    const handleKeyDown = (event) => {
+      if (isSubmitted || submissionModalOpen || mobilePaletteOpen) return
+      if (event.metaKey || event.ctrlKey || event.altKey) return
+      const target = event.target
+      if (target instanceof HTMLElement && ['INPUT', 'TEXTAREA', 'SELECT'].includes(target.tagName)) return
+
+      if (/^[1-4]$/.test(event.key)) {
+        const optIndex = Number(event.key) - 1
+        if (currentQuestion?.options?.[optIndex] != null) {
+          event.preventDefault()
+          handleSelectOption(optIndex)
+        }
+        return
+      }
+      if (event.key === 'ArrowRight') {
+        event.preventDefault()
+        handleNext()
+      } else if (event.key === 'ArrowLeft') {
+        event.preventDefault()
+        handlePrev()
+      }
+    }
+
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  })
 
   // Answered / marked counts
   const answeredCount = Object.keys(answers).length
@@ -135,8 +182,8 @@ export default function LiveExamPage() {
     }
   }, [attempt, isSubmitted, toast])
 
-  if (loading) return <div className="flex min-h-screen items-center justify-center bg-zinc-950 text-zinc-400">Starting examination...</div>
-  if (loadError || !attempt) return <div className="flex min-h-screen items-center justify-center bg-zinc-950 text-red-400">{loadError || 'Unable to start examination.'}</div>
+  if (loading) return <div className="flex min-h-screen items-center justify-center bg-canvas text-ink-3">Starting examination...</div>
+  if (loadError || !attempt) return <div className="flex min-h-screen items-center justify-center bg-canvas text-danger">{loadError || 'Unable to start examination.'}</div>
 
   // ── SUBMITTED STATE SCREEN ──
   if (isSubmitted) {
@@ -149,26 +196,26 @@ export default function LiveExamPage() {
     ]
 
     return (
-      <div className="flex min-h-screen items-center justify-center bg-zinc-950 p-4">
+      <div className="flex min-h-screen items-center justify-center bg-canvas p-4">
         <div className="card w-full max-w-lg space-y-6 p-8 text-center">
-          <CheckCircle2 size={32} className="mx-auto text-emerald-400" />
+          <CheckCircle2 size={32} className="mx-auto text-success" />
 
           <div>
             <p className="eyebrow">
               {autoSubmitted ? 'Submitted automatically when time ran out' : 'Submitted'}
             </p>
-            <h1 className="mt-2 text-2xl font-semibold text-zinc-50">Examination completed</h1>
-            <p className="mt-2 text-sm text-zinc-400">
-              Your responses for <span className="text-zinc-100">{exam.title}</span> have been
+            <h1 className="mt-2 text-2xl font-semibold text-ink">Examination completed</h1>
+            <p className="mt-2 text-sm text-ink-3">
+              Your responses for <span className="text-ink">{exam.title}</span> have been
               recorded.
             </p>
           </div>
 
-          <dl className="grid grid-cols-3 divide-x divide-zinc-800 rounded-lg border border-zinc-800">
+          <dl className="grid grid-cols-3 divide-x divide-line rounded-lg border border-line">
             {stats.map(({ label, value }) => (
               <div key={label} className="p-4">
                 <dt className="eyebrow">{label}</dt>
-                <dd className="mt-1 text-lg font-semibold tabular-nums text-zinc-50">{value}</dd>
+                <dd className="mt-1 text-lg font-semibold tabular-nums text-ink">{value}</dd>
               </div>
             ))}
           </dl>
@@ -194,16 +241,16 @@ export default function LiveExamPage() {
 
   // ── ACTIVE DISTRACTION-FREE EXAM INTERFACE ──
   return (
-    <div className="no-select flex min-h-screen select-none flex-col bg-zinc-950 font-sans">
+    <div className="no-select flex min-h-screen select-none flex-col bg-canvas font-sans">
       {/* ── TOP HEADER ── */}
-      <header className="sticky top-0 z-30 flex h-16 items-center justify-between gap-4 border-b border-zinc-800 bg-zinc-950 px-4 sm:px-6">
+      <header className="sticky top-0 z-30 flex h-16 items-center justify-between gap-4 border-b border-line bg-canvas px-4 sm:px-6">
         <div className="flex min-w-0 items-center gap-3">
-          <span className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg bg-amber-500 text-zinc-950">
+          <span className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg bg-accent text-accent-ink">
             <GraduationCap size={18} />
           </span>
           <div className="min-w-0">
-            <h1 className="truncate text-sm font-semibold text-zinc-100">{exam.title}</h1>
-            <p className="hidden truncate text-xs text-zinc-500 sm:block">
+            <h1 className="truncate text-sm font-semibold text-ink">{exam.title}</h1>
+            <p className="hidden truncate text-xs text-ink-3 sm:block">
               {exam.subject} · <span className="tabular-nums">{exam.code}</span>
             </p>
           </div>
@@ -211,7 +258,7 @@ export default function LiveExamPage() {
 
         {/* Progress */}
         <div className="hidden w-48 md:block">
-          <div className="mb-2 flex items-center justify-between text-xs text-zinc-400">
+          <div className="mb-2 flex items-center justify-between text-xs text-ink-3">
             <span>Progress</span>
             <span className="tabular-nums">
               {answeredCount}/{totalQuestions} ({progressPct}%)
@@ -222,7 +269,13 @@ export default function LiveExamPage() {
 
         <div className="flex flex-shrink-0 items-center gap-2 sm:gap-4">
           <ExamTimer
-            initialSeconds={exam.duration ? exam.duration * 60 : 3600}
+            initialSeconds={
+              attempt.expiresAt
+                ? Math.max(0, Math.round((new Date(attempt.expiresAt).getTime() - Date.now()) / 1000))
+                : exam.duration
+                ? exam.duration * 60
+                : 3600
+            }
             onExpire={handleTimerExpire}
           />
 
@@ -230,7 +283,7 @@ export default function LiveExamPage() {
             type="button"
             onClick={() => setMobilePaletteOpen(true)}
             aria-label="Open question navigator"
-            className="rounded-lg border border-zinc-800 p-2 text-zinc-300 hover:bg-zinc-800 lg:hidden"
+            className="rounded-lg border border-line p-2 text-ink-2 hover:bg-sunken lg:hidden"
           >
             <LayoutGrid size={18} />
           </button>
@@ -244,15 +297,19 @@ export default function LiveExamPage() {
       {/* ── MAIN: question + navigator ── */}
       <div className="mx-auto flex w-full max-w-7xl flex-1 flex-col gap-6 px-4 py-8 sm:px-6 lg:flex-row lg:px-8">
         <div className="min-w-0 flex-1">
-          <QuestionCard
-            question={currentQuestion}
-            questionNumber={currentIndex + 1}
-            totalQuestions={totalQuestions}
-            selectedOption={currentAnswer}
-            onSelectOption={handleSelectOption}
-            onClearAnswer={handleClearAnswer}
-            isMarked={isCurrentMarked}
-          />
+          <div key={currentIndex} className="animate-panel-in">
+            <QuestionCard
+              question={currentQuestion}
+              questionNumber={currentIndex + 1}
+              totalQuestions={totalQuestions}
+              selectedOption={currentAnswer}
+              onSelectOption={handleSelectOption}
+              onClearAnswer={handleClearAnswer}
+              isMarked={isCurrentMarked}
+              saveStatus={saveState[currentIndex]}
+              onRetrySave={handleRetrySave}
+            />
+          </div>
         </div>
 
         <div className="hidden w-80 flex-shrink-0 lg:block">
@@ -272,11 +329,11 @@ export default function LiveExamPage() {
       {mobilePaletteOpen && (
         <div className="fixed inset-0 z-50 lg:hidden">
           <div
-            className="absolute inset-0 bg-black/60"
+            className="absolute inset-0 bg-ink/20"
             onClick={() => setMobilePaletteOpen(false)}
             aria-hidden="true"
           />
-          <div className="absolute inset-y-0 right-0 w-full max-w-xs overflow-y-auto border-l border-zinc-800 bg-zinc-950 p-4">
+          <div className="absolute inset-y-0 right-0 w-full max-w-xs overflow-y-auto border-l border-line bg-canvas p-4">
             <QuestionNavigator
               totalQuestions={totalQuestions}
               currentIndex={currentIndex}
@@ -290,7 +347,7 @@ export default function LiveExamPage() {
       )}
 
       {/* ── BOTTOM NAVIGATION BAR ── */}
-      <footer className="sticky bottom-0 z-20 border-t border-zinc-800 bg-zinc-950 px-4 py-4 sm:px-6">
+      <footer className="sticky bottom-0 z-20 border-t border-line bg-canvas px-4 py-4 sm:px-6">
         <div className="mx-auto flex max-w-7xl items-center justify-between gap-2 lg:px-2">
           <Button
             variant="secondary"
@@ -308,8 +365,8 @@ export default function LiveExamPage() {
             className={[
               'inline-flex items-center gap-2 rounded-lg border px-4 py-2 text-sm font-medium transition-colors',
               isCurrentMarked
-                ? 'border-amber-500/50 text-amber-400'
-                : 'border-zinc-700 text-zinc-200 hover:bg-zinc-800',
+                ? 'border-accent/50 text-accent-strong'
+                : 'border-line-strong text-ink-2 hover:bg-sunken',
             ].join(' ')}
           >
             <Bookmark size={14} className={isCurrentMarked ? 'fill-current' : ''} />

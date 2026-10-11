@@ -19,13 +19,13 @@ export default function ErrorState({
   className = '',
 }) {
   return (
-    <div className={`flex flex-col items-center justify-center py-12 px-4 text-center ${className}`}>
-      <div className="mb-4 text-red-400">
+    <div className={`flex flex-col items-center justify-center px-4 py-12 text-center ${className}`}>
+      <div className="mb-4 text-danger">
         {icon || <AlertCircle size={28} />}
       </div>
-      <h3 className="text-sm font-semibold text-zinc-100">{title}</h3>
+      <h3 className="text-sm font-semibold text-ink">{title}</h3>
       {message && (
-        <p className="mt-2 max-w-sm text-sm text-zinc-400">
+        <p className="mt-2 max-w-sm text-sm text-ink-3">
           {message}
         </p>
       )}

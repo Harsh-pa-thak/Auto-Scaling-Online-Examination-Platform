@@ -33,7 +33,7 @@ const Select = forwardRef(function Select(
         <label htmlFor={id} className="form-label">
           {label}
           {required && (
-            <span className="text-red-500 ml-0.5" aria-hidden="true">
+            <span className="ml-0.5 text-danger" aria-hidden="true">
               *
             </span>
           )}
@@ -74,17 +74,17 @@ const Select = forwardRef(function Select(
 
         <ChevronDown
           size={16}
-          className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-zinc-500"
+          className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-ink-4"
         />
       </div>
 
       {error && (
-        <p role="alert" className="text-xs text-red-400">
+        <p role="alert" className="text-xs text-danger">
           {error}
         </p>
       )}
       {helperText && !error && (
-        <p className="text-xs text-zinc-400">{helperText}</p>
+        <p className="text-xs text-ink-3">{helperText}</p>
       )}
     </div>
   )

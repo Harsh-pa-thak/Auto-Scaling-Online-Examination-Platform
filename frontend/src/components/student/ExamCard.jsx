@@ -50,8 +50,12 @@ function formatTime(dateStr) {
 export default function ExamCard({ exam, isActive = false, className = '' }) {
   if (!exam) return null
 
-  const isLive = isActive || exam.status === 'active'
-  const isUpcoming = exam.status === 'upcoming'
+  const now = Date.now()
+  const startsAt = exam.startTime ? new Date(exam.startTime).getTime() : NaN
+  const endsAt = exam.endTime ? new Date(exam.endTime).getTime() : NaN
+  const isWithinWindow = Number.isFinite(startsAt) && Number.isFinite(endsAt) && now >= startsAt && now <= endsAt
+  const isLive = isActive || (['active', 'published'].includes(exam.status) && isWithinWindow)
+  const isUpcoming = ['upcoming', 'published'].includes(exam.status) && Number.isFinite(startsAt) && now < startsAt
   const isCompleted = exam.status === 'completed'
   const isUnavailable = exam.status === 'unavailable' || exam.status === 'draft'
 
@@ -66,16 +70,16 @@ export default function ExamCard({ exam, isActive = false, className = '' }) {
     <div
       className={[
         'card flex flex-col p-6',
-        isLive ? 'border-amber-500/50' : '',
+        isLive ? 'border-accent/50' : '',
         isUnavailable ? 'opacity-70' : '',
         className,
       ].join(' ')}
     >
       {/* Subject & Status */}
       <div className="flex items-center justify-between gap-2">
-        <p className="truncate text-sm text-zinc-400">
+        <p className="truncate text-sm text-ink-3">
           {exam.subject}
-          {exam.code && <span className="tabular-nums text-zinc-500"> · {exam.code}</span>}
+          {exam.code && <span className="tabular-nums text-ink-3"> · {exam.code}</span>}
         </p>
 
         {isLive ? (
@@ -94,17 +98,17 @@ export default function ExamCard({ exam, isActive = false, className = '' }) {
       </div>
 
       {/* Title */}
-      <h3 className="mt-2 text-base font-semibold text-zinc-100">{exam.title}</h3>
+      <h3 className="mt-2 text-base font-semibold text-ink">{exam.title}</h3>
 
       {/* Details */}
-      <dl className="mt-4 flex-1 space-y-2 border-t border-zinc-800 pt-4 text-sm">
+      <dl className="mt-4 flex-1 space-y-2 border-t border-line pt-4 text-sm">
         {details.map(({ icon: Icon, label, value }) => (
           <div key={label} className="flex items-center justify-between gap-4">
-            <dt className="flex items-center gap-2 text-zinc-400">
-              <Icon size={14} className="text-zinc-500" />
+            <dt className="flex items-center gap-2 text-ink-3">
+              <Icon size={14} className="text-ink-3" />
               {label}
             </dt>
-            <dd className="text-right tabular-nums text-zinc-200">{value}</dd>
+            <dd className="text-right tabular-nums text-ink-2">{value}</dd>
           </div>
         ))}
       </dl>

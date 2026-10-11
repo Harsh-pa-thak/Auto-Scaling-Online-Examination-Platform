@@ -32,25 +32,25 @@ export default function StatsCard({
 
   const TrendIcon = trend === 'positive' ? ArrowUpRight : trend === 'negative' ? ArrowDownRight : Minus
   const trendColor =
-    trend === 'positive' ? 'text-emerald-400' : trend === 'negative' ? 'text-red-400' : 'text-zinc-400'
+    trend === 'positive' ? 'text-success' : trend === 'negative' ? 'text-danger' : 'text-ink-3'
 
   return (
     <div className={`card p-6 ${className}`}>
       <div className="flex items-center justify-between gap-4">
         <p className="eyebrow">{title}</p>
-        {icon && <span className="flex-shrink-0 text-zinc-500">{icon}</span>}
+        {icon && <span className="flex-shrink-0 text-ink-4">{icon}</span>}
       </div>
 
-      <p className="mt-2 text-3xl font-semibold tracking-tight tabular-nums text-zinc-50">
+      <p className="mt-2 text-3xl font-semibold tracking-tight tabular-nums text-ink">
         {value}
       </p>
 
       {description && (
-        <p className="mt-1 text-sm text-zinc-400">{description}</p>
+        <p className="mt-1 text-sm text-ink-3">{description}</p>
       )}
 
       {change && (
-        <p className="mt-4 flex items-center gap-1 text-xs text-zinc-400">
+        <p className="mt-4 flex items-center gap-1 text-xs text-ink-3">
           <span className={`inline-flex items-center gap-0.5 font-medium ${trendColor}`}>
             <TrendIcon size={14} />
             {change}

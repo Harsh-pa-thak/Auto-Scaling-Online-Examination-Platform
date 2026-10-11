@@ -28,15 +28,15 @@ import { useToast } from '../../hooks/useToast'
 function Section({ title, subtitle, icon, children }) {
   return (
     <Card>
-      <div className="flex items-start gap-3 mb-5 pb-4 border-b border-zinc-800">
+      <div className="flex items-start gap-3 mb-5 pb-4 border-b border-line">
         {icon && (
-          <div className="h-8 w-8 rounded-lg bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400 shrink-0">
+          <div className="h-8 w-8 rounded-lg bg-accent-soft border border-accent/20 flex items-center justify-center text-accent-strong shrink-0">
             {icon}
           </div>
         )}
         <div>
-          <h2 className="text-sm font-semibold text-zinc-200">{title}</h2>
-          {subtitle && <p className="text-xs text-zinc-500 mt-0.5">{subtitle}</p>}
+          <h2 className="text-sm font-semibold text-ink-2">{title}</h2>
+          {subtitle && <p className="text-xs text-ink-3 mt-0.5">{subtitle}</p>}
         </div>
       </div>
       {children}
@@ -47,13 +47,13 @@ function Section({ title, subtitle, icon, children }) {
 // ── Info row ──────────────────────────────────────────────────
 function InfoRow({ icon, label, value, mono = false }) {
   return (
-    <div className="flex items-center gap-3 py-3 border-b border-zinc-800/60 last:border-0">
-      <div className="shrink-0 w-8 h-8 rounded-lg bg-zinc-800/60 flex items-center justify-center text-zinc-500">
+    <div className="flex items-center gap-3 py-3 border-b border-line/60 last:border-0">
+      <div className="shrink-0 w-8 h-8 rounded-lg bg-sunken/60 flex items-center justify-center text-ink-3">
         {icon}
       </div>
       <div className="flex-1 min-w-0">
-        <p className="text-xs text-zinc-500 uppercase tracking-wider font-medium">{label}</p>
-        <p className={`text-sm font-medium text-zinc-200 mt-0.5 truncate ${mono ? 'tabular-nums' : ''}`}>
+        <p className="text-xs text-ink-3 uppercase tracking-wider font-medium">{label}</p>
+        <p className={`text-sm font-medium text-ink-2 mt-0.5 truncate ${mono ? 'tabular-nums' : ''}`}>
           {value}
         </p>
       </div>
@@ -77,7 +77,7 @@ function PasswordField({ id, label, value, onChange, error, placeholder }) {
         <button
           type="button"
           onClick={() => setShow((s) => !s)}
-          className="text-zinc-500 hover:text-zinc-300 transition-colors"
+          className="text-ink-3 hover:text-ink-2 transition-colors"
           aria-label={show ? 'Hide password' : 'Show password'}
         >
           {show ? <EyeOff size={15} /> : <Eye size={15} />}
@@ -97,13 +97,13 @@ function Toggle({ checked, onChange }) {
       onClick={onChange}
       className={[
         'relative inline-flex h-5 w-9 shrink-0 cursor-pointer rounded-full border-2 border-transparent',
-        'transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-amber-500/50',
-        checked ? 'bg-amber-500' : 'bg-zinc-700',
+        'transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-accent/50',
+        checked ? 'bg-accent' : 'bg-sunken',
       ].join(' ')}
     >
       <span
         className={[
-          'pointer-events-none inline-block h-4 w-4 transform rounded-full bg-zinc-900',
+          'pointer-events-none inline-block h-4 w-4 transform rounded-full bg-surface',
           'transition duration-200 ease-in-out',
           checked ? 'translate-x-4' : 'translate-x-0',
         ].join(' ')}
@@ -176,11 +176,11 @@ export default function AdminProfilePage() {
     <div className="space-y-8">
       {/* ── Page Header ── */}
       <div>
-        <h1 className="text-xl font-bold text-zinc-100 flex items-center gap-2">
-          <User className="text-amber-500" size={22} />
+        <h1 className="text-xl font-bold text-ink flex items-center gap-2">
+          <User className="text-accent-strong" size={22} />
           Administrator Profile
         </h1>
-        <p className="mt-1 text-sm text-zinc-400">
+        <p className="mt-1 text-sm text-ink-3">
           Manage your identity, portal credentials, and account preferences.
         </p>
       </div>
@@ -192,8 +192,8 @@ export default function AdminProfilePage() {
           <Card padding="p-6">
             <div className="flex flex-col items-center text-center">
               <Avatar name={admin.name} size="xl" className="mb-4" />
-              <h2 className="text-base font-bold text-zinc-100">{admin.name}</h2>
-              <p className="text-xs text-zinc-400 mt-0.5 tabular-nums">{admin.email}</p>
+              <h2 className="text-base font-bold text-ink">{admin.name}</h2>
+              <p className="text-xs text-ink-3 mt-0.5 tabular-nums">{admin.email}</p>
 
               <div className="mt-3 flex flex-wrap gap-2 justify-center">
                 <Badge variant="warning" size="sm">Administrator</Badge>
@@ -202,18 +202,18 @@ export default function AdminProfilePage() {
                 </Badge>
               </div>
 
-              <div className="mt-5 w-full space-y-3 pt-4 border-t border-zinc-800 text-left text-xs">
+              <div className="mt-5 w-full space-y-3 pt-4 border-t border-line text-left text-xs">
                 <div>
-                  <p className="text-zinc-500 uppercase tracking-wider font-medium">Staff ID</p>
-                  <p className="mt-0.5 tabular-nums font-semibold text-zinc-300">{admin.id}</p>
+                  <p className="text-ink-3 uppercase tracking-wider font-medium">Staff ID</p>
+                  <p className="mt-0.5 tabular-nums font-semibold text-ink-2">{admin.id}</p>
                 </div>
                 <div>
-                  <p className="text-zinc-500 uppercase tracking-wider font-medium">Role</p>
-                  <p className="mt-0.5 font-medium text-zinc-300">System Administrator</p>
+                  <p className="text-ink-3 uppercase tracking-wider font-medium">Role</p>
+                  <p className="mt-0.5 font-medium text-ink-2">System Administrator</p>
                 </div>
                 <div>
-                  <p className="text-zinc-500 uppercase tracking-wider font-medium">Member Since</p>
-                  <p className="mt-0.5 text-zinc-300">
+                  <p className="text-ink-3 uppercase tracking-wider font-medium">Member Since</p>
+                  <p className="mt-0.5 text-ink-2">
                     {new Date(admin.joinedAt).toLocaleDateString('en-IN', { month: 'long', year: 'numeric' })}
                   </p>
                 </div>
@@ -224,12 +224,12 @@ export default function AdminProfilePage() {
           {/* Session / Logout card */}
           <Card>
             <div className="flex items-center gap-2 mb-3">
-              <ShieldCheck size={14} className="text-zinc-500" />
-              <span className="text-xs font-medium text-zinc-400 uppercase tracking-wider">Active Session</span>
+              <ShieldCheck size={14} className="text-ink-3" />
+              <span className="text-xs font-medium text-ink-3 uppercase tracking-wider">Active Session</span>
             </div>
-            <div className="text-xs text-zinc-500 space-y-1 mb-4">
-              <p>Logged in as <span className="text-zinc-300 font-medium">Administrator</span></p>
-              <p>Portal access level: <span className="text-amber-400 font-semibold">Full Access</span></p>
+            <div className="text-xs text-ink-3 space-y-1 mb-4">
+              <p>Logged in as <span className="text-ink-2 font-medium">Administrator</span></p>
+              <p>Portal access level: <span className="text-accent-strong font-semibold">Full Access</span></p>
             </div>
             <Button
               variant="danger"
@@ -263,7 +263,7 @@ export default function AdminProfilePage() {
                 value={new Date(admin.joinedAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' })}
               />
             </div>
-            <p className="mt-4 text-xs text-zinc-600">
+            <p className="mt-4 text-xs text-ink-2">
               Profile details are managed by IT administration. Contact the helpdesk to request updates.
             </p>
           </Section>
@@ -301,14 +301,14 @@ export default function AdminProfilePage() {
               />
 
               {/* Password strength hint */}
-              <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-zinc-500">
-                <span className={`flex items-center gap-1 ${pwForm.next.length >= 8 ? 'text-emerald-400' : ''}`}>
+              <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-ink-3">
+                <span className={`flex items-center gap-1 ${pwForm.next.length >= 8 ? 'text-success' : ''}`}>
                   <CheckCircle2 size={11} /> Min 8 characters
                 </span>
-                <span className={`flex items-center gap-1 ${/[A-Z]/.test(pwForm.next) ? 'text-emerald-400' : ''}`}>
+                <span className={`flex items-center gap-1 ${/[A-Z]/.test(pwForm.next) ? 'text-success' : ''}`}>
                   <CheckCircle2 size={11} /> Uppercase letter
                 </span>
-                <span className={`flex items-center gap-1 ${/[0-9]/.test(pwForm.next) ? 'text-emerald-400' : ''}`}>
+                <span className={`flex items-center gap-1 ${/[0-9]/.test(pwForm.next) ? 'text-success' : ''}`}>
                   <CheckCircle2 size={11} /> Contains number
                 </span>
               </div>
@@ -357,11 +357,11 @@ export default function AdminProfilePage() {
               ].map(({ key, label, sub }) => (
                 <div
                   key={key}
-                  className="flex items-center justify-between gap-4 py-3.5 border-b border-zinc-800/60 last:border-0"
+                  className="flex items-center justify-between gap-4 py-3.5 border-b border-line/60 last:border-0"
                 >
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-zinc-200">{label}</p>
-                    <p className="text-xs text-zinc-500 mt-0.5">{sub}</p>
+                    <p className="text-sm font-medium text-ink-2">{label}</p>
+                    <p className="text-xs text-ink-3 mt-0.5">{sub}</p>
                   </div>
                   <Toggle checked={settings[key]} onChange={() => toggleSetting(key)} />
                 </div>

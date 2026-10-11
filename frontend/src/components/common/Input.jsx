@@ -37,7 +37,7 @@ const Input = forwardRef(function Input(
         <label htmlFor={id} className="form-label">
           {label}
           {required && (
-            <span className="text-red-500 ml-0.5" aria-hidden="true">
+            <span className="ml-0.5 text-danger" aria-hidden="true">
               *
             </span>
           )}
@@ -46,7 +46,7 @@ const Input = forwardRef(function Input(
 
       <div className="relative">
         {leftIcon && (
-          <div className="pointer-events-none absolute inset-y-0 left-0 pl-3 flex items-center text-zinc-500">
+          <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-ink-4">
             {leftIcon}
           </div>
         )}
@@ -72,20 +72,20 @@ const Input = forwardRef(function Input(
         />
 
         {rightSlot && (
-          <div className="absolute inset-y-0 right-0 pr-3 flex items-center">
+          <div className="absolute inset-y-0 right-0 flex items-center pr-3">
             {rightSlot}
           </div>
         )}
       </div>
 
       {error && (
-        <p id={`${id}-error`} role="alert" className="text-xs text-red-400 flex items-center gap-1">
+        <p id={`${id}-error`} role="alert" className="flex items-center gap-1 text-xs text-danger">
           {error}
         </p>
       )}
 
       {helperText && !error && (
-        <p id={`${id}-helper`} className="text-xs text-zinc-400">
+        <p id={`${id}-helper`} className="text-xs text-ink-3">
           {helperText}
         </p>
       )}

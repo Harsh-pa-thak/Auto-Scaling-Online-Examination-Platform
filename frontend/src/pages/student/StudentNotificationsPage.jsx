@@ -95,7 +95,7 @@ export default function StudentNotificationsPage() {
           <p className="page-subtitle">
             Exam schedules, reminders, result releases, and platform notices.
             {counts.unread > 0 && (
-              <span className="text-zinc-200"> {counts.unread} unread.</span>
+              <span className="text-ink-2"> {counts.unread} unread.</span>
             )}
           </p>
         </div>
@@ -113,7 +113,7 @@ export default function StudentNotificationsPage() {
 
       <div className="space-y-4">
         {/* ── Category Tabs ── */}
-        <nav aria-label="Notification type" className="flex gap-6 overflow-x-auto border-b border-zinc-800">
+        <nav aria-label="Notification type" className="flex gap-6 overflow-x-auto border-b border-line">
           {FILTER_TABS.map((tab) => {
             const isActive = activeFilter === tab.id
             return (
@@ -124,12 +124,12 @@ export default function StudentNotificationsPage() {
                 aria-current={isActive ? 'page' : undefined}
                 className={`-mb-px flex items-center gap-2 whitespace-nowrap border-b-2 py-3 text-sm font-medium transition-colors ${
                   isActive
-                    ? 'border-amber-500 text-zinc-50'
-                    : 'border-transparent text-zinc-400 hover:text-zinc-100'
+                    ? 'border-accent text-ink'
+                    : 'border-transparent text-ink-3 hover:text-ink'
                 }`}
               >
                 {tab.label}
-                <span className="tabular-nums text-zinc-500">{tab.count}</span>
+                <span className="tabular-nums text-ink-3">{tab.count}</span>
               </button>
             )
           })}
@@ -161,7 +161,7 @@ export default function StudentNotificationsPage() {
             />
           </div>
         ) : (
-          <ul className="card divide-y divide-zinc-800">
+          <ul className="card divide-y divide-line">
             {filteredNotifications.map((item) => {
               const config = TYPE_CONFIG[item.type] || TYPE_CONFIG.system
               const Icon = config.icon
@@ -170,13 +170,13 @@ export default function StudentNotificationsPage() {
                 <li key={item.id} className="flex flex-col gap-4 p-6 sm:flex-row sm:items-start">
                   <Icon
                     size={18}
-                    className={`mt-0.5 flex-shrink-0 ${item.read ? 'text-zinc-600' : 'text-zinc-400'}`}
+                    className={`mt-0.5 flex-shrink-0 ${item.read ? 'text-ink-2' : 'text-ink-3'}`}
                   />
 
                   <div className="min-w-0 flex-1">
-                    <p className="flex flex-wrap items-center gap-2 text-xs text-zinc-500">
+                    <p className="flex flex-wrap items-center gap-2 text-xs text-ink-3">
                       {!item.read && (
-                        <span className="h-2 w-2 rounded-full bg-amber-500" aria-label="Unread" />
+                        <span className="h-2 w-2 rounded-full bg-accent" aria-label="Unread" />
                       )}
                       <span>{config.label}</span>
                       <span>·</span>
@@ -184,12 +184,12 @@ export default function StudentNotificationsPage() {
                     </p>
                     <h2
                       className={`mt-1 text-sm ${
-                        item.read ? 'font-medium text-zinc-300' : 'font-semibold text-zinc-50'
+                        item.read ? 'font-medium text-ink-2' : 'font-semibold text-ink'
                       }`}
                     >
                       {item.title}
                     </h2>
-                    <p className="mt-1 text-sm text-zinc-400">{item.message}</p>
+                    <p className="mt-1 text-sm text-ink-3">{item.message}</p>
                   </div>
 
                   <div className="flex flex-shrink-0 items-center gap-2">

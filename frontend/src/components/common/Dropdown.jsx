@@ -17,15 +17,15 @@ export function DropdownItem({
       disabled={disabled}
       onClick={onClick}
       className={[
-        'flex w-full items-center gap-2 px-3 py-2 text-sm rounded-lg text-left transition-colors',
+        'flex w-full items-center gap-2 rounded-md px-3 py-2 text-left text-sm transition-colors duration-fast',
         danger
-          ? 'text-red-400 hover:bg-red-950/40 active:bg-red-950/60'
-          : 'text-zinc-300 hover:bg-zinc-800 hover:text-zinc-100 active:bg-zinc-700',
+          ? 'text-danger hover:bg-danger-soft'
+          : 'text-ink-2 hover:bg-sunken hover:text-ink',
         disabled ? 'opacity-40 cursor-not-allowed' : '',
         className,
       ].join(' ')}
     >
-      {icon && <span className="flex-shrink-0 text-zinc-500">{icon}</span>}
+      {icon && <span className="flex-shrink-0 text-ink-4">{icon}</span>}
       <span className="flex-1 truncate">{children}</span>
     </button>
   )
@@ -35,7 +35,7 @@ export function DropdownItem({
  * Dropdown divider component
  */
 export function DropdownDivider() {
-  return <div className="my-1 border-t border-zinc-800" />
+  return <div className="my-1 border-t border-line" />
 }
 
 /**
@@ -90,7 +90,7 @@ export default function Dropdown({
           role="menu"
           aria-orientation="vertical"
           className={[
-            'absolute z-50 mt-2 p-1 bg-zinc-900 border border-zinc-700 rounded-xl focus:outline-none',
+            'absolute z-50 mt-2 p-1 bg-surface border border-line rounded-lg shadow-lg focus:outline-none animate-panel-in',
             align === 'right' ? 'right-0 origin-top-right' : 'left-0 origin-top-left',
             width,
           ].join(' ')}

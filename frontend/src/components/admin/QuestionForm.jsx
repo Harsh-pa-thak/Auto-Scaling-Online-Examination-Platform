@@ -151,7 +151,7 @@ export default function QuestionForm({
       {/* ── Question Text ── */}
       <div className="space-y-2">
         <label htmlFor="question-text" className="form-label">
-          Question text <span className="text-red-500">*</span>
+          Question text <span className="text-danger">*</span>
         </label>
         <textarea
           id="question-text"
@@ -165,7 +165,7 @@ export default function QuestionForm({
           ].join(' ')}
         />
         {errors.text && (
-          <p role="alert" className="text-xs text-red-400">
+          <p role="alert" className="text-xs text-danger">
             {errors.text}
           </p>
         )}
@@ -265,7 +265,7 @@ export default function QuestionForm({
       </div>
 
       {/* ── Action Buttons ── */}
-      <div className="flex items-center justify-end gap-2 border-t border-zinc-800 pt-6">
+      <div className="flex items-center justify-end gap-2 border-t border-line pt-6">
         <Button
           type="button"
           variant="secondary"
