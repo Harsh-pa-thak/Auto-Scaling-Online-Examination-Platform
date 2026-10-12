@@ -191,11 +191,11 @@ export default function AdminMonitoringPage() {
             <Card className="p-6">
               <div className="flex items-start justify-between">
                 <div>
-                  <p className="eyebrow">In session now</p>
+                  <p className="eyebrow pr-6">In session now</p>
                   <p className="mt-1 text-3xl font-semibold tabular-nums text-accent-strong">{inSession}</p>
                   <p className="mt-0.5 text-xs text-ink-3">Active attempt{inSession === 1 ? '' : 's'}</p>
                 </div>
-                <span className="rounded-xl bg-accent-soft p-2.5 text-accent-strong">
+                <span className="flex-shrink-0 rounded-xl bg-accent-soft p-2.5 text-accent-strong">
                   <Activity size={18} />
                 </span>
               </div>
@@ -204,11 +204,11 @@ export default function AdminMonitoringPage() {
             <Card className="p-6">
               <div className="flex items-start justify-between">
                 <div>
-                  <p className="eyebrow">Exams with candidates</p>
+                  <p className="eyebrow pr-6">Live exams</p>
                   <p className="mt-1 text-3xl font-semibold tabular-nums text-ink">{liveExams.length}</p>
                   <p className="mt-0.5 text-xs text-ink-3">Running right now</p>
                 </div>
-                <span className="rounded-xl bg-sunken p-2.5 text-ink-2">
+                <span className="flex-shrink-0 rounded-xl bg-sunken p-2.5 text-ink-2">
                   <Radio size={18} />
                 </span>
               </div>
@@ -217,13 +217,13 @@ export default function AdminMonitoringPage() {
             <Card className="p-6">
               <div className="flex items-start justify-between">
                 <div>
-                  <p className="eyebrow">Submitted attempts</p>
+                  <p className="eyebrow pr-6">Submitted</p>
                   <p className="mt-1 text-3xl font-semibold tabular-nums text-success">
                     {submittedAttempts ?? '—'}
                   </p>
                   <p className="mt-0.5 text-xs text-ink-3">All-time evaluations</p>
                 </div>
-                <span className="rounded-xl bg-success-soft p-2.5 text-success">
+                <span className="flex-shrink-0 rounded-xl bg-success-soft p-2.5 text-success">
                   <ClipboardList size={18} />
                 </span>
               </div>
@@ -232,13 +232,13 @@ export default function AdminMonitoringPage() {
             <Card className="p-6">
               <div className="flex items-start justify-between">
                 <div>
-                  <p className="eyebrow">Registered students</p>
+                  <p className="eyebrow pr-6">Students</p>
                   <p className="mt-1 text-3xl font-semibold tabular-nums text-ink">
                     {analytics?.students ?? '—'}
                   </p>
                   <p className="mt-0.5 text-xs text-ink-3">Eligible candidates</p>
                 </div>
-                <span className="rounded-xl bg-sunken p-2.5 text-ink-2">
+                <span className="flex-shrink-0 rounded-xl bg-sunken p-2.5 text-ink-2">
                   <Users size={18} />
                 </span>
               </div>
