@@ -212,25 +212,25 @@ The monitoring page pulls from the backend `Prisma` ORM querying `attempts` with
 
 ## Screenshots
 
-### Live Monitoring Page (Admin)
-![Live Monitoring Page](frontend/src/data/monitoring-screenshot.png)
-*Admin live monitoring dashboard showing in-progress exam attempts, grouped by exam with countdown timers and candidate details.*
+### Login Page
 
-### Exam Interface (Student)
-![Exam Interface](frontend/src/data/exam-interface.png)
-*Student taking an exam with timer, questions, and answer options.*
+<!-- Add login page screenshot here -->
 
-### Admin Dashboard
-![Admin Dashboard](frontend/src/admin-dashboard.png)
-*Admin dashboard with stats, recent activity, and navigation.*
+### Live Monitoring Page
 
-### Analytics Page
-![Analytics](frontend/src/data/analytics.png)
-*Platform-wide analytics showing attempt counts, average scores, and student performance.*
+<!-- Add live monitoring page screenshot here -->
+
+### VPC
+
+<!-- Add VPC screenshot here -->
+
+### Public and Private Subnets
+
+<!-- Add public and private subnets screenshot here -->
 
 ---
 
-> **Note**: Screenshots above are placeholders. The actual live monitoring page dynamically renders data from the API in real-time. To capture actual screenshots, run `npm run dev` in both frontend and backend directories, then navigate to `http://localhost:5173/admin/monitoring` while an exam attempt is in progress.
+> **Note**: The screenshot sections above are placeholders for the application and AWS infrastructure screenshots.
 
 ## Available Scripts
 
