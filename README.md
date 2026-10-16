@@ -181,23 +181,19 @@ The monitoring page pulls from the backend `Prisma` ORM querying `attempts` with
 
 ### Login Page
 
-<!-- Add login page screenshot here -->
+<img width="2880" height="1800" alt="image" src="https://github.com/user-attachments/assets/233f2056-24fb-48a6-8285-6bede398f7b4" />
 
 ### Live Monitoring Page
 
-<!-- Add live monitoring page screenshot here -->
+<img width="2880" height="1800" alt="Screenshot_20261016_224427" src="https://github.com/user-attachments/assets/bd4f66df-4389-4294-b93b-475b784f9628" />
 
 ### VPC
 
-<!-- Add VPC screenshot here -->
-
+<img width="1473" height="921" alt="Screenshot_20261016_233803" src="https://github.com/user-attachments/assets/f437aa35-9162-4890-9ec1-317bc5655e91" />
 ### Public and Private Subnets
 
-<!-- Add public and private subnets screenshot here -->
-
+<img width="1503" height="947" alt="Screenshot_20261016_233904" src="https://github.com/user-attachments/assets/ec6b8d87-b8f6-4c8c-95f1-f1579961aa44" />
 ---
-
-> **Note**: The screenshot sections above are placeholders for the application and AWS infrastructure screenshots.
 
 ## Available Scripts
 
