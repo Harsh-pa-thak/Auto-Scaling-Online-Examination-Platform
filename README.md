@@ -206,23 +206,9 @@ The monitoring page pulls from the backend `Prisma` ORM querying `attempts` with
 
 - **Frontend**: React 18, Vite 5, Tailwind CSS 3
 - **Backend**: Node.js, Express, Prisma ORM
-- **Database**: PostgreSQL (Neon/Hosted) via `DATABASE_URL`
+- **Database**: PostgreSQL (Amazon RDS or another managed PostgreSQL provider) via `DATABASE_URL`
 - **Authentication**: JWT-based with role (STUDENT/ADMIN) enforcement
-- **Deployment**: Cloudflare Workers compatible (frontend Vite build + backend Express)
-
-## AWS Integration
-
-The platform is designed to work with AWS services for scaling and deployment:
-
-- **Amazon RDS / Neon**: PostgreSQL database hosting (already configured via `DATABASE_URL` in `.env`)
-- **AWS Auto Scaling**: The platform architecture supports auto-scaling - the Express backend can run behind an Application Load Balancer with target tracking scaling policies
-- **Amazon CloudFront**: Frontend assets can be distributed via CloudFront CDN for global edge caching
-- **AWS Lambda + API Gateway**: Backend API can be deployed as Lambda functions behind API Gateway for serverless scaling
-- **Amazon S3**: Static asset storage (Vite build output) for CDN delivery
-- **Amazon CloudWatch**: Monitoring and logs integration for the backend service
-- **AWS IAM**: Role-based access control for admin operations
-
-The `backend.md` file references the backend API structure, and the `DATABASE_URL` in `.env.example` already points to an AWS-hosted Neon PostgreSQL instance (`ep-blue-bar-zan27f8w-pooler.c-2.eu-west-2.aws.neon.tech`).
+- **AWS deployment**: S3 + CloudFront for the frontend, ALB + ECS Fargate or EC2 Auto Scaling for the API, and Amazon RDS for PostgreSQL
 
 ## Screenshots
 
@@ -268,29 +254,66 @@ The `backend.md` file references the backend API structure, and the `DATABASE_UR
 
 ## Deployment
 
-### Traditional Deployment
+### Local development
+
 1. Build frontend: `cd frontend && npm run build`
 2. Start backend: `cd backend && npm run dev`
-3. Serve static files from `frontend/dist/` via Express or your preferred web server
+3. Serve `frontend/dist/` with the Vite preview server or a static web server.
 
-### Cloudflare Workers (Recommended for Auto-Scaling)
-1. Deploy backend as a Cloudflare Worker (adapt Express to Worker fetch handler)
-2. Deploy frontend static assets to Cloudflare R2 + CDN
-3. Configure DNS with proper routing
-4. Set up D1 database binding for Prisma ORM
+### AWS deployment (recommended)
 
-### AWS Deployment (Full Stack)
-1. **Database**: Use Amazon RDS (PostgreSQL) or Neon (serverless Postgres)
-2. **Backend**: Deploy Node.js + Express to AWS Elastic Beanstalk, ECS Fargate, or Lambda
-3. **Frontend**: Deploy to S3 + CloudFront with domain mapping
-4. **CI/CD**: Set up GitHub Actions or GitLab CI for automated deployments
-5. **Monitoring**: Configure CloudWatch dashboards for API latency, error rates, and attempt metrics
+#### 1. Provision the AWS foundation
+
+Create the VPC, subnets, route tables, security groups, ALB target group, RDS PostgreSQL instance, CloudFront distribution, S3 bucket, ACM certificates, IAM roles, and CloudWatch log groups described in [AWS Architecture](#aws-architecture). Use infrastructure as code for repeatable environments.
+
+#### 2. Configure Amazon RDS
+
+Create the database in private subnets and allow PostgreSQL traffic only from the API security group. Store the resulting connection string as `DATABASE_URL` in Secrets Manager. Apply Prisma migrations from a controlled deployment environment:
+
+```bash
+cd backend
+npm ci
+npx prisma generate
+npx prisma migrate deploy
+```
+
+#### 3. Deploy the API
+
+Build an API image or package the Node.js service for the selected compute option:
+
+- **ECS Fargate:** push the backend image to Amazon ECR, create an ECS task definition, inject Secrets Manager values, attach the task to the ALB target group, and enable ECS Service Auto Scaling.
+- **EC2 Auto Scaling:** create an AMI or launch-template user data script that runs `npm ci`, `npx prisma generate`, and `npm start`; attach instances to the ALB target group and configure ASG target tracking.
+
+The ALB health check should call `GET /api/health`. Keep the API listening on the port configured by `PORT` and bind it to `0.0.0.0` in the compute environment.
+
+#### 4. Deploy the frontend
+
+Set `VITE_API_BASE_URL` to the HTTPS API hostname exposed by the ALB, then build and publish the static files:
+
+```bash
+cd frontend
+npm ci
+npm run build
+aws s3 sync dist/ s3://YOUR-FRONTEND-BUCKET/ --delete
+aws cloudfront create-invalidation \
+  --distribution-id YOUR_DISTRIBUTION_ID \
+  --paths "/*"
+```
+
+Configure CloudFront to use S3 with Origin Access Control so the bucket does not need public access.
+
+#### 5. Operate and scale the platform
+
+- Use CloudWatch dashboards and alarms for ALB 5xx responses, target response time, healthy host count, ECS/EC2 CPU and memory, RDS CPU/storage/connections, and application errors.
+- Set minimum capacity high enough for the start of an exam and maximum capacity based on tested database limits.
+- Enable RDS automated backups, encryption at rest, Multi-AZ, and deletion protection for production.
+- Use a CI/CD pipeline, such as GitHub Actions with OIDC, to test, publish the API image, run migrations, deploy the service, and publish the frontend.
 
 ## Environment Variables
 
 Create `.env` in both `frontend/` and `backend/` directories:
 
-### Backend `.env`
+### Backend `.env` (local development only)
 ```
 PORT=5000
 DATABASE_URL=postgresql://user:password@host:port/database?sslmode=require
@@ -301,6 +324,8 @@ NODE_ENV=development
 SEED_ADMIN_PASSWORD=123
 SEED_STUDENT_PASSWORD=123
 ```
+
+For AWS, inject these values through ECS task secrets, EC2 instance configuration, or a process manager that reads from AWS Secrets Manager. Do not commit real credentials or JWT secrets.
 
 ### Frontend `.env`
 ```
