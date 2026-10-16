@@ -1,6 +1,81 @@
 # Auto-Scaling Online Examination Platform
 
-A full-stack web application for conducting online examinations with live monitoring, admin controls, and student interfaces.
+A cloud-ready online examination platform built for bursty exam traffic. The application separates the React frontend from the Express API and PostgreSQL database so each tier can be deployed, secured, and scaled independently on AWS.
+
+## AWS Architecture
+
+The recommended production architecture uses managed AWS services and keeps the API tier stateless:
+
+```text
+Students / Admins
+        |
+ Route 53 (DNS)
+        |
+ CloudFront (CDN) -------- S3 (React/Vite static files)
+        |
+        +---- HTTPS ---- Application Load Balancer (public subnets)
+                              |
+                         Target Group
+                              |
+                 ECS Fargate or EC2 Auto Scaling Group
+                 (private application subnets, Express API)
+                              |
+                         Amazon RDS
+                    PostgreSQL (private DB subnets)
+```
+
+### AWS services and responsibilities
+
+| AWS service | Role in this project |
+|---|---|
+| **Amazon VPC** | Isolates the application into public, private application, and private database subnets across at least two Availability Zones. |
+| **Application Load Balancer (ALB)** | Terminates HTTPS, distributes `/api/*` traffic across healthy API instances, and exposes a stable API endpoint to the frontend. |
+| **Amazon ECS on Fargate** | Recommended compute layer for running the containerized Express API without managing servers. ECS Service Auto Scaling adjusts task count as traffic changes. |
+| **EC2 Auto Scaling Group (ASG)** | Alternative compute layer when the API is deployed directly to EC2. The ASG replaces unhealthy instances and scales the API fleet using CloudWatch metrics. |
+| **Amazon RDS for PostgreSQL** | Managed relational database for Prisma. Deploy it in private subnets with Multi-AZ enabled for production workloads. |
+| **Amazon S3** | Stores the built frontend files from `frontend/dist`. The bucket should remain private and be accessed through CloudFront Origin Access Control. |
+| **Amazon CloudFront** | Caches frontend assets at edge locations and provides the public web distribution. |
+| **Amazon Route 53** | Provides DNS records for the web application and API domain names. |
+| **AWS Certificate Manager (ACM)** | Provides the TLS certificate used by CloudFront and the ALB. |
+| **Amazon CloudWatch** | Collects ALB, ECS/EC2, and application logs and drives scaling alarms and operational dashboards. |
+| **AWS Secrets Manager** | Stores `DATABASE_URL`, `JWT_SECRET`, and other production secrets instead of committing them to `.env` files. |
+| **AWS IAM** | Uses task roles/instance roles with least-privilege access to RDS, CloudWatch, S3, and Secrets Manager. |
+
+> **Deployment status:** this repository contains the application and AWS deployment guidance; it does not provision AWS infrastructure automatically. Create the AWS resources described below with AWS CDK, Terraform, CloudFormation, or the AWS Console before deploying.
+
+### Request flow
+
+1. A user requests the React application through Route 53 and CloudFront.
+2. CloudFront serves the static Vite build from the private S3 bucket.
+3. Frontend API requests are sent over HTTPS to the ALB.
+4. The ALB health-checks and routes requests to API tasks/instances in private application subnets.
+5. The Express API uses Prisma to connect to PostgreSQL in private RDS subnets.
+6. CloudWatch metrics and logs provide visibility into latency, errors, saturation, and scaling events.
+
+### Network and security design
+
+- Use one VPC spanning at least two Availability Zones.
+- Place the ALB in public subnets and the API compute layer in private application subnets.
+- Place RDS in private database subnets using a DB subnet group; do not expose the database publicly.
+- Allow inbound traffic only from the required security group:
+  - Internet -> ALB: `443` (and optionally `80` only to redirect to HTTPS)
+  - ALB -> API: `5000` (or the port used by the container)
+  - API -> RDS: PostgreSQL `5432`
+- Restrict administrative access through AWS Systems Manager Session Manager or a controlled bastion/VPN rather than opening SSH to the internet.
+- Store production secrets in Secrets Manager and rotate the database credentials; never commit `backend/.env`.
+- Configure CORS and the frontend API URL for the production CloudFront/API domains.
+
+### Scaling strategy
+
+The API is designed to scale horizontally because request state is stored in PostgreSQL and authentication uses JWTs rather than in-memory server sessions.
+
+- **ALB target group:** route only to healthy API tasks/instances using `GET /api/health`.
+- **ECS Fargate:** configure Service Auto Scaling with minimum, desired, and maximum task counts. Use average CPU/memory and ALB request count per target as scaling signals.
+- **EC2 option:** attach the API instances to an Auto Scaling Group behind the ALB and use a launch template, health checks, and target tracking policies.
+- **Database protection:** set sensible maximum capacity and connection limits. Use RDS Proxy or a connection pooler if high task counts could exhaust PostgreSQL connections.
+- **Exam-day capacity:** pre-scale before a scheduled exam window when the expected load is known, then let target tracking scale back down afterward.
+
+This scaling model improves API availability during concurrent exam starts and answer submissions; it does not make a single database writer infinitely scalable. RDS sizing, indexes, backups, and connection management remain important capacity controls.
 
 ## Project Structure
 
